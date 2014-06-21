@@ -20,7 +20,7 @@ _Note: Original code was a collaborative team effort during a 2006 senior capsto
 ### Build Instructions
 
 ### Code Plan
-[] Initialize project, flesh out README, and organize coding steps (6/22)  
+[x] Initialize project, flesh out README, and organize coding steps (6/22)  
 [] Research pertinent literature, and collect relevant strategies (6/22)  
 [] Review existing code, refactor/revise as necessary, and refine areas still needing attention (6/29)  
 [] Finalize music theory heuristics and develop unit tests (7/6)  
