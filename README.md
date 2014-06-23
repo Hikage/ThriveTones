@@ -38,12 +38,21 @@ _Note: Original code was a collaborative team effort during a 2006 senior capsto
 
 ### Development Challenges
 
+
 ### Currently Working On / Next Steps
 * Find visual GA site as a reference
 * Research related literature
 * Rename project to something clever
 
 ### Useful Resources
+http://arstechnica.com/science/2009/09/virtual-composer-makes-beautiful-musicand-stirs-controversy/
+http://www.fastcodesign.com/1673173/can-computers-write-music-that-has-a-soul
+https://www.ece.umd.edu/~blj/papers/OrganizedSound.pdf
+http://sourceforge.net/projects/musicalgorithm1/
+http://computationalcreativity.net/iccc2012/wp-content/uploads/2012/06/160-Smith.pdf
+http://cacm.acm.org/magazines/2011/7/109891-algorithmic-composition/fulltext
+http://mzlabs.com/MZLabsJM/page4/page22/page22.html
+http://www.hooktheory.com/
 
 ### License and Sharing
 Full MIT license details available within COPYING
