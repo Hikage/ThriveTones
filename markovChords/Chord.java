@@ -1,102 +1,95 @@
 package markovChords;
 
-public class Chords {
+import java.util.HashMap;
+
+public class Chord {
+
+	private HashMap<String, Integer> notes;
+	private String modifier;
+	private int octave;								//can be + or -; defaults to middle
 	
-	int root = 60;
-	int third = 60;
-	int fifth = 60;
-	int octave = 60;
-	
-	public Chords(int r, int t, int f){
-		root = r;
-		third = t;
-		fifth = f;
-		octave = root + 12;
-	}
-	
-	public void ChangeChord(int r, int t, int f){
-		root = r;
-		third = t;
-		fifth = f;
-		octave = root + 12;
-	}
-	
-	public void ChangeChord(int change){
-		root += change;
-		third += change;
-		fifth += change;
-		octave += change;
-	}
-	
-	public int Compare(int[] m){
-		int matches = 0;
-		int r = root % 12;
-		int t = third % 12;
-		int f = fifth % 12;
+	public Chord(int relchord, String mod, int oct){
+		int root = (relchord - 1) % 7;
+		notes.put("root", root);
 		
-		for(int i = 0; i < m.length; i++){
-			if((m[i] % 12) == r){
-				++ matches;
-				if((m[i] - root) > 12) ChangeOctave(1, true);
-				if((m[i] - root) < -12) ChangeOctave(1, false);
-			}
-			if((m[i] % 12) == t){
-				++ matches;
-				if((m[i] - third) > 12) ChangeOctave(3, true);
-				if((m[i] - third) < -12) ChangeOctave(3, false);
-			}
-			if((m[i] % 12) == f){
-				++matches;
-				if((m[i] - fifth) > 12) ChangeOctave(5, true);
-				if((m[i] - fifth) < -12) ChangeOctave(5, false);
-			}
-		}		
-		return matches;
+		int third = root + 4;
+		switch (mod){
+		case "major": third = root + 4; break;
+		case "minor":
+		case "diminished": third = root + 3; break;
+		default: System.err.println("Invalid modifier: " + mod + " (valid exaples: major, diminished)"); System.exit(1);
+		}
+		notes.put("third", third);
+		
+		int fifth = root + 7;
+		if(mod.equals("diminished")) fifth = root + 6;
+		notes.put("fifth", fifth);
+		
+		modifier = mod;
+		octave = oct;
 	}
 	
-	public void ChangeOctave(int place, boolean up){
-		switch(place){
-		case 1:{
-			if(up){
-				if(octave + 12 > 100);
-				else{
-					root += 12;
-					octave += 12;
-				}
-			}
-			else{
-				if(root - 12 < 20);
-				else{
-					root -= 12;
-					octave -=12;
-				}
-			}
-		}
-		case 3:{
-			if(up){
-				if(third + 12 > 100);
-				else third += 12;
-			}
-			else{
-				if(third - 12 < 20);
-				else third -=12;
-			}
-		}
-		case 5:{
-			if(up){
-				if(fifth + 12 > 100);
-				else fifth += 12;
-			}
-			else{
-				if(fifth - 12 < 20);
-				else fifth -= 12;
-			}
-		}
-		}
+	public void makeMinor(){
+		notes.put("third", notes.get("root") + 3);
+		notes.put("fifth", notes.get("root") + 7);
 	}
 	
-	public int[] GetChord(){
-		int[] chord = {root, third, fifth, octave};
+	public void makeDiminished(){
+		notes.put("third", notes.get("root") + 3);
+		notes.put("fifth", notes.get("root") + 6);
+	}
+	
+	public void makeMajor(){
+		notes.put("third", notes.get("root") + 4);
+		notes.put("fifth", notes.get("root") + 7);
+	}
+	
+	public void changeOctave(int oct){
+		octave = oct;
+	}
+	
+	public HashMap<String, Integer> getNotes(){
+		return notes;
+	}
+	
+	@Override
+	public String toString(){
+		String chord = "{";
+		for(int note : notes.values())
+			chord += note + " ";
+		chord += "}";
 		return chord;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((modifier == null) ? 0 : modifier.hashCode());
+		result = prime * result + ((notes == null) ? 0 : notes.hashCode());
+		result = prime * result + octave;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+		
+		Chord other = (Chord) obj;
+		if (modifier == null && other.modifier != null)
+			return false;
+		if (!modifier.equals(other.modifier))
+			return false;
+		if (notes == null && other.notes != null)
+			return false;
+		if (!notes.equals(other.notes))
+			return false;
+		if (octave != other.octave)
+			return false;
+		return true;
 	}
 }

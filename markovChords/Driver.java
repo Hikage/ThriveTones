@@ -1,12 +1,7 @@
 package markovChords;
 
 import java.util.*;
-import java.lang.*;
 import org.jfugue.*;
-
-//import sun.security.krb5.internal.crypto.s;
-
-import NN.NNet;
 
 /**
  * @author Brianna Jarvis
@@ -19,13 +14,22 @@ public class Driver {
 	private static Pattern pattern;
 	private static int SONG_LENGTH;
 	static Song complete;
-	
+
+	private static final int C = 60, Cs = 61, Db = 61, D = 62, Ds = 63, Eb = 63, E = 64,
+			F = 65, Fs = 66, Gb = 66, G = 67, Gs = 68, Ab = 68, A = 69, As = 70, Bb = 70, B = 71;
 	
 	/**
 	 * Main Class
 	 * @param args
 	 */
 	public static void main (String args[]){
+		/**
+		 * Chords are represented by Roman numeral (key-independent), then translated
+		 * Start with first chord, based on probabilities for beginning chords (default I)
+		 * Depending on previous chord, pick another (repeat until desired length)
+		 * Resolve to concluding chord, based on probabilities (default I)
+		 */
+
 		boolean major = true;		//default to major tonality
 		boolean valid = false;		//not yet a valid song
 		int length = 0;				//no length, flexibility, time, or key
