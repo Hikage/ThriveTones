@@ -1,4 +1,4 @@
-package musicTheory;
+package markovChords;
 
 import java.util.*;
 import java.lang.*;

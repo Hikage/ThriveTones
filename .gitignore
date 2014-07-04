@@ -3,3 +3,4 @@
 .settings/
 CVS/
 midifiles/
+*.class

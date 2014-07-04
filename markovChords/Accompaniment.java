@@ -1,4 +1,4 @@
-package musicTheory;
+package markovChords;
 
 import java.util.ArrayList;
 
@@ -11,14 +11,14 @@ public class Accompaniment {
 	//minor = 60, 62, 63, 65, 67, 68, 71
 	
 	//establishing different chordal types
-	Chords tonic = new Chords(60, 64, 67);
-	Chords two = new Chords(62, 65, 69);
-	Chords three = new Chords(64, 67, 71);
-	Chords subdominant = new Chords(65, 69, 72);
-	Chords dominant = new Chords(67, 71, 74);
-	Chords six = new Chords(69, 72, 76);
-	Chords subtonic = new Chords(71, 74, 77);
-	Chords[] accompaniment;				//final chordal progression
+	Chord tonic = new Chord(60, 64, 67);
+	Chord two = new Chord(62, 65, 69);
+	Chord three = new Chord(64, 67, 71);
+	Chord subdominant = new Chord(65, 69, 72);
+	Chord dominant = new Chord(67, 71, 74);
+	Chord six = new Chord(69, 72, 76);
+	Chord subtonic = new Chord(71, 74, 77);
+	Chord[] accompaniment;				//final chordal progression
 	int previous = 0;
 	
 	/**
@@ -43,7 +43,7 @@ public class Accompaniment {
 		int newLength = melody.length / n;
 		if(melody.length % n != 0) ++newLength;
 		
-		accompaniment = new Chords[newLength];
+		accompaniment = new Chord[newLength];
 		int[] notes = new int[n];
 		int q = 0;
 		for(int j = 0; j < melody.length; j += n){
@@ -68,7 +68,7 @@ public class Accompaniment {
 	 * @param m - melody sequence
 	 * @return - returns the proper chord
 	 */
-	public Chords FindBestFit(int[] m){
+	public Chord FindBestFit(int[] m){
 		
 		int fit1 = tonic.Compare(m);
 		int fit2 = two.Compare(m);	
@@ -196,7 +196,7 @@ public class Accompaniment {
 	/**
 	 * @return - Returns the accompaniment sequence
 	 */
-	public Chords[] getAccompaniment(){
+	public Chord[] getAccompaniment(){
 		return accompaniment;
 	}
 }

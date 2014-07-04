@@ -1,4 +1,4 @@
-package musicTheory;
+package markovChords;
 
 /*
  * Created on Mar 27, 2006

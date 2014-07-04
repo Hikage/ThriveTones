@@ -1,4 +1,4 @@
-package musicTheory;
+package markovChords;
 
 public class Chords {
 	
