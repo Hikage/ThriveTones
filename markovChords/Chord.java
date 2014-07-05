@@ -29,7 +29,7 @@ public class Chord {
 		notes.put("root", root);
 		
 		int third = root + 4;
-		switch (tone){
+		switch (tone.toLowerCase()){
 		case "major": third = root + 4; break;
 		case "minor":
 		case "diminished": third = root + 3; break;
@@ -83,6 +83,22 @@ public class Chord {
 	 */
 	public HashMap<String, Integer> getNotes(){
 		return notes;
+	}
+	
+	/**
+	 * Retrieves Chord's tonality
+	 * @return: the tonality of the Chord
+	 */
+	public String getTonality(){
+		return tonality;
+	}
+	
+	/**
+	 * Retrieves Chord's octave
+	 * @return: the notes of the octave
+	 */
+	public int getOctave(){
+		return octave;
 	}
 	
 	/**
