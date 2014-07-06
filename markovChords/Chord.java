@@ -27,8 +27,8 @@ public class Chord {
 	public Chord(int root, String tone, int oct){
 		notes = new HashMap<String, Integer>();
 		
-		if(root < 0 || root > 10){
-			System.err.println("Invalid note supplied as chord root (0 - 10): " + root);
+		if(root < 0 || root > 11){
+			System.err.println("Invalid note supplied as chord root (0 - 11): " + root);
 			System.exit(1);
 		}
 		notes.put("root", root);

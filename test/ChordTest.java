@@ -51,7 +51,17 @@ public class ChordTest {
 	
 	@Test
 	public void testInitializationEdgeCases(){
-		Chord ubchord = new Chord(10, "major", 7);
+		//test upper bound
+		Chord ubchord = new Chord(11, "major", 7);
+		assertEquals(11, (int)ubchord.getNotes().get("root"));
+		assertEquals(3, (int)ubchord.getNotes().get("third"));
+		assertEquals(6, (int)ubchord.getNotes().get("fifth"));
+		
+		//test lower bound
+		Chord lbchord = new Chord(0, "diminished", -7);
+		assertEquals(0, (int)lbchord.getNotes().get("root"));
+		assertEquals(3, (int)lbchord.getNotes().get("third"));
+		assertEquals(6, (int)lbchord.getNotes().get("fifth"));
 	}
 
 }
