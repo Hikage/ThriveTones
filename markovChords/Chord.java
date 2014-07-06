@@ -13,9 +13,11 @@ import java.util.HashMap;
 
 public class Chord {
 
+	public enum Tonality {MAJOR, MINOR, DIMINISHED, AUGMENTED};
+	
 	//TODO: bitmap chord representation?
 	private HashMap<String, Integer> notes;			//stores actual notes of the chord
-	private String tonality;						//e.g.: major, minor, diminished, etc.
+	private Tonality tonality;
 	private int octave;								//can be + or -; defaults to middle
 	
 	/**
@@ -24,7 +26,7 @@ public class Chord {
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 */
-	public Chord(int root, String tone, int oct){
+	public Chord(int root, Tonality tone, int oct){
 		notes = new HashMap<String, Integer>();
 		
 		if(root < 0 || root > 11){
@@ -34,9 +36,8 @@ public class Chord {
 		notes.put("root", root);
 		
 		int third = offset(root, 4);
-		tone = tone.toLowerCase();
-		if (tone.equals("minor") || tone.equals("diminished")) third = offset(root, 3);
-		else if (tone.equals("major")) third = offset(root, 4);
+		if (tone.equals(Tonality.MINOR) || tone.equals(Tonality.DIMINISHED)) third = offset(root, 3);
+		else if (tone.equals(Tonality.MAJOR)) third = offset(root, 4);
 		else{
 			System.err.println("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
 			System.exit(1);
@@ -44,7 +45,7 @@ public class Chord {
 		notes.put("third", third);
 		
 		int fifth = offset(root, 7);
-		if(tone.equals("diminished")) fifth = offset(root, 6);
+		if(tone.equals(Tonality.DIMINISHED)) fifth = offset(root, 6);
 		notes.put("fifth", fifth);
 		
 		tonality = tone;
@@ -105,7 +106,7 @@ public class Chord {
 	 * Retrieves Chord's tonality
 	 * @return: the tonality of the Chord
 	 */
-	public String getTonality(){
+	public Tonality getTonality(){
 		return tonality;
 	}
 	

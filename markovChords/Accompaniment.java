@@ -10,13 +10,13 @@ public class Accompaniment {
 	//minor = 60, 62, 63, 65, 67, 69, 70
 	
 	//establishing different chordal types
-	Chord tonic = new Chord(0, "major", 0);
-	Chord two = new Chord(2, "minor", 0);
-	Chord three = new Chord(4, "minor", 0);
-	Chord subdominant = new Chord(5, "major", 0);
-	Chord dominant = new Chord(7, "major", 0);
-	Chord six = new Chord(9, "minor", 0);
-	Chord subtonic = new Chord(11, "diminished", 0);
+	Chord tonic = new Chord(0, Chord.Tonality.MAJOR, 0);
+	Chord two = new Chord(2, Chord.Tonality.MINOR, 0);
+	Chord three = new Chord(4, Chord.Tonality.MINOR, 0);
+	Chord subdominant = new Chord(5, Chord.Tonality.MAJOR, 0);
+	Chord dominant = new Chord(7, Chord.Tonality.MAJOR, 0);
+	Chord six = new Chord(9, Chord.Tonality.MINOR, 0);
+	Chord subtonic = new Chord(11, Chord.Tonality.DIMINISHED, 0);
 	Chord[] accompaniment;				//final chordal progression
 	int previous = 0;
 	
@@ -30,10 +30,10 @@ public class Accompaniment {
 		//adjust for minor tonality
 		if(!Mm){
 			tonic.makeMinor();
-			three = new Chord(3, "major", 0);
+			three = new Chord(3, Chord.Tonality.MAJOR, 0);
 			dominant.makeMinor();
 			six.makeDiminished();
-			subtonic = new Chord(6, "major", 0);
+			subtonic = new Chord(6, Chord.Tonality.MAJOR, 0);
 		}
 	
 		//get melody and divide across designated measures
