@@ -34,7 +34,10 @@ public class ChordTest {
 		roct = new Random().nextInt(7) - 3;
 		
 		System.out.println("Creating " + rtone + " chord: " + rnote + " in octave " + roct);
-		chord = new Chord(rnote, rtone, roct);
+		try	{ chord = new Chord(rnote, rtone, roct); }
+		catch (Exception e) {
+			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+		}
 	}
 	
 	@Test
@@ -55,21 +58,38 @@ public class ChordTest {
 	@Test
 	public void testInitializationEdgeCases(){
 		//test upper bound
-		Chord ubchord = new Chord(11, Chord.Tonality.MAJOR, 7);
-		assertEquals(11, (int)ubchord.getNotes().get("root"));
-		assertEquals(3, (int)ubchord.getNotes().get("third"));
-		assertEquals(6, (int)ubchord.getNotes().get("fifth"));
+		Chord ubchord;
+		try {
+			ubchord = new Chord(11, Chord.Tonality.MAJOR, 7);
+			assertEquals(11, (int)ubchord.getNotes().get("root"));
+			assertEquals(3, (int)ubchord.getNotes().get("third"));
+			assertEquals(6, (int)ubchord.getNotes().get("fifth"));
+		}
+		catch (Exception e) {
+			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+		}
 		
 		//test lower bound
-		Chord lbchord = new Chord(0, Chord.Tonality.DIMINISHED, -7);
-		assertEquals(0, (int)lbchord.getNotes().get("root"));
-		assertEquals(3, (int)lbchord.getNotes().get("third"));
-		assertEquals(6, (int)lbchord.getNotes().get("fifth"));
+		Chord lbchord;
+		try {
+			lbchord = new Chord(0, Chord.Tonality.DIMINISHED, -7);
+			assertEquals(0, (int)lbchord.getNotes().get("root"));
+			assertEquals(3, (int)lbchord.getNotes().get("third"));
+			assertEquals(6, (int)lbchord.getNotes().get("fifth"));
+		}
+		catch (Exception e) {
+			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+		}
 	}
 	
-	@Test
-	public void testInvalidInput(){
-		
+	@Test (expected = Exception.class)
+	public void testNegativeChord() throws Exception{
+		new Chord(-1, Chord.Tonality.AUGMENTED, 0);
+	}
+	
+	@Test (expected = Exception.class)
+	public void testInvalidChord() throws Exception{
+		new Chord(12, Chord.Tonality.DIMINISHED, 0);
 	}
 
 }

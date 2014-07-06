@@ -9,31 +9,39 @@ public class Accompaniment {
 	//major = 60, 62, 64, 65, 67, 69, 71
 	//minor = 60, 62, 63, 65, 67, 69, 70
 	
-	//establishing different chordal types
-	Chord tonic = new Chord(0, Chord.Tonality.MAJOR, 0);
-	Chord two = new Chord(2, Chord.Tonality.MINOR, 0);
-	Chord three = new Chord(4, Chord.Tonality.MINOR, 0);
-	Chord subdominant = new Chord(5, Chord.Tonality.MAJOR, 0);
-	Chord dominant = new Chord(7, Chord.Tonality.MAJOR, 0);
-	Chord six = new Chord(9, Chord.Tonality.MINOR, 0);
-	Chord subtonic = new Chord(11, Chord.Tonality.DIMINISHED, 0);
-	Chord[] accompaniment;				//final chordal progression
-	int previous = 0;
+	private Chord tonic, two, three, subdominant, dominant, six, subtonic;
+	private Chord[] accompaniment;				//final chordal progression
+	private int previous = 0;
 	
 	/**
 	 * Creates chordal accompaniment
 	 * @param Mm - tonality
 	 * @param m - associated melody
 	 * @param n - beats per measure
+	 * @throws Exception 
 	 */
-	public Accompaniment(boolean Mm, Melody m, int n){
-		//adjust for minor tonality
-		if(!Mm){
-			tonic.makeMinor();
-			three = new Chord(3, Chord.Tonality.MAJOR, 0);
-			dominant.makeMinor();
-			six.makeDiminished();
-			subtonic = new Chord(6, Chord.Tonality.MAJOR, 0);
+	public Accompaniment(boolean Mm, Melody m, int n) {
+		//establishing different chordal types
+		try{
+			tonic = new Chord(0, Chord.Tonality.MAJOR, 0);
+			two = new Chord(2, Chord.Tonality.MINOR, 0);
+			three = new Chord(4, Chord.Tonality.MINOR, 0);
+			subdominant = new Chord(5, Chord.Tonality.MAJOR, 0);
+			dominant = new Chord(7, Chord.Tonality.MAJOR, 0);
+			six = new Chord(9, Chord.Tonality.MINOR, 0);
+			subtonic = new Chord(11, Chord.Tonality.DIMINISHED, 0);
+			
+			//adjust for minor tonality
+			if(!Mm){
+				tonic.makeMinor();
+				three = new Chord(3, Chord.Tonality.MAJOR, 0);
+				dominant.makeMinor();
+				six.makeDiminished();
+				subtonic = new Chord(6, Chord.Tonality.MAJOR, 0);
+			}
+		}
+		catch (Exception e){
+			System.err.println("Oh no!  An error occurred: " + e.getMessage());
 		}
 	
 		//get melody and divide across designated measures

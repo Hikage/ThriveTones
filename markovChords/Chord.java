@@ -26,22 +26,17 @@ public class Chord {
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 */
-	public Chord(int root, Tonality tone, int oct){
+	public Chord(int root, Tonality tone, int oct) throws Exception{
 		notes = new HashMap<String, Integer>();
 		
-		if(root < 0 || root > 11){
-			System.err.println("Invalid note supplied as chord root (0 - 11): " + root);
-			System.exit(1);
-		}
+		if(root < 0 || root > 11)
+			throw new Exception("Invalid note supplied as chord root (0 - 11): " + root);
 		notes.put("root", root);
 		
 		int third = offset(root, 4);
 		if (tone.equals(Tonality.MINOR) || tone.equals(Tonality.DIMINISHED)) third = offset(root, 3);
 		else if (tone.equals(Tonality.MAJOR)) third = offset(root, 4);
-		else{
-			System.err.println("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
-			System.exit(1);
-		}
+		else throw new Exception("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
 		notes.put("third", third);
 		
 		int fifth = offset(root, 7);
