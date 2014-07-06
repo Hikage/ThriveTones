@@ -20,36 +20,45 @@ public class Chord {
 	
 	/**
 	 * Constructor method
-	 * @param relnote: integer representation of relative note upon which to build the chord (0 = tonic)
+	 * @param root: integer representation of relative note upon which to build the chord (0 = tonic)
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 */
-	public Chord(int relnote, String tone, int oct){
+	public Chord(int root, String tone, int oct){
 		notes = new HashMap<String, Integer>();
 		
-		if(relnote < 0 || relnote > 10){
-			System.err.println("Invalid note supplied as chord root (0 - 10): " + relnote);
+		if(root < 0 || root > 10){
+			System.err.println("Invalid note supplied as chord root (0 - 10): " + root);
 			System.exit(1);
 		}
-		int root = relnote;
 		notes.put("root", root);
 		
-		int third = root + 4;
-		String tone2 = tone.toLowerCase();
-		if (tone2.equals("minor") || tone2.equals("diminished")) third = root + 3;
-		else if (tone2.equals("major")) third = root + 4;
+		int third = offset(root, 4);
+		tone = tone.toLowerCase();
+		if (tone.equals("minor") || tone.equals("diminished")) third = offset(root, 3);
+		else if (tone.equals("major")) third = offset(root, 4);
 		else{
-			System.err.println("Invalid tonality: " + tone2 + " (valid exaples: major, diminished)");
+			System.err.println("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
 			System.exit(1);
 		}
 		notes.put("third", third);
 		
-		int fifth = root + 7;
-		if(tone.equals("diminished")) fifth = root + 6;
+		int fifth = offset(root, 7);
+		if(tone.equals("diminished")) fifth = offset(root, 6);
 		notes.put("fifth", fifth);
 		
 		tonality = tone;
 		octave = oct;
+	}
+	
+	/**
+	 * Helper function for note offsets
+	 * @param base: note from which to offset
+	 * @param degree: offset value
+	 * @return: resulting note
+	 */
+	private int offset(int base, int degree){
+		return (base + degree) % 12;
 	}
 	
 	/**
