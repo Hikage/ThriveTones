@@ -1,6 +1,5 @@
 package markovChords;
 
-import java.util.ArrayList;
 
 /**
  * @author Brianna Jarvis
@@ -8,16 +7,16 @@ import java.util.ArrayList;
  */
 public class Accompaniment {
 	//major = 60, 62, 64, 65, 67, 69, 71
-	//minor = 60, 62, 63, 65, 67, 68, 71
+	//minor = 60, 62, 63, 65, 67, 69, 70
 	
 	//establishing different chordal types
-	Chord tonic = new Chord(60, 64, 67);
-	Chord two = new Chord(62, 65, 69);
-	Chord three = new Chord(64, 67, 71);
-	Chord subdominant = new Chord(65, 69, 72);
-	Chord dominant = new Chord(67, 71, 74);
-	Chord six = new Chord(69, 72, 76);
-	Chord subtonic = new Chord(71, 74, 77);
+	Chord tonic = new Chord(0, "major", 0);
+	Chord two = new Chord(2, "minor", 0);
+	Chord three = new Chord(4, "minor", 0);
+	Chord subdominant = new Chord(5, "major", 0);
+	Chord dominant = new Chord(7, "major", 0);
+	Chord six = new Chord(9, "minor", 0);
+	Chord subtonic = new Chord(11, "diminished", 0);
 	Chord[] accompaniment;				//final chordal progression
 	int previous = 0;
 	
@@ -30,12 +29,11 @@ public class Accompaniment {
 	public Accompaniment(boolean Mm, Melody m, int n){
 		//adjust for minor tonality
 		if(!Mm){
-			tonic.ChangeChord(60, 63, 67);
-			two.ChangeChord(62, 65, 68);
-			three.ChangeChord(63, 67, 71);
-			subdominant.ChangeChord(65, 68, 72);
-			six.ChangeChord(68, 72, 77);
-			subtonic.ChangeChord(70, 74, 77);
+			tonic.makeMinor();
+			three = new Chord(3, "major", 0);
+			dominant.makeMinor();
+			six.makeDiminished();
+			subtonic = new Chord(6, "major", 0);
 		}
 	
 		//get melody and divide across designated measures
@@ -69,7 +67,7 @@ public class Accompaniment {
 	 * @return - returns the proper chord
 	 */
 	public Chord FindBestFit(int[] m){
-		
+/**		
 		int fit1 = tonic.Compare(m);
 		int fit2 = two.Compare(m);	
 		int fit3 = three.Compare(m);
@@ -97,6 +95,8 @@ public class Accompaniment {
 		case 7: return subtonic;
 		default: return tonic;
 		}
+**/
+		return tonic;
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class Accompaniment {
 	 */
 	public void Modulate(int change){
 		for(int i = 0; i < accompaniment.length; i++){
-			accompaniment[i].ChangeChord(change);
+			//accompaniment[i].ChangeChord(change);
 		}
 	}
 	

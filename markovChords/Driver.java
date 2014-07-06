@@ -160,9 +160,8 @@ public class Driver {
 		for(int k = 0; k < accomLength; k++){
 			for(int i = (k*beats); i< (k*beats)+beats; i++){
 				songArr[i][0] = complete.justMelody()[i];
-				for(int j = 1; j<4; j++){
-					songArr[i][j] = complete.getChords()[k][j-1];
-				}
+				//TODO: fix this
+				//songArr[i][j] = complete.getChords()[k];
 				System.out.println("final chord = " + songArr[i][0] + ", " + 
 						songArr[i][1] + ", " + songArr[i][2] + ", " + songArr[i][3]);
 			}
@@ -181,13 +180,13 @@ public class Driver {
 	 * @param chords - takes in associated chords
 	 * @param beats - number of beats per measure
 	 */
-	public static void PlaySong(int melody[], int chords[][], int beats){
+	public static void PlaySong(int melody[], Chord chords[], int beats){
 		final int VOICES = 4;
 		int TEMPO = 120;
 		String INSTRUMENT = "Piano";
 		
 		//String song;
-		int currentChord[];
+		Chord currentChord;
 		/*Player player;
 		Pattern pattern;*/
 		int chordLength = chords.length;
@@ -199,7 +198,8 @@ public class Driver {
 			currentChord = chords[i];
 			for (int j = 0; j < VOICES; j++)
 			{
-				song += "[" + currentChord[j] + "]";
+				//TODO: refactor toString to be more conducive to its use here
+				song += "[" + currentChord.toString() + "]";
 				if (j < VOICES-1)
 					song += "+";
 			}

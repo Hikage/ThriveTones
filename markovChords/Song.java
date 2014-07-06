@@ -63,13 +63,7 @@ public class Song {
 	}
 	
 	//returns chords
-	public int[][] getChords(){
-		int accomLength = accom.getAccompaniment().length;
-		int[][]chords = new int[accomLength][4];
-		for(int i = 0; i < accomLength; i++){
-			for(int j = 0; j < 4; j++)
-				chords[i][j] = accom.getAccompaniment()[i].GetChord()[j];
-		}
-		return chords;
+	public Chord[] getChords(){
+		return accom.getAccompaniment();
 	}
 }
