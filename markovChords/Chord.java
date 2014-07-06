@@ -25,15 +25,18 @@ public class Chord {
 	 * @param oct: Chord's octave
 	 */
 	public Chord(int relchord, String tone, int oct){
+		notes = new HashMap<String, Integer>();
+		
 		int root = (relchord - 1) % 7;
 		notes.put("root", root);
 		
 		int third = root + 4;
-		switch (tone.toLowerCase()){
-		case "major": third = root + 4; break;
-		case "minor":
-		case "diminished": third = root + 3; break;
-		default: System.err.println("Invalid tonality: " + tone + " (valid exaples: major, diminished)"); System.exit(1);
+		String tone2 = tone.toLowerCase();
+		if (tone2.equals("minor") || tone2.equals("diminished")) third = root + 3;
+		else if (tone2.equals("major")) third = root + 4;
+		else{
+			System.err.println("Invalid tonality: " + tone2 + " (valid exaples: major, diminished)");
+			System.exit(1);
 		}
 		notes.put("third", third);
 		
