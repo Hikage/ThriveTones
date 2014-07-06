@@ -20,14 +20,18 @@ public class Chord {
 	
 	/**
 	 * Constructor method
-	 * @param relchord: numeral (integer) representation of relative Chord
+	 * @param relnote: integer representation of relative note upon which to build the chord (0 = tonic)
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 */
-	public Chord(int relchord, String tone, int oct){
+	public Chord(int relnote, String tone, int oct){
 		notes = new HashMap<String, Integer>();
 		
-		int root = (relchord - 1) % 7;
+		if(relnote < 0 || relnote > 10){
+			System.err.println("Invalid note supplied as chord root (0 - 10): " + relnote);
+			System.exit(1);
+		}
+		int root = relnote;
 		notes.put("root", root);
 		
 		int third = root + 4;

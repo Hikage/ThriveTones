@@ -13,12 +13,12 @@ import markovChords.Chord;
 public class ChordTest {
 
 	protected static Chord chord;
-	protected static int rchord, roct;
+	protected static int rnote, roct;
 	protected static String rtone;
 	
 	@Before
 	public void chordInit() {
-		rchord = new Random().nextInt(7) + 1;
+		rnote = new Random().nextInt(11);
 		
 		int rtonenum = new Random().nextInt(3);
 		switch(rtonenum){
@@ -30,14 +30,23 @@ public class ChordTest {
 		
 		roct = new Random().nextInt(7) - 3;
 		
-		System.out.println("Creating " + rtone + " chord: " + rchord + " in octave " + roct);
-		chord = new Chord(rchord, rtone, roct);
+		System.out.println("Creating " + rtone + " chord: " + rnote + " in octave " + roct);
+		chord = new Chord(rnote, rtone, roct);
 	}
 	
 	@Test
 	public void testInitialization(){
 		assertEquals(rtone, chord.getTonality());
 		assertEquals(roct, chord.getOctave());
+		assertEquals(rnote, (int)chord.getNotes().get("root"));
+		if(rtone.equals("minor") || rtone.equals("diminished"))
+			assertEquals(rnote + 3, (int)chord.getNotes().get("third"));
+		else
+			assertEquals(rnote + 4, (int)chord.getNotes().get("third"));
+		if(rtone.equals("diminished"))
+			assertEquals(rnote + 6, (int)chord.getNotes().get("fifth"));
+		else
+			assertEquals(rnote + 7, (int)chord.getNotes().get("fifth"));
 	}
 
 }
