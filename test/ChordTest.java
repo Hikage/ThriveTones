@@ -41,21 +41,28 @@ public class ChordTest {
 	
 	@Test
 	public void testInitialization(){
-		assertEquals(rand_tone, chord.getTonality());
-		assertEquals(rand_octave, chord.getOctave());
-		assertEquals(rand_note, (int)chord.getNotes().get("root"));
-		
-		if(rand_tone.equals(Chord.Tonality.MINOR) || rand_tone.equals(Chord.Tonality.DIMINISHED))
-			assertEquals((rand_note + 3) % 12, (int)chord.getNotes().get("third"));
-		else
-			assertEquals((rand_note + 4) % 12, (int)chord.getNotes().get("third"));
-		
-		if(rand_tone.equals(Chord.Tonality.DIMINISHED))
-			assertEquals((rand_note + 6) % 12, (int)chord.getNotes().get("fifth"));
-		else if(rand_tone.equals(Chord.Tonality.AUGMENTED))
-			assertEquals((rand_note + 8) % 12, (int)chord.getNotes().get("fifth"));
-		else
-			assertEquals((rand_note + 7) % 12, (int)chord.getNotes().get("fifth"));
+		try{
+			chord = new Chord(rand_note, rand_tone, rand_octave);
+
+			assertEquals(rand_tone, chord.getTonality());
+			assertEquals(rand_octave, chord.getOctave());
+			assertEquals(rand_note, (int)chord.getNotes().get("root"));
+			
+			if(rand_tone.equals(Chord.Tonality.MINOR) || rand_tone.equals(Chord.Tonality.DIMINISHED))
+				assertEquals((rand_note + 3) % 12, (int)chord.getNotes().get("third"));
+			else
+				assertEquals((rand_note + 4) % 12, (int)chord.getNotes().get("third"));
+			
+			if(rand_tone.equals(Chord.Tonality.DIMINISHED))
+				assertEquals((rand_note + 6) % 12, (int)chord.getNotes().get("fifth"));
+			else if(rand_tone.equals(Chord.Tonality.AUGMENTED))
+				assertEquals((rand_note + 8) % 12, (int)chord.getNotes().get("fifth"));
+			else
+				assertEquals((rand_note + 7) % 12, (int)chord.getNotes().get("fifth"));
+		}
+		catch (Exception e) {
+			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+		}
 	}
 	
 	@Test
@@ -93,6 +100,57 @@ public class ChordTest {
 	@Test (expected = Exception.class)
 	public void testInvalidChord() throws Exception{
 		new Chord(12, Chord.Tonality.DIMINISHED, 0);
+	}
+	
+	@Test
+	public void testMakeMajor(){
+		int original_octave = chord.getOctave();
+		chord.makeMajor();
+		assertEquals((chord.getNotes().get("root") + 4) % 12, (int)chord.getNotes().get("third"));
+		assertEquals((chord.getNotes().get("root") + 7) % 12, (int)chord.getNotes().get("fifth"));
+		assertEquals(original_octave, chord.getOctave());
+		assertEquals(Chord.Tonality.MAJOR, chord.getTonality());
+	}
+	
+	@Test
+	public void testMakeMinor(){
+		int original_octave = chord.getOctave();
+		chord.makeMinor();
+		assertEquals((chord.getNotes().get("root") + 3) % 12, (int)chord.getNotes().get("third"));
+		assertEquals((chord.getNotes().get("root") + 7) % 12, (int)chord.getNotes().get("fifth"));
+		assertEquals(original_octave, chord.getOctave());
+		assertEquals(Chord.Tonality.MINOR, chord.getTonality());
+	}
+	
+	@Test
+	public void testMakeDiminished(){
+		int original_octave = chord.getOctave();
+		chord.makeDiminished();
+		assertEquals((chord.getNotes().get("root") + 3) % 12, (int)chord.getNotes().get("third"));
+		assertEquals((chord.getNotes().get("root") + 6) % 12, (int)chord.getNotes().get("fifth"));
+		assertEquals(original_octave, chord.getOctave());
+		assertEquals(Chord.Tonality.DIMINISHED, chord.getTonality());
+	}
+	
+	@Test
+	public void testMakeAugmented(){
+		int original_octave = chord.getOctave();
+		chord.makeAugmented();
+		assertEquals((chord.getNotes().get("root") + 4) % 12, (int)chord.getNotes().get("third"));
+		assertEquals((chord.getNotes().get("root") + 8) % 12, (int)chord.getNotes().get("fifth"));
+		assertEquals(original_octave, chord.getOctave());
+		assertEquals(Chord.Tonality.AUGMENTED, chord.getTonality());
+	}
+	
+	@Test
+	public void testChangeOctave(){
+		int original_octave = chord.getOctave();
+		chord.changeOctave(original_octave);
+		assertEquals(original_octave, chord.getOctave());
+		chord.changeOctave(5);
+		assertEquals(5, chord.getOctave());
+		chord.changeOctave(-3);
+		assertEquals(-3, chord.getOctave());
 	}
 
 }

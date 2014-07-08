@@ -68,6 +68,7 @@ public class Chord {
 	 */
 	public void makeMajor(){
 		setThirdFifth(4, 7);
+		tonality = Tonality.MAJOR;
 	}
 	
 	/**
@@ -75,6 +76,7 @@ public class Chord {
 	 */
 	public void makeMinor(){
 		setThirdFifth(3, 7);
+		tonality = Tonality.MINOR;
 	}
 	
 	/**
@@ -82,6 +84,7 @@ public class Chord {
 	 */
 	public void makeDiminished(){
 		setThirdFifth(3, 6);
+		tonality = Tonality.DIMINISHED;
 	}
 	
 	/**
@@ -89,6 +92,7 @@ public class Chord {
 	 */
 	public void makeAugmented(){
 		setThirdFifth(4, 8);
+		tonality = Tonality.AUGMENTED;
 	}
 	
 	/**
