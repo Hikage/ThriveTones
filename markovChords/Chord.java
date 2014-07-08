@@ -33,15 +33,13 @@ public class Chord {
 			throw new Exception("Invalid note supplied as chord root (0 - 11): " + root);
 		notes.put("root", root);
 		
-		int third = offset(root, 4);
-		if (tone.equals(Tonality.MINOR) || tone.equals(Tonality.DIMINISHED)) third = offset(root, 3);
-		else if (tone.equals(Tonality.MAJOR)) third = offset(root, 4);
-		else throw new Exception("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
-		notes.put("third", third);
-		
-		int fifth = offset(root, 7);
-		if(tone.equals(Tonality.DIMINISHED)) fifth = offset(root, 6);
-		notes.put("fifth", fifth);
+		switch(tone){
+		case MAJOR: makeMajor(); break;
+		case MINOR: makeMinor(); break;
+		case DIMINISHED: makeDiminished(); break;
+		case AUGMENTED: makeAugmented(); break;
+		default: throw new Exception("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
+		}
 		
 		tonality = tone;
 		octave = oct;
@@ -58,27 +56,39 @@ public class Chord {
 	}
 	
 	/**
-	 * Adjusts Chord to be of minor tonality
+	 * Adjusts Chord to be of major tonality
 	 */
-	public void makeMinor(){
-		notes.put("third", notes.get("root") + 3);
-		notes.put("fifth", notes.get("root") + 7);
-	}
-	
-	/**
-	 * Adjusts Chord to be of diminished tonality
-	 */
-	public void makeDiminished(){
-		notes.put("third", notes.get("root") + 3);
-		notes.put("fifth", notes.get("root") + 6);
+	public void setThirdFifth(int third_offset, int fifth_offset){
+		notes.put("third", offset(notes.get("root"), third_offset));
+		notes.put("fifth", offset(notes.get("root"), fifth_offset));
 	}
 	
 	/**
 	 * Adjusts Chord to be of major tonality
 	 */
 	public void makeMajor(){
-		notes.put("third", notes.get("root") + 4);
-		notes.put("fifth", notes.get("root") + 7);
+		setThirdFifth(4, 7);
+	}
+	
+	/**
+	 * Adjusts Chord to be of minor tonality
+	 */
+	public void makeMinor(){
+		setThirdFifth(3, 7);
+	}
+	
+	/**
+	 * Adjusts Chord to be of diminished tonality
+	 */
+	public void makeDiminished(){
+		setThirdFifth(3, 6);
+	}
+	
+	/**
+	 * Adjusts Chord to be of augmented tonality
+	 */
+	public void makeAugmented(){
+		setThirdFifth(4, 8);
 	}
 	
 	/**
