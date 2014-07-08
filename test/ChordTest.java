@@ -152,5 +152,35 @@ public class ChordTest {
 		chord.changeOctave(-3);
 		assertEquals(-3, chord.getOctave());
 	}
+	
+	@Test
+	public void testEquals(){
+		try{
+			chord = new Chord(rand_note, rand_tone, rand_octave);
+			Chord chord2 = new Chord(rand_note, rand_tone, rand_octave);
+			assertTrue(chord.equals(chord2));
+			assertTrue(chord2.equals(chord));
+			
+			chord2.changeOctave(rand_octave + 1);
+			assertFalse(chord.equals(chord2));
+			assertFalse(chord2.equals(chord));
+			
+			chord2.changeOctave(rand_octave);
+			assertTrue(chord.equals(chord2));
+			assertTrue(chord2.equals(chord));
+			
+			chord.makeDiminished();
+			chord2.makeDiminished();
+			assertTrue(chord.equals(chord2));
+			assertTrue(chord2.equals(chord));
+			
+			chord.makeMinor();
+			assertFalse(chord.equals(chord2));
+			assertFalse(chord2.equals(chord));
+		}
+		catch (Exception e) {
+			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+		}
+	}
 
 }
