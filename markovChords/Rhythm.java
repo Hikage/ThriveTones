@@ -1,4 +1,4 @@
-package musicTheory;
+package markovChords;
 
 import java.util.Random;
 
@@ -15,7 +15,7 @@ public class Rhythm {
 		beats = b;
 		pulse = p;
 		rhythm = new double[length];
-		remainingBeats = beats;
+		int remainingBeats = beats;
 	}
 	
 

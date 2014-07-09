@@ -1,4 +1,4 @@
-3package NN;
+package NN;
 
 import java.io.*;
 import java.util.*;

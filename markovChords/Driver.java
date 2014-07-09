@@ -1,12 +1,7 @@
-package musicTheory;
+package markovChords;
 
 import java.util.*;
-import java.lang.*;
 import org.jfugue.*;
-
-//import sun.security.krb5.internal.crypto.s;
-
-import NN.NNet;
 
 /**
  * @author Brianna Jarvis
@@ -19,13 +14,22 @@ public class Driver {
 	private static Pattern pattern;
 	private static int SONG_LENGTH;
 	static Song complete;
-	
+
+	private static final int C = 60, Cs = 61, Db = 61, D = 62, Ds = 63, Eb = 63, E = 64,
+			F = 65, Fs = 66, Gb = 66, G = 67, Gs = 68, Ab = 68, A = 69, As = 70, Bb = 70, B = 71;
 	
 	/**
 	 * Main Class
 	 * @param args
 	 */
 	public static void main (String args[]){
+		/**
+		 * Chords are represented by Roman numeral (key-independent), then translated
+		 * Start with first chord, based on probabilities for beginning chords (default I)
+		 * Depending on previous chord, pick another (repeat until desired length)
+		 * Resolve to concluding chord, based on probabilities (default I)
+		 */
+
 		boolean major = true;		//default to major tonality
 		boolean valid = false;		//not yet a valid song
 		int length = 0;				//no length, flexibility, time, or key
@@ -156,9 +160,8 @@ public class Driver {
 		for(int k = 0; k < accomLength; k++){
 			for(int i = (k*beats); i< (k*beats)+beats; i++){
 				songArr[i][0] = complete.justMelody()[i];
-				for(int j = 1; j<4; j++){
-					songArr[i][j] = complete.getChords()[k][j-1];
-				}
+				//TODO: fix this
+				//songArr[i][j] = complete.getChords()[k];
 				System.out.println("final chord = " + songArr[i][0] + ", " + 
 						songArr[i][1] + ", " + songArr[i][2] + ", " + songArr[i][3]);
 			}
@@ -177,13 +180,13 @@ public class Driver {
 	 * @param chords - takes in associated chords
 	 * @param beats - number of beats per measure
 	 */
-	public static void PlaySong(int melody[], int chords[][], int beats){
+	public static void PlaySong(int melody[], Chord chords[], int beats){
 		final int VOICES = 4;
 		int TEMPO = 120;
 		String INSTRUMENT = "Piano";
 		
 		//String song;
-		int currentChord[];
+		Chord currentChord;
 		/*Player player;
 		Pattern pattern;*/
 		int chordLength = chords.length;
@@ -195,7 +198,8 @@ public class Driver {
 			currentChord = chords[i];
 			for (int j = 0; j < VOICES; j++)
 			{
-				song += "[" + currentChord[j] + "]";
+				//TODO: refactor toString to be more conducive to its use here
+				song += "[" + currentChord.toString() + "]";
 				if (j < VOICES-1)
 					song += "+";
 			}
