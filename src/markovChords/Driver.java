@@ -181,7 +181,6 @@ public class Driver {
 	 * @param beats - number of beats per measure
 	 */
 	public static void PlaySong(int melody[], Chord chords[], int beats){
-		final int VOICES = 4;
 		int TEMPO = 120;
 		String INSTRUMENT = "Piano";
 		
@@ -189,21 +188,14 @@ public class Driver {
 		Chord currentChord;
 		/*Player player;
 		Pattern pattern;*/
-		int chordLength = chords.length;
+		int songLength = chords.length;
 		int melodyLength = melody.length;
 		
 		song = "T" + TEMPO + " I[" + INSTRUMENT + "] ";
-		for (int i = 0; i < chordLength; i++)
+		for (int i = 0; i < songLength; i++)
 		{
 			currentChord = chords[i];
-			for (int j = 0; j < VOICES; j++)
-			{
-				//TODO: refactor toString to be more conducive to its use here
-				song += "[" + currentChord.toString() + "]";
-				if (j < VOICES-1)
-					song += "+";
-			}
-			song += "w+";
+			song += currentChord.toString();
 			
 			for (int k = i*beats; k < i*beats + beats; k++){
 				song += "[" + melody[k] + "]q";

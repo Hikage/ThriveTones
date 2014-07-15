@@ -133,10 +133,20 @@ public class Chord {
 	 */
 	@Override
 	public String toString(){
-		String chord = "{";
-		for(int note : notes.values())
-			chord += note + " ";
-		chord += "}";
+		int octave_offset = octave * 12;
+		
+		String chord = "";
+		boolean first_note = true;
+		for(int note : notes.values()){
+			int converted_note = 60 + octave_offset + note;
+			if(first_note){
+				chord += "[" + converted_note + "]";
+				first_note = false;
+			}
+			else chord += "+[" + converted_note + "]";
+		}
+		chord += "w+";
+
 		return chord;
 	}
 	
