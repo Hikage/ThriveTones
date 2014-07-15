@@ -43,13 +43,20 @@ public class XMLReader extends DefaultHandler {
 	    NodeList rows = results.item(0).getChildNodes();
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
-	    	for(int j = 0; j < fields.getLength(); j++){
-	    		Node node = fields.item(j);
-	    		if(node.getNodeName().equals("field") && node.getAttributes().getNamedItem("name").getNodeValue().equals("song"))
-	    		//System.out.println(node.getAttributes().getNamedItem("name").getNodeValue());
-	    			System.out.println(node.getTextContent().trim());
-	    		
-	    	}
+	    	System.out.println(nodeValueByAttValue(fields, "song"));
 	    }
     }
+	
+	private static String nodeValueByAttValue(NodeList fields, String attVal){
+		String node_value = "";
+		for(int j = 0; j < fields.getLength(); j++){
+    		Node node = fields.item(j);
+    		if(node.getNodeName().equals("field") && node.getAttributes().getNamedItem("name").getNodeValue().equals(attVal)){
+    			node_value = node.getTextContent().trim();
+    			break;
+    		}    		
+    	}
+		
+		return node_value;
+	}
 }
