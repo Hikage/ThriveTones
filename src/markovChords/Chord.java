@@ -45,6 +45,16 @@ public class Chord {
 		octave = oct;
 	}
 	
+	public Chord(int root, int mode, String schord) throws Exception{
+		notes = new HashMap<String, Integer>();
+
+		if(root < 0 || root > 11)
+			throw new Exception("Invalid note supplied as chord root (0 - 11): " + root);
+		notes.put("root", root);
+
+		//convert schord based on mode
+	}
+
 	/**
 	 * Helper function for note offsets
 	 * @param base: note from which to offset

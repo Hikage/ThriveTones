@@ -11,8 +11,6 @@ import markovChords.Chord;
 
 
 public class ChordTest {
-
-	
 	
 	protected static Chord chord;
 	protected static int rand_note, rand_octave;
