@@ -13,25 +13,25 @@ import markovChords.Chord;
 public class ChordTest {
 	
 	protected static Chord chord;
-	protected static int rand_note, rand_octave;
+	protected static int rand_root, rand_octave;
 	protected static Chord.Tonality rand_tone;
 	
 	@BeforeClass
 	public static void chordInit() {
-		rand_note = new Random().nextInt(11);
+		rand_root = new Random().nextInt(7) + 1;
 		
 		switch(new Random().nextInt(4)){
-		case 0: rand_tone = Chord.Tonality.MAJOR; break;
-		case 1: rand_tone = Chord.Tonality.MINOR; break;
-		case 2: rand_tone = Chord.Tonality.DIMINISHED; break;
-		case 3: rand_tone = Chord.Tonality.AUGMENTED; break;
-		default: rand_tone = Chord.Tonality.MAJOR;
+		case 0: rand_tone = Chord.Tonality.maj; break;
+		case 1: rand_tone = Chord.Tonality.min; break;
+		case 2: rand_tone = Chord.Tonality.dim; break;
+		case 3: rand_tone = Chord.Tonality.aug; break;
+		default: rand_tone = Chord.Tonality.maj;
 		}
 		
 		rand_octave = new Random().nextInt(7) - 3;
 		
-		System.out.println("Creating " + rand_tone + " chord: " + rand_note + " in octave " + rand_octave);
-		try	{ chord = new Chord(rand_note, rand_tone, rand_octave); }
+		System.out.println("Creating " + rand_tone + " chord: " + rand_root + " in octave " + rand_octave);
+		try	{ chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4); }
 		catch (Exception e) {
 			System.err.println("Oh no!  An error occurred: " + e.getMessage());
 		}
@@ -40,23 +40,11 @@ public class ChordTest {
 	@Test
 	public void testInitialization(){
 		try{
-			chord = new Chord(rand_note, rand_tone, rand_octave);
+			chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
 
 			assertEquals(rand_tone, chord.getTonality());
 			assertEquals(rand_octave, chord.getOctave());
-			assertEquals(rand_note, (int)chord.getNotes().get("root"));
-			
-			if(rand_tone.equals(Chord.Tonality.MINOR) || rand_tone.equals(Chord.Tonality.DIMINISHED))
-				assertEquals((rand_note + 3) % 12, (int)chord.getNotes().get("third"));
-			else
-				assertEquals((rand_note + 4) % 12, (int)chord.getNotes().get("third"));
-			
-			if(rand_tone.equals(Chord.Tonality.DIMINISHED))
-				assertEquals((rand_note + 6) % 12, (int)chord.getNotes().get("fifth"));
-			else if(rand_tone.equals(Chord.Tonality.AUGMENTED))
-				assertEquals((rand_note + 8) % 12, (int)chord.getNotes().get("fifth"));
-			else
-				assertEquals((rand_note + 7) % 12, (int)chord.getNotes().get("fifth"));
+			assertEquals(rand_root, (int)chord.getRoot());
 		}
 		catch (Exception e) {
 			System.err.println("Oh no!  An error occurred: " + e.getMessage());
@@ -68,10 +56,8 @@ public class ChordTest {
 		//test upper bound
 		Chord upper_chord;
 		try {
-			upper_chord = new Chord(11, Chord.Tonality.MAJOR, 7);
-			assertEquals(11, (int)upper_chord.getNotes().get("root"));
-			assertEquals(3, (int)upper_chord.getNotes().get("third"));
-			assertEquals(6, (int)upper_chord.getNotes().get("fifth"));
+			upper_chord = new Chord(7, Chord.Tonality.maj, 7, 0, "", 4);
+			assertEquals(7, (int)upper_chord.getRoot());
 		}
 		catch (Exception e) {
 			System.err.println("Oh no!  An error occurred: " + e.getMessage());
@@ -80,10 +66,8 @@ public class ChordTest {
 		//test lower bound
 		Chord lower_chord;
 		try {
-			lower_chord = new Chord(0, Chord.Tonality.DIMINISHED, -7);
-			assertEquals(0, (int)lower_chord.getNotes().get("root"));
-			assertEquals(3, (int)lower_chord.getNotes().get("third"));
-			assertEquals(6, (int)lower_chord.getNotes().get("fifth"));
+			lower_chord = new Chord(1, Chord.Tonality.dim, -7, 0, "", 4);
+			assertEquals(1, (int)lower_chord.getRoot());
 		}
 		catch (Exception e) {
 			System.err.println("Oh no!  An error occurred: " + e.getMessage());
@@ -92,52 +76,44 @@ public class ChordTest {
 	
 	@Test (expected = Exception.class)
 	public void testNegativeChord() throws Exception{
-		new Chord(-1, Chord.Tonality.AUGMENTED, 0);
+		new Chord(-1, Chord.Tonality.aug, 0, 0, "", 4);
 	}
 	
 	@Test (expected = Exception.class)
 	public void testInvalidChord() throws Exception{
-		new Chord(12, Chord.Tonality.DIMINISHED, 0);
+		new Chord(12, Chord.Tonality.dim, 0, 0, "", 4);
 	}
 	
 	@Test
 	public void testMakeMajor(){
 		int original_octave = chord.getOctave();
 		chord.makeMajor();
-		assertEquals((chord.getNotes().get("root") + 4) % 12, (int)chord.getNotes().get("third"));
-		assertEquals((chord.getNotes().get("root") + 7) % 12, (int)chord.getNotes().get("fifth"));
 		assertEquals(original_octave, chord.getOctave());
-		assertEquals(Chord.Tonality.MAJOR, chord.getTonality());
+		assertEquals(Chord.Tonality.maj, chord.getTonality());
 	}
 	
 	@Test
 	public void testMakeMinor(){
 		int original_octave = chord.getOctave();
 		chord.makeMinor();
-		assertEquals((chord.getNotes().get("root") + 3) % 12, (int)chord.getNotes().get("third"));
-		assertEquals((chord.getNotes().get("root") + 7) % 12, (int)chord.getNotes().get("fifth"));
 		assertEquals(original_octave, chord.getOctave());
-		assertEquals(Chord.Tonality.MINOR, chord.getTonality());
+		assertEquals(Chord.Tonality.min, chord.getTonality());
 	}
 	
 	@Test
 	public void testMakeDiminished(){
 		int original_octave = chord.getOctave();
 		chord.makeDiminished();
-		assertEquals((chord.getNotes().get("root") + 3) % 12, (int)chord.getNotes().get("third"));
-		assertEquals((chord.getNotes().get("root") + 6) % 12, (int)chord.getNotes().get("fifth"));
 		assertEquals(original_octave, chord.getOctave());
-		assertEquals(Chord.Tonality.DIMINISHED, chord.getTonality());
+		assertEquals(Chord.Tonality.dim, chord.getTonality());
 	}
 	
 	@Test
 	public void testMakeAugmented(){
 		int original_octave = chord.getOctave();
 		chord.makeAugmented();
-		assertEquals((chord.getNotes().get("root") + 4) % 12, (int)chord.getNotes().get("third"));
-		assertEquals((chord.getNotes().get("root") + 8) % 12, (int)chord.getNotes().get("fifth"));
 		assertEquals(original_octave, chord.getOctave());
-		assertEquals(Chord.Tonality.AUGMENTED, chord.getTonality());
+		assertEquals(Chord.Tonality.aug, chord.getTonality());
 	}
 	
 	@Test
@@ -154,8 +130,8 @@ public class ChordTest {
 	@Test
 	public void testEquals(){
 		try{
-			chord = new Chord(rand_note, rand_tone, rand_octave);
-			Chord chord2 = new Chord(rand_note, rand_tone, rand_octave);
+			chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
+			Chord chord2 = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
 			assertTrue(chord.equals(chord2));
 			assertTrue(chord2.equals(chord));
 			

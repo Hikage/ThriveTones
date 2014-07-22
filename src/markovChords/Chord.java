@@ -14,7 +14,6 @@ public class Chord {
 	public enum Tonality {maj, min, dim, aug};
 	
 	//TODO: bitmap chord representation?
-	private int key;
 	private int root;
 	private Tonality tonality;
 	private int octave;								//can be + or -; defaults to middle
@@ -28,11 +27,9 @@ public class Chord {
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 */
-	public Chord(int ky, int rt, Tonality tone, int oct, int inv, String emb, int dur) throws Exception{
-		changeKey(ky);
-		
+	public Chord(int rt, Tonality tone, int oct, int inv, String emb, int dur) throws Exception{		
 		if(rt-1 < 0 || rt-1 > 7)
-			throw new Exception("Invalid root (1-7): " + root);
+			throw new Exception("Invalid root (1-7): " + rt);
 		root = rt;
 		
 		tonality = tone;
@@ -47,7 +44,7 @@ public class Chord {
 		duration = dur;
 	}
 
-	private Chord(int ky, int mode, String schord) throws Exception{
+	private Chord(int mode, String schord) throws Exception{
 		String[] chord_parts = schord.split("-");
 		String chord = chord_parts[0];
 
@@ -112,7 +109,7 @@ public class Chord {
 		int target = Integer.parseInt(duration_target[1]);
 		//TODO: target
 
-		new Chord(ky, relative_chord, tone, 0, inv, emb, dur);
+		new Chord(relative_chord, tone, 0, inv, emb, dur);
 	}
 
 	/**
@@ -154,19 +151,6 @@ public class Chord {
 	}
 
 	/**
-	 * Adjust Chord's key
-	 * @param ky: desired key
-	 */
-	public void changeKey(int ky) throws Exception{
-		if(ky < 0 || ky > 11)
-			throw new Exception("Invalid key: " + ky);
-		int old_key = key;
-		key = ky;
-		root += (old_key - key) % 7;
-		if(root < 0) root += 7;
-	}
-
-	/**
 	 * Adjust Chord's octave
 	 * @param oct: desired octave
 	 */
@@ -181,14 +165,6 @@ public class Chord {
 	public void changeInversion(int inv) throws Exception{
 		if (inv < 0 || inv > 3) throw new Exception("Invalid inversion: " + inv);
 		inversion = inv;
-	}
-
-	/**
-	 * Retrieves Chord's key
-	 * @return: the key of the Chord
-	 */
-	public int getKey(){
-		return key;
 	}
 
 	/**
@@ -243,7 +219,6 @@ public class Chord {
 		result = prime * result
 				+ ((embelishment == null) ? 0 : embelishment.hashCode());
 		result = prime * result + inversion;
-		result = prime * result + key;
 		result = prime * result + octave;
 		result = prime * result + root;
 		result = prime * result
@@ -270,7 +245,7 @@ public class Chord {
 		}
 		else if (!embelishment.equals(other.embelishment))
 			return false;
-		if (inversion != other.inversion || key != other.key || octave != other.octave
+		if (inversion != other.inversion || octave != other.octave
 				|| root != other.root || tonality != other.tonality)
 			return false;
 		return true;
