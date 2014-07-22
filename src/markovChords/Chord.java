@@ -9,16 +9,18 @@ package markovChords;
  * TODO: details on this class
  */
 
-import java.util.HashMap;
-
 public class Chord {
 
-	public enum Tonality {MAJOR, MINOR, DIMINISHED, AUGMENTED};
+	public enum Tonality {maj, min, dim, aug};
 	
 	//TODO: bitmap chord representation?
-	private HashMap<String, Integer> notes;			//stores actual notes of the chord
+	private int key;
+	private int root;
 	private Tonality tonality;
 	private int octave;								//can be + or -; defaults to middle
+	private int inversion;
+	private String embelishment;
+	private int duration;
 	
 	/**
 	 * Constructor method
@@ -26,33 +28,91 @@ public class Chord {
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 */
-	public Chord(int root, Tonality tone, int oct) throws Exception{
-		notes = new HashMap<String, Integer>();
+	public Chord(int ky, int rt, Tonality tone, int oct, int inv, String emb, int dur) throws Exception{
+		changeKey(ky);
 		
-		if(root < 0 || root > 11)
-			throw new Exception("Invalid note supplied as chord root (0 - 11): " + root);
-		notes.put("root", root);
-		
-		switch(tone){
-		case MAJOR: makeMajor(); break;
-		case MINOR: makeMinor(); break;
-		case DIMINISHED: makeDiminished(); break;
-		case AUGMENTED: makeAugmented(); break;
-		default: throw new Exception("Invalid tonality: " + tone + " (valid exaples: major, diminished)");
-		}
+		if(rt-1 < 0 || rt-1 > 7)
+			throw new Exception("Invalid root (1-7): " + root);
+		root = rt;
 		
 		tonality = tone;
 		octave = oct;
+
+		changeInversion(inv);
+
+		if(!emb.contains("add") && !emb.contains("sus") && !emb.isEmpty() && emb != null)
+			throw new Exception("Invalid embelishment: " + emb);
+		embelishment = emb;
+
+		duration = dur;
 	}
-	
-	public Chord(int root, int mode, String schord) throws Exception{
-		notes = new HashMap<String, Integer>();
 
-		if(root < 0 || root > 11)
-			throw new Exception("Invalid note supplied as chord root (0 - 11): " + root);
-		notes.put("root", root);
+	private Chord(int ky, int mode, String schord) throws Exception{
+		String[] chord_parts = schord.split("-");
+		String chord = chord_parts[0];
 
-		//convert schord based on mode
+		char cmode;
+		int relative_chord;
+
+		int ptr = 0;
+		if(!Character.isDigit(chord.charAt(ptr))){
+			cmode = chord.charAt(ptr);
+			//TODO: mode
+			ptr++;
+		}
+
+		relative_chord = chord.charAt(ptr);
+		Tonality tone;
+		switch(relative_chord){
+		case 1: case 4: case 5: tone = Tonality.maj; break;
+		case 2: case 3: case 6: tone = Tonality.min; break;
+		case 7: tone = Tonality.dim; break;
+		default: throw new Exception("Invalid relative chord: " + relative_chord);
+		}
+
+		relative_chord -= mode;
+		if(relative_chord < 0) relative_chord += 7;
+		ptr++;
+
+		int inv = 0;
+		if(ptr < chord.length() && Character.isDigit(chord.charAt(ptr))){
+			inv = chord.charAt(ptr);
+			ptr++;
+		}
+		if(ptr < chord.length() && Character.isDigit(chord.charAt(ptr))){
+			inv = inv * 10 + chord.charAt(ptr);
+			ptr++;
+		}
+		switch(inv){
+		case 7: inv = 0; break;
+		case 6: case 65: inv = 1; break;
+		case 64: case 43: inv = 2; break;
+		case 42: inv = 3; break;
+		default: throw new Exception("Invalid inversion: " + inv);
+		}
+
+		String emb = "";
+		if(chord.contains("add")){
+			emb = chord.substring(chord.indexOf("add"));
+			ptr = chord.length();
+		}
+		if(chord.contains("sus")){
+			emb = chord.substring(chord.indexOf("sus"));
+			ptr = chord.length();
+		}
+
+		if(ptr < chord.length())
+			throw new Exception("Invalid chord! " + chord);
+
+		if(chord_parts.length <= 1) return;
+
+		String[] duration_target = chord_parts[1].split("/");
+		int dur = Integer.parseInt(duration_target[0]);
+		if(duration_target.length <= 1) return;
+		int target = Integer.parseInt(duration_target[1]);
+		//TODO: target
+
+		new Chord(ky, relative_chord, tone, 0, inv, emb, dur);
 	}
 
 	/**
@@ -64,47 +124,48 @@ public class Chord {
 	private int offset(int base, int degree){
 		return (base + degree) % 12;
 	}
-	
-	/**
-	 * Adjusts Chord to be of major tonality
-	 */
-	public void setThirdFifth(int third_offset, int fifth_offset){
-		notes.put("third", offset(notes.get("root"), third_offset));
-		notes.put("fifth", offset(notes.get("root"), fifth_offset));
-	}
-	
+
 	/**
 	 * Adjusts Chord to be of major tonality
 	 */
 	public void makeMajor(){
-		setThirdFifth(4, 7);
-		tonality = Tonality.MAJOR;
+		tonality = Tonality.maj;
 	}
-	
+
 	/**
 	 * Adjusts Chord to be of minor tonality
 	 */
 	public void makeMinor(){
-		setThirdFifth(3, 7);
-		tonality = Tonality.MINOR;
+		tonality = Tonality.min;
 	}
-	
+
 	/**
 	 * Adjusts Chord to be of diminished tonality
 	 */
 	public void makeDiminished(){
-		setThirdFifth(3, 6);
-		tonality = Tonality.DIMINISHED;
+		tonality = Tonality.dim;
 	}
-	
+
 	/**
 	 * Adjusts Chord to be of augmented tonality
 	 */
 	public void makeAugmented(){
-		setThirdFifth(4, 8);
-		tonality = Tonality.AUGMENTED;
+		tonality = Tonality.aug;
 	}
-	
+
+	/**
+	 * Adjust Chord's key
+	 * @param ky: desired key
+	 */
+	public void changeKey(int ky) throws Exception{
+		if(ky < 0 || ky > 11)
+			throw new Exception("Invalid key: " + ky);
+		int old_key = key;
+		key = ky;
+		root += (old_key - key) % 7;
+		if(root < 0) root += 7;
+	}
+
 	/**
 	 * Adjust Chord's octave
 	 * @param oct: desired octave
@@ -112,15 +173,32 @@ public class Chord {
 	public void changeOctave(int oct){
 		octave = oct;
 	}
-	
+
 	/**
-	 * Retrieves Chord's notes
-	 * @return: the notes of the Chord
+	 * Adjust Chord's inversion
+	 * @param inv: desired inversion
 	 */
-	public HashMap<String, Integer> getNotes(){
-		return notes;
+	public void changeInversion(int inv) throws Exception{
+		if (inv < 0 || inv > 3) throw new Exception("Invalid inversion: " + inv);
+		inversion = inv;
 	}
-	
+
+	/**
+	 * Retrieves Chord's key
+	 * @return: the key of the Chord
+	 */
+	public int getKey(){
+		return key;
+	}
+
+	/**
+	 * Retrieves Chord's root
+	 * @return: the root of the Chord
+	 */
+	public int getRoot(){
+		return root;
+	}
+
 	/**
 	 * Retrieves Chord's tonality
 	 * @return: the tonality of the Chord
@@ -128,7 +206,7 @@ public class Chord {
 	public Tonality getTonality(){
 		return tonality;
 	}
-	
+
 	/**
 	 * Retrieves Chord's octave
 	 * @return: the notes of the octave
@@ -146,20 +224,13 @@ public class Chord {
 		int octave_offset = octave * 12;
 		
 		String chord = "";
-		boolean first_note = true;
-		for(int note : notes.values()){
-			int converted_note = 60 + octave_offset + note;
-			if(first_note){
-				chord += "[" + converted_note + "]";
-				first_note = false;
-			}
-			else chord += "+[" + converted_note + "]";
-		}
+		chord += root;
+		chord += tonality;
 		chord += "w+";
 
 		return chord;
 	}
-	
+
 	/**
 	 * Automatically generated hashCode function for comparisons
 	 * @return: a hash value representing the Chord object
@@ -168,10 +239,15 @@ public class Chord {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + duration;
+		result = prime * result
+				+ ((embelishment == null) ? 0 : embelishment.hashCode());
+		result = prime * result + inversion;
+		result = prime * result + key;
+		result = prime * result + octave;
+		result = prime * result + root;
 		result = prime * result
 				+ ((tonality == null) ? 0 : tonality.hashCode());
-		result = prime * result + ((notes == null) ? 0 : notes.hashCode());
-		result = prime * result + octave;
 		return result;
 	}
 
@@ -185,18 +261,19 @@ public class Chord {
 			return true;
 		if (obj == null || getClass() != obj.getClass())
 			return false;
-		
 		Chord other = (Chord) obj;
-		if (tonality == null && other.tonality != null)
+		if (duration != other.duration)
 			return false;
-		if (!tonality.equals(other.tonality))
+		if (embelishment == null) {
+			if (other.embelishment != null)
+				return false;
+		}
+		else if (!embelishment.equals(other.embelishment))
 			return false;
-		if (notes == null && other.notes != null)
-			return false;
-		if (!notes.equals(other.notes))
-			return false;
-		if (octave != other.octave)
+		if (inversion != other.inversion || key != other.key || octave != other.octave
+				|| root != other.root || tonality != other.tonality)
 			return false;
 		return true;
 	}
+
 }
