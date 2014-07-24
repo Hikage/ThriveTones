@@ -28,49 +28,84 @@ public class ChordTest {
 		default: rand_tone = Chord.Tonality.maj;
 		}
 		
-		rand_octave = new Random().nextInt(7) - 3;
+		rand_octave = new Random().nextInt(10);
 		
-		System.out.println("Creating " + rand_tone + " chord: " + rand_root + " in octave " + rand_octave);
-		try	{ chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4); }
+		//necessary for tests requiring an established chord
+		try{
+			System.out.println("Creating " + rand_tone + " chord: " + rand_root + " in octave " + rand_octave);
+			chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
+		}
 		catch (Exception e) {
-			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 	
 	@Test
-	public void testInitialization(){
+	public void testFullInitialization(){
 		try{
+			System.out.println("Creating " + rand_tone + " chord: " + rand_root + " in octave " + rand_octave);
 			chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
 
+			assertEquals(rand_root, (int)chord.getRoot());
 			assertEquals(rand_tone, chord.getTonality());
 			assertEquals(rand_octave, chord.getOctave());
-			assertEquals(rand_root, (int)chord.getRoot());
+			assertEquals(0, chord.getInversion());
+			assertEquals(4, chord.getDuration());
 		}
 		catch (Exception e) {
-			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testSimpleInitializtion(){
+		try{
+			System.out.println("Creating simple " + rand_tone + " chord: " + rand_root);
+			chord = new Chord(rand_root, rand_tone, 8);
+
+			assertEquals(rand_root, (int)chord.getRoot());
+			assertEquals(rand_tone, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(8, chord.getDuration());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 	
 	@Test
-	public void testInitializationEdgeCases(){
-		//test upper bound
-		Chord upper_chord;
+	public void testUpperBoundChord(){
 		try {
-			upper_chord = new Chord(7, Chord.Tonality.maj, 7, 0, "", 4);
-			assertEquals(7, (int)upper_chord.getRoot());
+			chord = new Chord(7, Chord.Tonality.aug, 10, 3, "sus42", 8);
+			assertEquals(7, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.aug, chord.getTonality());
+			assertEquals(10, chord.getOctave());
+			assertEquals(3, chord.getInversion());
+			assertEquals(8, chord.getDuration());
 		}
 		catch (Exception e) {
-			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
-		
-		//test lower bound
-		Chord lower_chord;
+	}
+
+	@Test
+	public void testLowerBoundChord(){
 		try {
-			lower_chord = new Chord(1, Chord.Tonality.dim, -7, 0, "", 4);
-			assertEquals(1, (int)lower_chord.getRoot());
+			chord = new Chord(1, Chord.Tonality.dim, 0, 0, "", 1);
+			assertEquals(1, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.dim, chord.getTonality());
+			assertEquals(0, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(1, chord.getDuration());
 		}
 		catch (Exception e) {
-			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 	
@@ -119,16 +154,22 @@ public class ChordTest {
 	@Test
 	public void testChangeOctave(){
 		int original_octave = chord.getOctave();
-		chord.changeOctave(original_octave);
-		assertEquals(original_octave, chord.getOctave());
-		chord.changeOctave(5);
-		assertEquals(5, chord.getOctave());
-		chord.changeOctave(-3);
-		assertEquals(-3, chord.getOctave());
+		try{
+			chord.changeOctave(original_octave);
+			assertEquals(original_octave, chord.getOctave());
+			chord.changeOctave(5);
+			assertEquals(5, chord.getOctave());
+			chord.changeOctave(0);
+			assertEquals(0, chord.getOctave());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 	
 	@Test
-	public void testEquals(){
+	public void testEquivalentChords(){
 		try{
 			chord = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
 			Chord chord2 = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
@@ -153,7 +194,8 @@ public class ChordTest {
 			assertFalse(chord2.equals(chord));
 		}
 		catch (Exception e) {
-			System.err.println("Oh no!  An error occurred: " + e.getMessage());
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 
