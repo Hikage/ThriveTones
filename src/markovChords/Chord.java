@@ -18,7 +18,7 @@ public class Chord {
 	private Tonality tonality;
 	private int octave = 5;								//defaults to middle - octave 5
 	private int inversion = 0;
-	private String embelishment = "";
+	private String embellishment = "";
 	private int duration = 4;
 	
 	/**
@@ -39,7 +39,7 @@ public class Chord {
 
 		if(!emb.contains("add") && !emb.contains("sus") && !emb.isEmpty() && emb != null)
 			throw new Exception("Invalid embelishment: " + emb);
-		embelishment = emb;
+		embellishment = emb;
 
 		duration = dur;
 	}
@@ -235,7 +235,7 @@ public class Chord {
 		int result = 1;
 		result = prime * result + duration;
 		result = prime * result
-				+ ((embelishment == null) ? 0 : embelishment.hashCode());
+				+ ((embellishment == null) ? 0 : embellishment.hashCode());
 		result = prime * result + inversion;
 		result = prime * result + octave;
 		result = prime * result + root;
@@ -257,11 +257,11 @@ public class Chord {
 		Chord other = (Chord) obj;
 		if (duration != other.duration)
 			return false;
-		if (embelishment == null) {
-			if (other.embelishment != null)
+		if (embellishment == null) {
+			if (other.embellishment != null)
 				return false;
 		}
-		else if (!embelishment.equals(other.embelishment))
+		else if (!embellishment.equals(other.embellishment))
 			return false;
 		if (inversion != other.inversion || octave != other.octave
 				|| root != other.root || tonality != other.tonality)
