@@ -108,6 +108,22 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
+
+	@Test
+	public void testMajorSIFChord(){
+		try{
+			chord = new Chord(1, "1-4");
+			assertEquals(1, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.maj, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(4, chord.getDuration());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
 	
 	@Test (expected = Exception.class)
 	public void testNegativeChord() throws Exception{

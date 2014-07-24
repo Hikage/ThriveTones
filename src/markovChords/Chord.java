@@ -23,9 +23,12 @@ public class Chord {
 	
 	/**
 	 * Constructor method
-	 * @param root: integer representation of relative note upon which to build the chord (0 = tonic)
+	 * @param root: integer representation of relative note upon which to build the chord (1 = tonic)
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
+	 * @param inv: Chord's inversion
+	 * @param emb: Chord's embellishment
+	 * @param dur: Chord's duration
 	 */
 	public Chord(int rt, Tonality tone, int oct, int inv, String emb, int dur) throws Exception{		
 		if(rt-1 < 0 || rt-1 > 7)
@@ -66,29 +69,33 @@ public class Chord {
 		String[] chord_parts = schord.split("-");
 		String chord = chord_parts[0];
 
-		char cmode;
-		int relative_chord;
-
 		int ptr = 0;
+
+		//Chord's mode (minor, major, dorian, etc)
+		char cmode;
 		if(!Character.isDigit(chord.charAt(ptr))){
 			cmode = chord.charAt(ptr);
 			//TODO: mode
 			ptr++;
 		}
 
-		relative_chord = chord.charAt(ptr);
-		Tonality tone;
+		//Chord numeral relative to key (I, ii, V, etc)
+		int relative_chord = Character.getNumericValue(chord.charAt(ptr));
+
 		switch(relative_chord){
-		case 1: case 4: case 5: tone = Tonality.maj; break;
-		case 2: case 3: case 6: tone = Tonality.min; break;
-		case 7: tone = Tonality.dim; break;
+		case 1: case 4: case 5: tonality = Tonality.maj; break;
+		case 2: case 3: case 6: tonality = Tonality.min; break;
+		case 7: tonality = Tonality.dim; break;
 		default: throw new Exception("Invalid relative chord: " + relative_chord);
 		}
 
+		//Translate chord based on mode; major (1) has no offset, while minor (6) should have the iv chord translate to i
 		relative_chord -= mode;
 		if(relative_chord < 0) relative_chord += 7;
+		root = relative_chord + 1;
 		ptr++;
 
+		//Extract and translate inversion
 		int inv = 0;
 		if(ptr < chord.length() && Character.isDigit(chord.charAt(ptr))){
 			inv = chord.charAt(ptr);
@@ -99,13 +106,14 @@ public class Chord {
 			ptr++;
 		}
 		switch(inv){
-		case 7: inv = 0; break;
-		case 6: case 65: inv = 1; break;
-		case 64: case 43: inv = 2; break;
-		case 42: inv = 3; break;
+		case 0: case 7: changeInversion(0); break;
+		case 6: case 65: changeInversion(1); break;
+		case 64: case 43: changeInversion(2); break;
+		case 42: changeInversion(3); break;
 		default: throw new Exception("Invalid inversion: " + inv);
 		}
 
+		//Parse any embellishments
 		String emb = "";
 		if(chord.contains("add")){
 			emb = chord.substring(chord.indexOf("add"));
@@ -115,19 +123,23 @@ public class Chord {
 			emb = chord.substring(chord.indexOf("sus"));
 			ptr = chord.length();
 		}
+		if(!emb.equals("sus2") && !emb.equals("sus4") && !emb.equals("sus42") && !emb.equals("add9") && !emb.isEmpty())
+			throw new Exception("Invalid embellishment: " + emb);
+		embellishment = emb;
 
 		if(ptr < chord.length())
 			throw new Exception("Invalid chord! " + chord);
 
 		if(chord_parts.length <= 1) return;
 
+		//Extract chord duration and any applied target
 		String[] duration_target = chord_parts[1].split("/");
-		int dur = Integer.parseInt(duration_target[0]);
+		duration = Integer.parseInt(duration_target[0]);
+
 		if(duration_target.length <= 1) return;
+
 		int target = Integer.parseInt(duration_target[1]);
 		//TODO: target
-
-		new Chord(relative_chord, tone, 0, inv, emb, dur);
 	}
 
 	/**
