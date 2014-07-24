@@ -69,6 +69,9 @@ public class Chord {
 		String[] chord_parts = schord.split("-");
 		String chord = chord_parts[0];
 
+		if(chord.length() < 1)
+			throw new Exception("Empty chord detected!");
+
 		int ptr = 0;
 
 		//Chord's mode (minor, major, dorian, etc)
@@ -248,7 +251,7 @@ public class Chord {
 		chord += root;
 		chord += octave;		//no need to specify JFugue's default 3, but doesn't hurt
 		chord += tonality;
-		chord += "w+";
+		chord += "w";
 
 		return chord;
 	}

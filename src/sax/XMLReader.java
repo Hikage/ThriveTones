@@ -28,16 +28,16 @@ public class XMLReader extends DefaultHandler {
 		private static final long serialVersionUID = 1L;
 	{
 		put("C", 0);
-		put("Cs", 1); put("Db", 1);
+		put("C#", 1); put("Db", 1);
 		put("D", 2);
-		put("Ds", 3); put("Eb", 3);
+		put("D#", 3); put("Eb", 3);
 		put("E", 4);
 		put("F", 5);
-		put("Fs", 6); put("Gb", 6);
+		put("F#", 6); put("Gb", 6);
 		put("G", 7);
-		put("Gs", 8); put("Ab", 8);
+		put("G#", 8); put("Ab", 8);
 		put("A", 9);
-		put("As", 10); put("Bb", 10);
+		put("A#", 10); put("Bb", 10);
 		put("B", 11);
 	}};
 
@@ -63,6 +63,7 @@ public class XMLReader extends DefaultHandler {
 	    NodeList rows = results.item(0).getChildNodes();
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
+	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 	    	System.out.println(SIFtoChords(fields));
 	    }
     }
@@ -94,14 +95,14 @@ public class XMLReader extends DefaultHandler {
 		case 'b':
 		case 'f': key += 'b'; break;
 		case '#':
-		case 's': key += 's'; break;
+		case 's': key += '#'; break;
 		default: return null;
 		}
 
 		return key;
 	}
 
-	public static int extractKey(NodeList fields){
+	public static String extractKey(NodeList fields){
 		String xkey = nodeValueByAttValue(fields, "songKey");
 		String key = XMLKeytoKey(xkey);
 		if(key == null){
@@ -109,23 +110,26 @@ public class XMLReader extends DefaultHandler {
 			System.exit(1);
 		}
 
-		return keys.get(key);
+		return key;
 	}
 
 	public static String SIFtoChords(NodeList fields){
-		int key = extractKey(fields);
+		String key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttValue(fields, "mode"));
 		String sif = nodeValueByAttValue(fields, "SIF");
 		String[] sif_chords = sif.split(",");
 		Chord[] chords = new Chord[sif_chords.length];
+		String playable_chords = "K" + key + "maj ";
 		for(int i = 0; i < chords.length; i++){
+			if(sif_chords[i].isEmpty()) continue;
 			try{
-				chords[i] = new Chord(key, mode, sif_chords[i]);
+				chords[i] = new Chord(mode, sif_chords[i]);
+				playable_chords += chords[i].toString() + " ";
 			}
 			catch(Exception e){
-				System.err.println("Oh no!  An error occurred: " + e.getMessage());
+				e.printStackTrace();
 			}
 		}
-		return sif;
+		return playable_chords;
 	}
 }
