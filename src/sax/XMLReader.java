@@ -13,6 +13,7 @@ import javax.xml.parsers.*;
 
 import markovChords.Chord;
 
+import org.jfugue.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -64,7 +65,9 @@ public class XMLReader extends DefaultHandler {
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
-	    	System.out.println(SIFtoChords(fields));
+			String song = SIFtoChords(fields);
+			System.out.println(song);
+			PlaySong(song);
 	    }
     }
 
@@ -124,12 +127,25 @@ public class XMLReader extends DefaultHandler {
 			if(sif_chords[i].isEmpty()) continue;
 			try{
 				chords[i] = new Chord(mode, sif_chords[i]);
-				playable_chords += chords[i].toString() + " ";
+				playable_chords += chords[i].toString(keys.get(key)) + " ";
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 		return playable_chords;
+	}
+
+	public static void PlaySong(String chords){
+		int TEMPO = 120;
+		String INSTRUMENT = "Piano";
+
+		String song = "T" + TEMPO + " I[" + INSTRUMENT + "] " + chords;
+
+		System.out.println(song);
+		Pattern pattern = new Pattern();
+		pattern.setMusicString(song);
+		Player player = new Player();
+		player.play(pattern);
 	}
 }

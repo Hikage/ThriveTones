@@ -257,6 +257,20 @@ public class Chord {
 	}
 
 	/**
+	 * Converts Chord into a string representation, taking key into account
+	 * @return: the JFugue string representation of the Chord
+	 */
+	public String toString(int key){
+		String chord = "";
+		chord += (char)(int)('A' + ((key + root) % 7));
+		chord += octave;		//no need to specify JFugue's default 3, but doesn't hurt
+		chord += tonality;
+		chord += "w";
+
+		return chord;
+	}
+
+	/**
 	 * Automatically generated hashCode function for comparisons
 	 * @return: a hash value representing the Chord object
 	 */
