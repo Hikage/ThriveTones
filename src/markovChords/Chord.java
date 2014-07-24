@@ -16,10 +16,10 @@ public class Chord {
 	//TODO: bitmap chord representation?
 	private int root;
 	private Tonality tonality;
-	private int octave;								//can be + or -; defaults to middle
-	private int inversion;
-	private String embelishment;
-	private int duration;
+	private int octave = 5;								//defaults to middle - octave 5
+	private int inversion = 0;
+	private String embelishment = "";
+	private int duration = 4;
 	
 	/**
 	 * Constructor method
@@ -44,7 +44,25 @@ public class Chord {
 		duration = dur;
 	}
 
-	private Chord(int mode, String schord) throws Exception{
+	/**
+	 * Simplified Chord constructor, leaving other qualities default
+	 * @param rt: integer representation of relative note upon which to build the chord (1 = tonic)
+	 * @param tone: tonality of the Chord
+	 * @param dur: Chord's duration
+	 */
+	public Chord(int rt, Tonality tone, int dur){
+		root = rt;
+		tonality = tone;
+		duration = dur;
+	}
+
+	/**
+	 * Constructor to take in Hooktheory-format chord
+	 * @param mode: key's mode (minor, dorian, major, etc)
+	 * @param schord: string representation of the chord
+	 * @throws Exception
+	 */
+	public Chord(int mode, String schord) throws Exception{
 		String[] chord_parts = schord.split("-");
 		String chord = chord_parts[0];
 
