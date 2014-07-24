@@ -131,16 +131,6 @@ public class Chord {
 	}
 
 	/**
-	 * Helper function for note offsets
-	 * @param base: note from which to offset
-	 * @param degree: offset value
-	 * @return: resulting note
-	 */
-	private int offset(int base, int degree){
-		return (base + degree) % 12;
-	}
-
-	/**
 	 * Adjusts Chord to be of major tonality
 	 */
 	public void makeMajor(){
@@ -172,7 +162,9 @@ public class Chord {
 	 * Adjust Chord's octave
 	 * @param oct: desired octave
 	 */
-	public void changeOctave(int oct){
+	public void changeOctave(int oct) throws Exception{
+		if(oct < 0 || oct > 10)
+			throw new Exception("Invalid octave (0-10): " + oct);
 		octave = oct;
 	}
 
@@ -181,7 +173,8 @@ public class Chord {
 	 * @param inv: desired inversion
 	 */
 	public void changeInversion(int inv) throws Exception{
-		if (inv < 0 || inv > 3) throw new Exception("Invalid inversion: " + inv);
+		if (inv < 0 || inv > 3)
+			throw new Exception("Invalid inversion: " + inv);
 		inversion = inv;
 	}
 
@@ -203,22 +196,37 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's octave
-	 * @return: the notes of the octave
+	 * @return: the Chord's octave
 	 */
 	public int getOctave(){
 		return octave;
 	}
 	
 	/**
+	 * Retrieves Chord's inversion
+	 * @return: the Chord's inversion
+	 */
+	public int getInversion(){
+		return inversion;
+	}
+
+	/**
+	 * Retrieves Chord's duration
+	 * @return: the Chord's duration
+	 */
+	public int getDuration(){
+		return duration;
+	}
+
+	/**
 	 * Converts Chord into a string representation
-	 * @return: the string representation of the Chord
+	 * @return: the JFugue string representation of the Chord
 	 */
 	@Override
 	public String toString(){
-		int octave_offset = octave * 12;
-		
 		String chord = "";
 		chord += root;
+		chord += octave;		//no need to specify JFugue's default 3, but doesn't hurt
 		chord += tonality;
 		chord += "w+";
 
