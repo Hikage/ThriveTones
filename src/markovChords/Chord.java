@@ -98,11 +98,11 @@ public class Chord {
 		//Extract and translate inversion
 		int inv = 0;
 		if(ptr < chord.length() && Character.isDigit(chord.charAt(ptr))){
-			inv = chord.charAt(ptr);
+			inv = Character.getNumericValue(chord.charAt(ptr));
 			ptr++;
 		}
 		if(ptr < chord.length() && Character.isDigit(chord.charAt(ptr))){
-			inv = inv * 10 + chord.charAt(ptr);
+			inv = inv * 10 + Character.getNumericValue(chord.charAt(ptr));
 			ptr++;
 		}
 		switch(inv){
@@ -220,6 +220,14 @@ public class Chord {
 	 */
 	public int getInversion(){
 		return inversion;
+	}
+	
+	/**
+	 * Retrieves Chord's embellishment
+	 * @return: the Chord's embellishment
+	 */
+	public String getEmbellishment(){
+		return embellishment;
 	}
 
 	/**

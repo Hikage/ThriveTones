@@ -110,7 +110,7 @@ public class ChordTest {
 	}
 
 	@Test
-	public void testMajorSIFChord(){
+	public void testSimpleMajorSIFChord(){
 		try{
 			chord = new Chord(1, "1-4");
 			assertEquals(1, (int)chord.getRoot());
@@ -118,6 +118,113 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals(4, chord.getDuration());
+			
+			chord = new Chord(1, "3-1");
+			assertEquals(3, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.min, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(1, chord.getDuration());
+			
+			chord = new Chord(1, "7-8");
+			assertEquals(7, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.dim, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(8, chord.getDuration());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSimpleMinorSIFChord(){
+		try{
+			chord = new Chord(6, "6-4");			//i chord
+			assertEquals(1, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.min, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(4, chord.getDuration());
+			
+			chord = new Chord(6, "1-1");			//III chord
+			assertEquals(3, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.maj, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(1, chord.getDuration());
+			
+			chord = new Chord(6, "7-8");			//ii* chord
+			assertEquals(2, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.dim, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(8, chord.getDuration());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSIFInvertedChord(){
+		try{
+			chord = new Chord(2, "27-4");			//i7 chord
+			assertEquals(1, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.min, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals(4, chord.getDuration());
+			
+			chord = new Chord(3, "764-1");			//v* chord
+			assertEquals(5, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.dim, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(2, chord.getInversion());
+			assertEquals(1, chord.getDuration());
+			
+			chord = new Chord(4, "742-8");			//iv*7 chord
+			assertEquals(4, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.dim, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(3, chord.getInversion());
+			assertEquals(8, chord.getDuration());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSIFEmbellishedChord(){
+		try{
+			chord = new Chord(5, "56sus2-4");		//I chord
+			assertEquals(1, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.maj, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(1, chord.getInversion());
+			assertEquals("sus2", chord.getEmbellishment());
+			assertEquals(4, chord.getDuration());
+			
+			chord = new Chord(6, "37add9-1");		//v79 chord
+			assertEquals(5, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.min, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(0, chord.getInversion());
+			assertEquals("add9", chord.getEmbellishment());
+			assertEquals(1, chord.getDuration());
+			
+			chord = new Chord(7, "364sus42-8");		//iv chord
+			assertEquals(4, (int)chord.getRoot());
+			assertEquals(Chord.Tonality.min, chord.getTonality());
+			assertEquals(5, chord.getOctave());
+			assertEquals(2, chord.getInversion());
+			assertEquals("sus42", chord.getEmbellishment());
+			assertEquals(8, chord.getDuration());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
