@@ -1,5 +1,14 @@
 package test;
 
+/**
+ * "Digital Chords" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * ChordTest.java
+ * Tests the Chord class
+ */
+
 import static org.junit.Assert.*;
 
 import java.util.Random;

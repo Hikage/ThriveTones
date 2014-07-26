@@ -6,7 +6,7 @@ package markovChords;
  * bshade@pdx.edu
  *
  * Chord.java
- * TODO: details on this class
+ * This class represents a chord object, having specified attributes like root, duration, and tonality
  */
 
 public class Chord {
@@ -14,7 +14,7 @@ public class Chord {
 	public enum Tonality {maj, min, dim, aug};
 	
 	//TODO: bitmap chord representation?
-	private int root;
+	private int root;									//relative note upon which to build the chord (1-7, 1 = tonic)
 	private Tonality tonality;
 	private int octave = 5;								//defaults to middle - octave 5
 	private int inversion = 0;
@@ -23,7 +23,7 @@ public class Chord {
 	
 	/**
 	 * Constructor method
-	 * @param root: integer representation of relative note upon which to build the chord (1 = tonic)
+	 * @param root: integer representation of Chord's root
 	 * @param tone: tonality of the Chord
 	 * @param oct: Chord's octave
 	 * @param inv: Chord's inversion
@@ -66,6 +66,7 @@ public class Chord {
 	 * @throws Exception
 	 */
 	public Chord(int mode, String schord) throws Exception{
+		//TODO: handle "rest" chords
 		String[] chord_parts = schord.split("-");
 		String chord = chord_parts[0];
 
