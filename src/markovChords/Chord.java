@@ -20,6 +20,7 @@ public class Chord {
 	private int inversion = 0;
 	private String embellishment = "";
 	private int duration = 4;
+	private boolean seven = false;
 	
 	/**
 	 * Constructor method
@@ -143,10 +144,13 @@ public class Chord {
 			ptr++;
 		}
 		switch(inv){
-		case 0: case 7: changeInversion(0); break;
-		case 6: case 65: changeInversion(1); break;
-		case 64: case 43: changeInversion(2); break;
-		case 42: changeInversion(3); break;
+		case 7: seven = true;
+		case 0: changeInversion(0); break;
+		case 65: seven = true;
+		case 6: changeInversion(1); break;
+		case 43: seven = true;
+		case 64: changeInversion(2); break;
+		case 42: seven = true; changeInversion(3); break;
 		default: throw new Exception("Invalid inversion: " + inv);
 		}
 
@@ -278,8 +282,11 @@ public class Chord {
 
 		String chord = "";
 		chord += root;
-		chord += octave;		//no need to specify JFugue's default 3, but doesn't hurt
+		chord += octave;			//no need to specify JFugue's default 3, but doesn't hurt
 		chord += tonality;
+		if(seven) chord += "7";
+		for(int i = 0; i<inversion; i++) chord += "^";
+		//TODO: implement duration
 		chord += "w";
 
 		return chord;
@@ -290,13 +297,15 @@ public class Chord {
 	 * @return: the JFugue string representation of the Chord
 	 */
 	public String toString(int key){
-		//TODO: inversions
 		if(root == 0) return "R";	//rest
 
 		String chord = "";
-		chord += (char)(int)('A' + ((key + root) % 7));
+		chord += (char)(int)('A' + ((key + root - 1) % 7));
 		chord += octave;			//no need to specify JFugue's default 3, but doesn't hurt
 		chord += tonality;
+		if(seven) chord += "7";
+		for(int i = 0; i<inversion; i++) chord += "^";
+		//TODO: implement duration
 		chord += "w";
 
 		return chord;

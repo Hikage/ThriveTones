@@ -308,6 +308,40 @@ public class ChordTest {
 		new Chord(1, "rest42-4");
 	}
 
+	@Test
+	public void testInversions(){
+		try{
+			chord = new Chord(1, "1");
+			String chord_string = chord.toString();
+			assertFalse(chord_string.contains("^"));
+			assertFalse(chord_string.contains("7"));
+
+			chord = new Chord(1, "57");
+			chord_string = chord.toString();
+			assertFalse(chord_string.contains("^"));
+			assertTrue(chord_string.contains("7"));
+
+			chord = new Chord(1, "36");
+			chord_string = chord.toString();
+			assertTrue(chord_string.contains("^"));
+			assertFalse(chord_string.contains("7"));
+
+			chord = new Chord(1, "664");
+			chord_string = chord.toString();
+			assertTrue(chord_string.contains("^^"));
+			assertFalse(chord_string.contains("7"));
+
+			chord = new Chord(1, "142");
+			chord_string = chord.toString();
+			assertTrue(chord_string.contains("^^^"));
+			assertTrue(chord_string.contains("7"));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
 	@Test (expected = Exception.class)
 	public void testNegativeChord() throws Exception{
 		new Chord(-1, Chord.Tonality.aug, 0, 0, "", 4);
@@ -360,6 +394,27 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			chord.changeOctave(0);
 			assertEquals(0, chord.getOctave());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testToString(){
+		try{
+			//TODO: Adjust for applied targets and suspension
+			chord = new Chord(1, "542sus4-3/5");
+			assertEquals("55maj7^^^w", chord.toString());
+			assertEquals("E5maj7^^^w", chord.toString(0));
+			assertEquals("F5maj7^^^w", chord.toString(1));
+			assertEquals("G5maj7^^^w", chord.toString(2));
+			assertEquals("A5maj7^^^w", chord.toString(3));
+			assertEquals("B5maj7^^^w", chord.toString(4));
+			assertEquals("C5maj7^^^w", chord.toString(5));
+			assertEquals("D5maj7^^^w", chord.toString(6));
+			assertEquals("E5maj7^^^w", chord.toString(7));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
