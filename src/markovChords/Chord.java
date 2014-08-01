@@ -66,12 +66,45 @@ public class Chord {
 	 * @throws Exception
 	 */
 	public Chord(int mode, String schord) throws Exception{
-		//TODO: handle "rest" chords
-		String[] chord_parts = schord.split("-");
+		if(schord.length() < 1)
+			throw new Exception("Empty chord supplied!");
+
+		//Parse incoming string
+		String[] chord_parts = schord.toLowerCase().split("/");
+		int applied_target = 0;
+
+		if(schord.contains("/")){		//has an applied target
+			if(chord_parts.length != 2
+					|| !Character.isDigit(chord_parts[1].charAt(0))	|| chord_parts[1].length() != 1)
+				throw new Exception("Invalid applied target: " + schord);
+			else
+				applied_target = Integer.parseInt(chord_parts[1]);
+		}
+
+		if(schord.contains("-")){		//has duration
+			chord_parts = chord_parts[0].split("-");
+			if(chord_parts.length != 2 || !Character.isDigit(chord_parts[1].charAt(0))
+					|| chord_parts[1].length() > 2 || chord_parts[1].length() < 1)
+				throw new Exception("Invalid duration: " + schord);
+			else
+				duration = Integer.parseInt(chord_parts[1]);
+		}
+
 		String chord = chord_parts[0];
 
 		if(chord.length() < 1)
 			throw new Exception("Empty chord detected!");
+
+		if(chord.contains("rest")){
+			if(!chord.equals("rest"))
+				throw new Exception("Invalid rest chord: " + schord);
+			if(applied_target > 0)
+				throw new Exception("Rests cannot have applied targets: " + schord);
+
+			root = 0;
+			tonality = Tonality.maj;		//just for the sake of not having a null attribute
+			return;
+		}
 
 		int ptr = 0;
 
@@ -136,13 +169,6 @@ public class Chord {
 
 		if(chord_parts.length <= 1) return;
 
-		//Extract chord duration and any applied target
-		String[] duration_target = chord_parts[1].split("/");
-		duration = Integer.parseInt(duration_target[0]);
-
-		if(duration_target.length <= 1) return;
-
-		int target = Integer.parseInt(duration_target[1]);
 		//TODO: target
 	}
 
@@ -248,6 +274,8 @@ public class Chord {
 	 */
 	@Override
 	public String toString(){
+		if(root == 0) return "R";	//rest
+
 		String chord = "";
 		chord += root;
 		chord += octave;		//no need to specify JFugue's default 3, but doesn't hurt
@@ -262,9 +290,12 @@ public class Chord {
 	 * @return: the JFugue string representation of the Chord
 	 */
 	public String toString(int key){
+		//TODO: inversions
+		if(root == 0) return "R";	//rest
+
 		String chord = "";
 		chord += (char)(int)('A' + ((key + root) % 7));
-		chord += octave;		//no need to specify JFugue's default 3, but doesn't hurt
+		chord += octave;			//no need to specify JFugue's default 3, but doesn't hurt
 		chord += tonality;
 		chord += "w";
 

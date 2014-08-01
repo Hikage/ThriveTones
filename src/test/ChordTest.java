@@ -20,15 +20,15 @@ import markovChords.Chord;
 
 
 public class ChordTest {
-	
+
 	protected static Chord chord;
 	protected static int rand_root, rand_octave;
 	protected static Chord.Tonality rand_tone;
-	
+
 	@BeforeClass
 	public static void chordInit() {
 		rand_root = new Random().nextInt(7) + 1;
-		
+
 		switch(new Random().nextInt(4)){
 		case 0: rand_tone = Chord.Tonality.maj; break;
 		case 1: rand_tone = Chord.Tonality.min; break;
@@ -36,9 +36,9 @@ public class ChordTest {
 		case 3: rand_tone = Chord.Tonality.aug; break;
 		default: rand_tone = Chord.Tonality.maj;
 		}
-		
+
 		rand_octave = new Random().nextInt(10);
-		
+
 		//necessary for tests requiring an established chord
 		try{
 			System.out.println("Creating " + rand_tone + " chord: " + rand_root + " in octave " + rand_octave);
@@ -49,7 +49,7 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testFullInitialization(){
 		try{
@@ -85,7 +85,7 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testUpperBoundChord(){
 		try {
@@ -118,6 +118,41 @@ public class ChordTest {
 		}
 	}
 
+	@Test (expected = Exception.class)
+	public void testEmptySIFChord() throws Exception{
+		new Chord(1, "");
+	}
+
+	@Test (expected = Exception.class)
+	public void testEmptyTargetSIFChord() throws Exception{
+		new Chord(1, "1/");
+	}
+
+	@Test (expected = Exception.class)
+	public void testInvalidTargetSIFChord() throws Exception{
+		new Chord(1, "1/V");
+	}
+
+	@Test (expected = Exception.class)
+	public void testLongTargetSIFChord() throws Exception{
+		new Chord(1, "1/12");
+	}
+
+	@Test (expected = Exception.class)
+	public void testEmptyDurationSIFChord() throws Exception{
+		new Chord(1, "1-");
+	}
+
+	@Test (expected = Exception.class)
+	public void testInvalidDurationSIFChord() throws Exception{
+		new Chord(1, "1-V");
+	}
+
+	@Test (expected = Exception.class)
+	public void testLongDurationSIFChord() throws Exception{
+		new Chord(1, "1-120");
+	}
+
 	@Test
 	public void testSimpleMajorSIFChord(){
 		try{
@@ -127,14 +162,14 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals(4, chord.getDuration());
-			
+
 			chord = new Chord(1, "3-1");
 			assertEquals(3, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.min, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals(1, chord.getDuration());
-			
+
 			chord = new Chord(1, "7-8");
 			assertEquals(7, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
@@ -147,7 +182,7 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testSimpleMinorSIFChord(){
 		try{
@@ -157,14 +192,14 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals(4, chord.getDuration());
-			
+
 			chord = new Chord(6, "1-1");			//III chord
 			assertEquals(3, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.maj, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals(1, chord.getDuration());
-			
+
 			chord = new Chord(6, "7-8");			//ii* chord
 			assertEquals(2, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
@@ -177,7 +212,7 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testSIFInvertedChord(){
 		try{
@@ -187,14 +222,14 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals(4, chord.getDuration());
-			
+
 			chord = new Chord(3, "764-1");			//v* chord
 			assertEquals(5, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(2, chord.getInversion());
 			assertEquals(1, chord.getDuration());
-			
+
 			chord = new Chord(4, "742-8");			//iv*7 chord
 			assertEquals(4, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
@@ -207,7 +242,7 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testSIFEmbellishedChord(){
 		try{
@@ -218,7 +253,7 @@ public class ChordTest {
 			assertEquals(1, chord.getInversion());
 			assertEquals("sus2", chord.getEmbellishment());
 			assertEquals(4, chord.getDuration());
-			
+
 			chord = new Chord(6, "37add9-1");		//v79 chord
 			assertEquals(5, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.min, chord.getTonality());
@@ -226,7 +261,7 @@ public class ChordTest {
 			assertEquals(0, chord.getInversion());
 			assertEquals("add9", chord.getEmbellishment());
 			assertEquals(1, chord.getDuration());
-			
+
 			chord = new Chord(7, "364sus42-8");		//iv chord
 			assertEquals(4, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.min, chord.getTonality());
@@ -240,17 +275,49 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
+	@Test
+	public void testRestSIFChord(){
+		try{
+			chord = new Chord(1, "rest");
+			assertEquals(0, chord.getRoot());
+			assertEquals(4, chord.getDuration());
+
+			chord = new Chord(6, "REST-10");
+			assertEquals(0, chord.getRoot());
+			assertEquals(10, chord.getDuration());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test (expected = Exception.class)
+	public void testTargetRestSIFChord() throws Exception{
+		new Chord(1, "rest/5");
+	}
+
+	@Test (expected = Exception.class)
+	public void testDurationTargetRestSIFChord() throws Exception{
+		new Chord(1, "rest-4/5");
+	}
+
+	@Test (expected = Exception.class)
+	public void testExtraInfoRestSIFChord() throws Exception{
+		new Chord(1, "rest42-4");
+	}
+
 	@Test (expected = Exception.class)
 	public void testNegativeChord() throws Exception{
 		new Chord(-1, Chord.Tonality.aug, 0, 0, "", 4);
 	}
-	
+
 	@Test (expected = Exception.class)
 	public void testInvalidChord() throws Exception{
 		new Chord(12, Chord.Tonality.dim, 0, 0, "", 4);
 	}
-	
+
 	@Test
 	public void testMakeMajor(){
 		int original_octave = chord.getOctave();
@@ -258,7 +325,7 @@ public class ChordTest {
 		assertEquals(original_octave, chord.getOctave());
 		assertEquals(Chord.Tonality.maj, chord.getTonality());
 	}
-	
+
 	@Test
 	public void testMakeMinor(){
 		int original_octave = chord.getOctave();
@@ -266,7 +333,7 @@ public class ChordTest {
 		assertEquals(original_octave, chord.getOctave());
 		assertEquals(Chord.Tonality.min, chord.getTonality());
 	}
-	
+
 	@Test
 	public void testMakeDiminished(){
 		int original_octave = chord.getOctave();
@@ -274,7 +341,7 @@ public class ChordTest {
 		assertEquals(original_octave, chord.getOctave());
 		assertEquals(Chord.Tonality.dim, chord.getTonality());
 	}
-	
+
 	@Test
 	public void testMakeAugmented(){
 		int original_octave = chord.getOctave();
@@ -282,7 +349,7 @@ public class ChordTest {
 		assertEquals(original_octave, chord.getOctave());
 		assertEquals(Chord.Tonality.aug, chord.getTonality());
 	}
-	
+
 	@Test
 	public void testChangeOctave(){
 		int original_octave = chord.getOctave();
@@ -299,7 +366,7 @@ public class ChordTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testEquivalentChords(){
 		try{
@@ -307,20 +374,20 @@ public class ChordTest {
 			Chord chord2 = new Chord(rand_root, rand_tone, rand_octave, 0, "", 4);
 			assertTrue(chord.equals(chord2));
 			assertTrue(chord2.equals(chord));
-			
+
 			chord2.changeOctave(rand_octave + 1);
 			assertFalse(chord.equals(chord2));
 			assertFalse(chord2.equals(chord));
-			
+
 			chord2.changeOctave(rand_octave);
 			assertTrue(chord.equals(chord2));
 			assertTrue(chord2.equals(chord));
-			
+
 			chord.makeDiminished();
 			chord2.makeDiminished();
 			assertTrue(chord.equals(chord2));
 			assertTrue(chord2.equals(chord));
-			
+
 			chord.makeMinor();
 			assertFalse(chord.equals(chord2));
 			assertFalse(chord2.equals(chord));
