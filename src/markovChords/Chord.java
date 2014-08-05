@@ -9,6 +9,8 @@ package markovChords;
  * This class represents a chord object, having specified attributes like root, duration, and tonality
  */
 
+import java.text.DecimalFormat;
+
 public class Chord {
 
 	public enum Tonality {maj, min, dim, aug};
@@ -19,7 +21,7 @@ public class Chord {
 	private int octave = 5;								//defaults to middle - octave 5
 	private int inversion = 0;
 	private String embellishment = "";
-	private int duration = 4;
+	private double duration = 4;
 	private boolean seven = false;
 	
 	/**
@@ -31,7 +33,7 @@ public class Chord {
 	 * @param emb: Chord's embellishment
 	 * @param dur: Chord's duration
 	 */
-	public Chord(int rt, Tonality tone, int oct, int inv, String emb, int dur) throws Exception{		
+	public Chord(int rt, Tonality tone, int oct, int inv, String emb, double dur) throws Exception{
 		if(rt-1 < 0 || rt-1 > 7)
 			throw new Exception("Invalid root (1-7): " + rt);
 		root = rt;
@@ -54,7 +56,7 @@ public class Chord {
 	 * @param tone: tonality of the Chord
 	 * @param dur: Chord's duration
 	 */
-	public Chord(int rt, Tonality tone, int dur){
+	public Chord(int rt, Tonality tone, double dur){
 		root = rt;
 		tonality = tone;
 		duration = dur;
@@ -85,10 +87,12 @@ public class Chord {
 		if(schord.contains("-")){		//has duration
 			chord_parts = chord_parts[0].split("-");
 			if(chord_parts.length != 2 || !Character.isDigit(chord_parts[1].charAt(0))
-					|| chord_parts[1].length() > 2 || chord_parts[1].length() < 1)
+					|| chord_parts[1].length() > 4 || chord_parts[1].length() < 1)
 				throw new Exception("Invalid duration: " + schord);
 			else
-				duration = Integer.parseInt(chord_parts[1]);
+				duration = Double.parseDouble(chord_parts[1]);
+			if(duration < 0 || duration > 100)
+				throw new Exception("Invalid duration: " + schord);
 		}
 
 		String chord = chord_parts[0];
@@ -269,7 +273,7 @@ public class Chord {
 	 * Retrieves Chord's duration
 	 * @return: the Chord's duration
 	 */
-	public int getDuration(){
+	public double getDuration(){
 		return duration;
 	}
 
@@ -279,14 +283,14 @@ public class Chord {
 	 */
 	@Override
 	public String toString(){
-		return toString(-1);
+		return toString(-1, duration);
 	}
 
 	/**
 	 * Converts Chord into a string representation, taking key into account
 	 * @return: the JFugue string representation of the Chord
 	 */
-	public String toString(int key){
+	public String toString(int key, double beats){
 		if(root == 0) return "R";	//rest
 
 		String chord = "";
@@ -298,8 +302,7 @@ public class Chord {
 		if(seven) chord += "7";
 		for(int i = 0; i<inversion; i++) chord += "^";
 		chord += embellishment;
-		//TODO: implement duration
-		chord += "w";
+		chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
 
 		return chord;
 	}
@@ -312,12 +315,15 @@ public class Chord {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + duration;
+		long temp;
+		temp = Double.doubleToLongBits(duration);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result
 				+ ((embellishment == null) ? 0 : embellishment.hashCode());
 		result = prime * result + inversion;
 		result = prime * result + octave;
 		result = prime * result + root;
+		result = prime * result + (seven ? 1231 : 1237);
 		result = prime * result
 				+ ((tonality == null) ? 0 : tonality.hashCode());
 		return result;
@@ -334,7 +340,8 @@ public class Chord {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Chord other = (Chord) obj;
-		if (duration != other.duration)
+		if (Double.doubleToLongBits(duration) != Double
+				.doubleToLongBits(other.duration))
 			return false;
 		if (embellishment == null) {
 			if (other.embellishment != null)
@@ -342,8 +349,8 @@ public class Chord {
 		}
 		else if (!embellishment.equals(other.embellishment))
 			return false;
-		if (inversion != other.inversion || octave != other.octave
-				|| root != other.root || tonality != other.tonality)
+		if (inversion != other.inversion || octave != other.octave || root != other.root
+				|| seven != other.seven || tonality != other.tonality)
 			return false;
 		return true;
 	}

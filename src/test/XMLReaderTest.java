@@ -117,7 +117,8 @@ public class XMLReaderTest {
 	public void testSIFtoChords(){
 		NodeList fields = rows.item(1).getChildNodes();
 		try{
-			assertEquals("KEbmaj E5majw B5majw A5majw E5majw E5majw B5majw A5majw E5majw", XMLReader.SIFtoChords(fields));
+			assertEquals("KEbmaj E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0 E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0",
+					XMLReader.SIFtoChords(fields));
 		}
 		catch(Exception e){
 			e.printStackTrace();

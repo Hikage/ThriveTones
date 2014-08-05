@@ -134,6 +134,7 @@ public class XMLReader extends DefaultHandler {
 	public static String SIFtoChords(NodeList fields) throws Exception{
 		String key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
+		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 		String sif = nodeValueByAttName(fields, "SIF");
 		String[] sif_chords = sif.split(",");
 		Chord[] chords = new Chord[sif_chords.length];
@@ -142,7 +143,7 @@ public class XMLReader extends DefaultHandler {
 			if(sif_chords[i].isEmpty()) continue;
 			try{
 				chords[i] = new Chord(mode, sif_chords[i]);
-				playable_chords += chords[i].toString(key.charAt(0) - 'A') + " ";
+				playable_chords += chords[i].toString(key.charAt(0) - 'A', beats) + " ";
 			}
 			catch(Exception e){
 				e.printStackTrace();
