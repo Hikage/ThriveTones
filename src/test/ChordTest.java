@@ -262,12 +262,13 @@ public class ChordTest {
 			assertEquals("add9", chord.getEmbellishment());
 			assertEquals(1, chord.getDuration());
 
-			chord = new Chord(7, "364sus42-8");		//iv chord
+			//TODO: reenable support for sus42 if ever present
+			chord = new Chord(7, "364sus4-8");		//iv chord
 			assertEquals(4, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.min, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(2, chord.getInversion());
-			assertEquals("sus42", chord.getEmbellishment());
+			assertEquals("sus4", chord.getEmbellishment());
 			assertEquals(8, chord.getDuration());
 		}
 		catch (Exception e) {
@@ -404,8 +405,8 @@ public class ChordTest {
 	@Test
 	public void testToString(){
 		try{
-			//TODO: Adjust for applied targets and suspension
-			chord = new Chord(1, "542sus4-3/5");
+			//TODO: Adjust for applied targets and chord modes
+			chord = new Chord(1, "542-3");
 			assertEquals("55maj7^^^w", chord.toString());
 			assertEquals("E5maj7^^^w", chord.toString(0));
 			assertEquals("F5maj7^^^w", chord.toString(1));
@@ -415,6 +416,14 @@ public class ChordTest {
 			assertEquals("C5maj7^^^w", chord.toString(5));
 			assertEquals("D5maj7^^^w", chord.toString(6));
 			assertEquals("E5maj7^^^w", chord.toString(7));
+			
+			chord = new Chord(6, "6sus4-4");
+			assertEquals("15sus4w", chord.toString());
+			assertEquals("E5sus4w", chord.toString(4));
+			
+			chord = new Chord(5, "76add9-4");
+			assertEquals("35dim^add9w", chord.toString());
+			assertEquals("E5dim^add9w", chord.toString(2));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

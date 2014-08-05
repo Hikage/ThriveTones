@@ -164,7 +164,8 @@ public class Chord {
 			emb = chord.substring(chord.indexOf("sus"));
 			ptr = chord.length();
 		}
-		if(!emb.equals("sus2") && !emb.equals("sus4") && !emb.equals("sus42") && !emb.equals("add9") && !emb.isEmpty())
+		//TODO: reenable support for sus42 if ever encountered
+		if(!emb.equals("sus2") && !emb.equals("sus4") && !emb.equals("add9") && !emb.isEmpty())
 			throw new Exception("Invalid embellishment: " + emb);
 		embellishment = emb;
 
@@ -273,23 +274,12 @@ public class Chord {
 	}
 
 	/**
-	 * Converts Chord into a string representation
+	 * Converts Chord into a key-independent string representation
 	 * @return: the JFugue string representation of the Chord
 	 */
 	@Override
 	public String toString(){
-		if(root == 0) return "R";	//rest
-
-		String chord = "";
-		chord += root;
-		chord += octave;			//no need to specify JFugue's default 3, but doesn't hurt
-		chord += tonality;
-		if(seven) chord += "7";
-		for(int i = 0; i<inversion; i++) chord += "^";
-		//TODO: implement duration
-		chord += "w";
-
-		return chord;
+		return toString(-1);
 	}
 
 	/**
@@ -300,11 +290,14 @@ public class Chord {
 		if(root == 0) return "R";	//rest
 
 		String chord = "";
-		chord += (char)(int)('A' + ((key + root - 1) % 7));
-		chord += octave;			//no need to specify JFugue's default 3, but doesn't hurt
-		chord += tonality;
+		if(key < 0) chord += root;
+		else chord += (char)(int)('A' + ((key + root - 1) % 7));
+		chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
+		if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
+			chord += tonality;
 		if(seven) chord += "7";
 		for(int i = 0; i<inversion; i++) chord += "^";
+		chord += embellishment;
 		//TODO: implement duration
 		chord += "w";
 
