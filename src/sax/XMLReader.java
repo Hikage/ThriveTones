@@ -43,27 +43,8 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import java.io.*;
-import java.util.HashMap;
 
 public class XMLReader extends DefaultHandler {
-
-	//Numerical representation of the 11 unique keys
-	private static final HashMap<String, Integer> keys = new HashMap<String, Integer>() {
-		private static final long serialVersionUID = 1L;
-	{
-		put("C", 0);
-		put("C#", 1); put("Db", 1);
-		put("D", 2);
-		put("D#", 3); put("Eb", 3);
-		put("E", 4);
-		put("F", 5);
-		put("F#", 6); put("Gb", 6);
-		put("G", 7);
-		put("G#", 8); put("Ab", 8);
-		put("A", 9);
-		put("A#", 10); put("Bb", 10);
-		put("B", 11);
-	}};
 
 	/**
 	 * Usage function
@@ -180,7 +161,7 @@ public class XMLReader extends DefaultHandler {
 			if(sif_chords[i].isEmpty()) continue;
 			try{
 				chords[i] = new Chord(mode, sif_chords[i]);
-				playable_chords += chords[i].toString(keys.get(key)) + " ";
+				playable_chords += chords[i].toString(key.charAt(0) - 'A') + " ";
 			}
 			catch(Exception e){
 				e.printStackTrace();
