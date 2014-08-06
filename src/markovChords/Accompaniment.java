@@ -23,21 +23,21 @@ public class Accompaniment {
 	public Accompaniment(boolean Mm, Melody m, int n) {
 		//establishing different chordal types
 		try{
-			tonic = new Chord(0, Chord.Tonality.MAJOR, 0);
-			two = new Chord(2, Chord.Tonality.MINOR, 0);
-			three = new Chord(4, Chord.Tonality.MINOR, 0);
-			subdominant = new Chord(5, Chord.Tonality.MAJOR, 0);
-			dominant = new Chord(7, Chord.Tonality.MAJOR, 0);
-			six = new Chord(9, Chord.Tonality.MINOR, 0);
-			subtonic = new Chord(11, Chord.Tonality.DIMINISHED, 0);
+			tonic = new Chord(0, Chord.Tonality.maj, 0);
+			two = new Chord(2, Chord.Tonality.min, 0);
+			three = new Chord(4, Chord.Tonality.min, 0);
+			subdominant = new Chord(5, Chord.Tonality.maj, 0);
+			dominant = new Chord(7, Chord.Tonality.maj, 0);
+			six = new Chord(9, Chord.Tonality.min, 0);
+			subtonic = new Chord(11, Chord.Tonality.dim, 0);
 			
 			//adjust for minor tonality
 			if(!Mm){
 				tonic.makeMinor();
-				three = new Chord(3, Chord.Tonality.MAJOR, 0);
+				three = new Chord(3, Chord.Tonality.maj, 0);
 				dominant.makeMinor();
 				six.makeDiminished();
-				subtonic = new Chord(6, Chord.Tonality.MAJOR, 0);
+				subtonic = new Chord(6, Chord.Tonality.maj, 0);
 			}
 		}
 		catch (Exception e){

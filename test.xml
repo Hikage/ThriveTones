@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<resultset>
+    <row>
+        <field name="artist">  Jimmy Eat World</field>
+        <field name="song">The Middle</field>
+        <field name="section">Intro and Verse</field>
+        <field name="SIF">,1-8,5-8,4-8,1-8,1-8,5-8,4-8,1-8,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">Eb</field>
+        <field name="bpm">146</field>
+        <field name="mode">1</field>
+    </row>
+</resultset>
