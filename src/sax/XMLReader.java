@@ -9,26 +9,7 @@ package sax;
  * This class extracts the songs from a specified XML data feed,
  * expecting the Hooktheory format
  * 
- * 	Fields:
- * 		artist 
- *		song
- *		section (e.g.: chorus, verse, intro, etc)
- *		SIF (chord progression)
- *		beatsInMeasure
- *		songKey
- *		bpm
- *		mode (i.e.: Ionian, Dorian, etc.  http://en.wikipedia.org/wiki/Mode_(music)#Modern; 1 is major, 6 is minor)
- *
- *	SIF Detail:  each chord has the format [mode]scale_degree[figured_bass][embellishment][-duration][/applied_target]
- *		mode (allows for chords to be borrowed from other keys)
- *			b - Minor, L(ydian), D(orian), M(ixolydian), Y - Phrygian, C - Locrian, S(n) - mode of the scale_degree n
- *		scale_degree (integer representation of Roman numerals, e.g.: I, ii, iii, IV, etc; 1-7, or "rest")
- *		figured_base (chord inversion: 6 (1st triad), 64 (2nd triad), 7 (root 7 chord), 65 (1st 7), 43 (2nd 7), 42 (3rd 7)
- *		embellishment (sus2, sus4, sus42, add9)
- *		duration (number of beats; default: 4)
- *		applied_target (secondary dominant/subdominant/leading-tone; e.g.: V/IV ("5 of 4"))
- *
- *	Chords are notated as their relative major mode.  Therefore, a i (1) chord in a minor mode (6) is written as 6
+ * For full format details, see XMLFORMAT-README.md
  */
 
 import javax.xml.parsers.*;
