@@ -59,8 +59,10 @@ public class XMLReader extends DefaultHandler {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			String song = SIFtoChords(fields);
+			System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 			System.out.println(song);
-			PlaySong(song);
+			System.out.println();
+			//PlaySong(song);
 	    }
     }
 
@@ -127,13 +129,52 @@ public class XMLReader extends DefaultHandler {
 	}
 
 	/**
+	 * Calculates the relative major, based on current key and mode
+	 * @param key: song key
+	 * @param mode: song mode
+	 * @return: the relative major key
+	 */
+	public static String relativeMajor(String key, int mode){
+		String circle = "FCGDAEB";
+		int offset;
+		switch(mode){
+		case 2: offset = -2; break;
+		case 3: offset = -4; break;
+		case 4: offset = 1; break;
+		case 5: offset = -1; break;
+		case 6: offset = -3; break;
+		case 7: offset = -5; break;
+		default: offset = 0;
+		}
+
+		String rel_major = "";
+		String accidental = "";
+		if(key.length() > 1) accidental += key.charAt(1);
+		int pos = circle.indexOf(key.toUpperCase().charAt(0));
+		int new_pos = pos + offset;
+		if(new_pos < 0){
+			rel_major += circle.charAt(new_pos + 7);
+			if(accidental.equals("#")) return rel_major;
+			else return rel_major + accidental + "b";
+		}
+		if(new_pos >= circle.length()){
+			rel_major += circle.charAt(new_pos - 7);
+			if(accidental.equals("b")) return rel_major;
+			else return rel_major + accidental + "#";
+		}
+		rel_major += circle.charAt(new_pos);
+		return rel_major + accidental;
+	}
+
+	/**
 	 * Converts the SIF string into Chord objects
 	 * @param fields: field nodes of the song to convert
 	 * @return: string representation of the song to be played
 	 */
 	public static String SIFtoChords(NodeList fields) throws Exception{
-		String key = extractKey(fields);
+		String raw_key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
+		String key = relativeMajor(raw_key, mode);
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 		String sif = nodeValueByAttName(fields, "SIF");
 		String[] sif_chords = sif.split(",");
