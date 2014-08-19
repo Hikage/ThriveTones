@@ -13,7 +13,7 @@ public class Driver {
 	private static Player player;
 	private static Pattern pattern;
 	private static int SONG_LENGTH;
-	static Song complete;
+	static FinalSong complete;
 
 	private static final int C = 60, Cs = 61, Db = 61, D = 62, Ds = 63, Eb = 63, E = 64,
 			F = 65, Fs = 66, Gb = 66, G = 67, Gs = 68, Ab = 68, A = 69, As = 70, Bb = 70, B = 71;
@@ -113,7 +113,7 @@ public class Driver {
 			}
 		}*/
 		
-		complete = new Song(major, length, flex, time1, key1, key2);
+		complete = new FinalSong(major, length, flex, time1, key1, key2);
 		
 		player = new Player();
 		pattern = new Pattern();
