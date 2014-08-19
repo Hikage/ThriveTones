@@ -114,35 +114,11 @@ public class XMLReaderTest {
 	}
 
 	@Test
-	public void testRelativeMajor(){
-		assertEquals("C", XMLReader.relativeMajor("C", 1));
-		assertEquals("C", XMLReader.relativeMajor("D", 2));
-		assertEquals("C", XMLReader.relativeMajor("E", 3));
-		assertEquals("C", XMLReader.relativeMajor("F", 4));
-		assertEquals("C", XMLReader.relativeMajor("G", 5));
-		assertEquals("C", XMLReader.relativeMajor("A", 6));
-		assertEquals("C", XMLReader.relativeMajor("B", 7));
-
-		assertEquals("Bb", XMLReader.relativeMajor("C", 2));
-		assertEquals("Ab", XMLReader.relativeMajor("C", 3));
-		assertEquals("G", XMLReader.relativeMajor("C", 4));
-		assertEquals("F", XMLReader.relativeMajor("C", 5));
-		assertEquals("Eb", XMLReader.relativeMajor("C", 6));
-		assertEquals("Db", XMLReader.relativeMajor("C", 7));
-
-		assertEquals("Db", XMLReader.relativeMajor("Bb", 6));
-		assertEquals("Bbb", XMLReader.relativeMajor("Db", 3));
-		assertEquals("Eb", XMLReader.relativeMajor("F", 2));
-		assertEquals("F#", XMLReader.relativeMajor("B", 4));
-		assertEquals("F##", XMLReader.relativeMajor("B#", 4));
-	}
-
-	@Test
 	public void testSIFtoChords(){
 		NodeList fields = rows.item(1).getChildNodes();
 		try{
 			assertEquals("KEbmaj E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0 E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0",
-					XMLReader.SIFtoChords(fields));
+					XMLReader.SIFtoChords(fields).toString());
 		}
 		catch(Exception e){
 			e.printStackTrace();

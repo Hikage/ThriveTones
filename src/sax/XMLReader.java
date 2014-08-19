@@ -14,9 +14,8 @@ package sax;
 
 import javax.xml.parsers.*;
 
-import markovChords.Chord;
+import markovChords.Song;
 
-import org.jfugue.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,9 +57,9 @@ public class XMLReader extends DefaultHandler {
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
-			String song = SIFtoChords(fields);
+			Song song = SIFtoChords(fields);
 			System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
-			System.out.println(song);
+			System.out.println(song.toString());
 			System.out.println();
 			//PlaySong(song);
 	    }
@@ -129,84 +128,18 @@ public class XMLReader extends DefaultHandler {
 	}
 
 	/**
-	 * Calculates the relative major, based on current key and mode
-	 * @param key: song key
-	 * @param mode: song mode
-	 * @return: the relative major key
-	 */
-	public static String relativeMajor(String key, int mode){
-		String circle = "FCGDAEB";
-		int offset;
-		switch(mode){
-		case 2: offset = -2; break;
-		case 3: offset = -4; break;
-		case 4: offset = 1; break;
-		case 5: offset = -1; break;
-		case 6: offset = -3; break;
-		case 7: offset = -5; break;
-		default: offset = 0;
-		}
-
-		String rel_major = "";
-		String accidental = "";
-		if(key.length() > 1) accidental += key.charAt(1);
-		int pos = circle.indexOf(key.toUpperCase().charAt(0));
-		int new_pos = pos + offset;
-		if(new_pos < 0){
-			rel_major += circle.charAt(new_pos + 7);
-			if(accidental.equals("#")) return rel_major;
-			else return rel_major + accidental + "b";
-		}
-		if(new_pos >= circle.length()){
-			rel_major += circle.charAt(new_pos - 7);
-			if(accidental.equals("b")) return rel_major;
-			else return rel_major + accidental + "#";
-		}
-		rel_major += circle.charAt(new_pos);
-		return rel_major + accidental;
-	}
-
-	/**
-	 * Converts the SIF string into Chord objects
+	 * Converts the SIF string into a Song object
 	 * @param fields: field nodes of the song to convert
-	 * @return: string representation of the song to be played
 	 */
-	public static String SIFtoChords(NodeList fields) throws Exception{
-		String raw_key = extractKey(fields);
+	public static Song SIFtoChords(NodeList fields) throws Exception{
+		String title = nodeValueByAttName(fields, "song");
+		String artist = nodeValueByAttName(fields, "artist");
+		String part = nodeValueByAttName(fields, "section");
+		String key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
-		String key = relativeMajor(raw_key, mode);
-		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 		String sif = nodeValueByAttName(fields, "SIF");
-		String[] sif_chords = sif.split(",");
-		Chord[] chords = new Chord[sif_chords.length];
-		String playable_chords = "K" + key + "maj ";
-		for(int i = 0; i < chords.length; i++){
-			if(sif_chords[i].isEmpty()) continue;
-			try{
-				chords[i] = new Chord(mode, sif_chords[i]);
-				playable_chords += chords[i].toString(key.charAt(0) - 'A', beats) + " ";
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		return playable_chords.trim();
-	}
-
-	/**
-	 * Plays the specified song
-	 * @param song: song to be played
-	 */
-	public static void PlaySong(String song){
-		int TEMPO = 120;
-		String INSTRUMENT = "Piano";
-
-		String playable_song = "T" + TEMPO + " I[" + INSTRUMENT + "] " + song;
-
-		System.out.println(playable_song);
-		Pattern pattern = new Pattern();
-		pattern.setMusicString(playable_song);
-		Player player = new Player();
-		player.play(pattern);
+		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
+		
+		return new Song(title, artist, part, key, mode, sif, beats);
 	}
 }
