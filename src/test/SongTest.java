@@ -1,7 +1,7 @@
 package test;
 
 /**
- * "Digital Chords" Song Generator
+ * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
@@ -10,10 +10,11 @@ package test;
  */
 
 import static org.junit.Assert.*;
-import markovChords.Song;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import thriveTones.Song;
 
 public class SongTest {
 

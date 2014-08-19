@@ -1,4 +1,4 @@
-package markovChords;
+package thriveTones;
 import java.util.ArrayList;
 import java.util.Random;
 /*

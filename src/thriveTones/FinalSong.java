@@ -1,4 +1,4 @@
-package markovChords;
+package thriveTones;
 
 /*
  * Created on Mar 27, 2006

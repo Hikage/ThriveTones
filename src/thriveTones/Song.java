@@ -1,4 +1,4 @@
-package markovChords;
+package thriveTones;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -7,7 +7,7 @@ import org.jfugue.Pattern;
 import org.jfugue.Player;
 
 /**
- * "Digital Chords" Song Generator
+ * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *

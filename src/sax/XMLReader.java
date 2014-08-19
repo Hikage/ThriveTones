@@ -1,7 +1,7 @@
 package sax;
 
 /**
- * "Digital Chords" Song Generator
+ * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
@@ -14,13 +14,13 @@ package sax;
 
 import javax.xml.parsers.*;
 
-import markovChords.Song;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+
+import thriveTones.Song;
 
 import java.io.*;
 

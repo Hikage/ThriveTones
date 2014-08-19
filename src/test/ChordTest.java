@@ -1,7 +1,7 @@
 package test;
 
 /**
- * "Digital Chords" Song Generator
+ * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
@@ -16,7 +16,7 @@ import java.util.Random;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import markovChords.Chord;
+import thriveTones.Chord;
 
 
 public class ChordTest {

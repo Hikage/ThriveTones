@@ -1,4 +1,4 @@
-MIDI_AI
+ThriveTones
 =======
 
 _Computers are the new musicians!  Using theory heuristics, compose through a crowd-source-driven genetic algorithm._
@@ -24,13 +24,13 @@ _Note: Original code was a collaborative team effort during a 2006 senior capsto
 [x] Research pertinent literature, and collect relevant strategies (6/29)  
 [x] Obtain pop chords and/or progression statistics (7/2)  
 [x] Build XML reader to process Hooktheory data (7/13)    
-[] Refactor GA to build chord progressions using Markov chains based on statistics (8/3)  
-[] Review existing code, refactor/revise as necessary, and refine areas still needing attention (ongoing)  
-[] Segregate chorus, verse, and bridge data for modular composition (8/10)  
-[] Finalize music theory heuristics and develop unit tests (8/17)  
-[] Add melody over chord structure (8/21)
+[] Complete data read-in to generate stats (8/24)  
+[] Segregate chorus, verse, and bridge data for modular composition (8/24)  
+[] Refactor GA to build chord progressions using Markov chains based on statistics (8/31)  
+[] Finalize music theory heuristics and develop unit tests (8/31)  
 
 ### Optional Enhancements / Future Work  
+[] Add melody over chord structure  
 [] Allow users to choose initial key, tempo, rhythm  
 [] Refactor composition as a four-part a cappella arrangement  
 [] Refactor code to make use of the Hooktheory API instead of a static data dump  
@@ -38,10 +38,9 @@ _Note: Original code was a collaborative team effort during a 2006 senior capsto
 [] Allow for new songs to be saved/downloaded for the user  
 
 ### Currently Working On / Next Steps
-* Rename project to something clever
 * Continue to refactor old code and clean up!
-* Hooktheory data write-up
-* Support for inversions, modes, and targets
+* Support for chord modes and targets
+* Create progression stats in preparation for Markov model
 
 ### Development Challenges
 #### How to best represent chords:  
