@@ -353,6 +353,22 @@ public class ChordTest {
 		new Chord(12, Chord.Tonality.dim, 0, 0, "", 4);
 	}
 
+	public int checkShift(int root, int offset){
+		chord = new Chord(root, rand_tone, 4);
+		chord.shiftRoot(offset);
+		return chord.getRoot();
+	}
+
+	@Test
+	public void testShiftRoot(){
+		assertEquals(1, checkShift(1, 1));
+		assertEquals(7, checkShift(7, 1));
+		assertEquals(1, checkShift(7, 7));
+		assertEquals(7, checkShift(7, 8));
+		assertEquals(3, checkShift(5, 3));
+		assertEquals(4, checkShift(3, 7));
+	}
+
 	@Test
 	public void testMakeMajor(){
 		int original_octave = chord.getOctave();
@@ -400,6 +416,56 @@ public class ChordTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+
+	@Test
+	public void testChordModes(){
+		try{
+			chord = new Chord(1, "b1");
+			assertEquals(1, chord.getRoot());
+			assertEquals("b", chord.getMode());
+
+			chord = new Chord(1, "S(3)4");
+			assertEquals(4, chord.getRoot());
+			assertEquals("s(3)", chord.getMode());
+
+			chord = new Chord(6, "5");
+			assertEquals("", chord.getMode());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test (expected = Exception.class)
+	public void testInvalidChordMode() throws Exception{
+		chord = new Chord(1, "x1");
+	}
+
+	@Test
+	public void testAppliedTargets(){
+		try{
+			chord = new Chord(1, "1/4");
+			assertEquals(4, chord.getRoot());
+			assertEquals(4, chord.getAppliedTarget());
+
+			chord = new Chord(1, "5/5");
+			assertEquals(2, chord.getRoot());
+			assertEquals(5, chord.getAppliedTarget());
+
+			chord = new Chord(1, "1");
+			assertEquals(0, chord.getAppliedTarget());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test (expected = Exception.class)
+	public void testInvalidTarget() throws Exception{
+		chord = new Chord(1, "1/1");
 	}
 
 	@Test

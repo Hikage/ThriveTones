@@ -192,6 +192,8 @@ public class Song {
 		String playable_chords = "K" + rel_major + "maj ";
 		ListIterator<Chord> it = progression.listIterator();
 		while(it.hasNext())
+			//TODO: cmode
+			//TODO: applied targets
 			playable_chords += it.next().toString(key.charAt(0) - 'A', beats) + " ";
 		return playable_chords.trim();
 	}

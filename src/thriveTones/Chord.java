@@ -23,6 +23,8 @@ public class Chord {
 	private String embellishment = "";
 	private double duration = 4;
 	private boolean seven = false;
+	private String cmode = "";
+	private int applied_target = 0;
 	
 	/**
 	 * Constructor method
@@ -74,7 +76,6 @@ public class Chord {
 
 		//Parse incoming string
 		String[] chord_parts = schord.toLowerCase().split("/");
-		int applied_target = 0;
 
 		if(schord.contains("/")){		//has an applied target
 			if(chord_parts.length != 2
@@ -114,28 +115,43 @@ public class Chord {
 		int ptr = 0;
 
 		//Chord's mode (minor, major, dorian, etc)
-		char cmode;
-		if(!Character.isDigit(chord.charAt(ptr))){
-			cmode = chord.charAt(ptr);
-			//TODO: mode
-			ptr++;
+		char mode_char = chord.charAt(ptr);
+		if(!Character.isDigit(mode_char)){
+			String valid_modes = "bldmycs";
+			if(valid_modes.indexOf(mode_char) < 0)
+				throw new Exception("Invalid chord mode: " + mode_char);
+			if(chord.charAt(ptr) == 's'){
+				cmode += chord.substring(ptr, ptr+4);
+				ptr += 4;
+			}
+			else{
+				cmode += mode_char;
+				ptr++;
+			}
+			//punting mode implementation to Song, as it really needs key input to mean anything
 		}
 
 		//Chord numeral relative to key (I, ii, V, etc)
-		int relative_chord = Character.getNumericValue(chord.charAt(ptr));
+		root = Character.getNumericValue(chord.charAt(ptr));
 
-		switch(relative_chord){
+		switch(root){
 		case 1: case 4: case 5: tonality = Tonality.maj; break;
 		case 2: case 3: case 6: tonality = Tonality.min; break;
 		case 7: tonality = Tonality.dim; break;
-		default: throw new Exception("Invalid relative chord: " + relative_chord);
+		default: throw new Exception("Invalid relative chord: " + root);
 		}
 
 		//Translate chord based on mode; major (1) has no offset, while minor (6) should have the iv chord translate to i
-		relative_chord -= mode;
-		if(relative_chord < 0) relative_chord += 7;
-		root = relative_chord + 1;
+		shiftRoot(mode);
 		ptr++;
+
+		switch(applied_target){
+		case 0: break;
+		case 4:
+		case 5:
+		case 7: shiftRoot(8 - (applied_target-1)); break;
+		default: throw new Exception("Invalid applied target: " + applied_target);
+		}
 
 		//Extract and translate inversion
 		int inv = 0;
@@ -177,8 +193,17 @@ public class Chord {
 			throw new Exception("Invalid chord! " + chord);
 
 		if(chord_parts.length <= 1) return;
+	}
 
-		//TODO: target
+	/**
+	 * Shifts the root down as per the provided offset
+	 * @param offset: offset with which to adjust the root
+	 * Note: offsets are off by one.  Offsetting a root of 6 by 6 will result in 1 instead of 0
+	 */
+	public void shiftRoot(int offset){
+		root -= offset;
+		if(root < 0) root += 7;
+		root++;
 	}
 
 	/**
@@ -275,6 +300,22 @@ public class Chord {
 	 */
 	public double getDuration(){
 		return duration;
+	}
+
+	/**
+	 * Retrieves Chord's mode
+	 * @return: the Chord's mode
+	 */
+	public String getMode(){
+		return cmode;
+	}
+
+	/**
+	 * Retrieves Chord's applied target
+	 * @return: the Chord's applied target
+	 */
+	public int getAppliedTarget(){
+		return applied_target;
 	}
 
 	/**
