@@ -69,7 +69,7 @@ public class Song {
 				progression.add(chord);
 			}
 			catch(Exception e){
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 

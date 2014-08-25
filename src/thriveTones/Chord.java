@@ -80,7 +80,7 @@ public class Chord {
 		if(schord.contains("/")){		//has an applied target
 			if(chord_parts.length != 2
 					|| !Character.isDigit(chord_parts[1].charAt(0))	|| chord_parts[1].length() != 1)
-				throw new Exception("Invalid applied target: " + schord);
+				throw new Exception("Expected applied target; invalid chord: " + schord);
 			else
 				applied_target = Integer.parseInt(chord_parts[1]);
 		}
@@ -141,17 +141,18 @@ public class Chord {
 		default: throw new Exception("Invalid relative chord: " + root);
 		}
 
-		//Translate chord based on mode; major (1) has no offset, while minor (6) should have the iv chord translate to i
-		shiftRoot(mode);
-		ptr++;
-
-		switch(applied_target){
-		case 0: break;
-		case 4:
-		case 5:
-		case 7: shiftRoot(8 - (applied_target-1)); break;
-		default: throw new Exception("Invalid applied target: " + applied_target);
+		//Shift root for applied target and test validity
+		if(applied_target > 0){
+			if(root != 4 && root != 5 && root != 7)
+				throw new Exception("Invalid chord for applied target: " + root + "/" + applied_target);
+			applied_target = shiftRoot(applied_target, mode);
+			root = shiftRoot(root, 8 - (applied_target-1));
 		}
+		//Translate chord based on mode; major (1) has no offset, while minor (6) should have the iv chord translate to i
+		else
+			root = shiftRoot(root, mode);
+
+		ptr++;
 
 		//Extract and translate inversion
 		int inv = 0;
@@ -200,10 +201,12 @@ public class Chord {
 	 * @param offset: offset with which to adjust the root
 	 * Note: offsets are off by one.  Offsetting a root of 6 by 6 will result in 1 instead of 0
 	 */
-	public void shiftRoot(int offset){
-		root -= offset;
-		if(root < 0) root += 7;
-		root++;
+	public int shiftRoot(int base, int offset){
+		base -= offset;
+		if(base < 0) base += 7;
+		base++;
+
+		return base;
 	}
 
 	/**

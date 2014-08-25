@@ -355,8 +355,7 @@ public class ChordTest {
 
 	public int checkShift(int root, int offset){
 		chord = new Chord(root, rand_tone, 4);
-		chord.shiftRoot(offset);
-		return chord.getRoot();
+		return chord.shiftRoot(root, offset);
 	}
 
 	@Test
@@ -446,13 +445,25 @@ public class ChordTest {
 	@Test
 	public void testAppliedTargets(){
 		try{
-			chord = new Chord(1, "1/4");
-			assertEquals(4, chord.getRoot());
+			chord = new Chord(1, "4/4");
+			assertEquals(7, chord.getRoot());
 			assertEquals(4, chord.getAppliedTarget());
 
 			chord = new Chord(1, "5/5");
 			assertEquals(2, chord.getRoot());
 			assertEquals(5, chord.getAppliedTarget());
+
+			chord = new Chord(1, "7/6");
+			assertEquals(5, chord.getRoot());
+			assertEquals(6, chord.getAppliedTarget());
+
+			chord = new Chord(1, "4/2");
+			assertEquals(5, chord.getRoot());
+			assertEquals(2, chord.getAppliedTarget());
+
+			chord = new Chord(6, "4/7");
+			assertEquals(5, chord.getRoot());
+			assertEquals(2, chord.getAppliedTarget());
 
 			chord = new Chord(1, "1");
 			assertEquals(0, chord.getAppliedTarget());
