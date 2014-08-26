@@ -90,8 +90,7 @@ public class Chord {
 			if(chord_parts.length != 2 || !Character.isDigit(chord_parts[1].charAt(0))
 					|| chord_parts[1].length() > 4 || chord_parts[1].length() < 1)
 				throw new Exception("Invalid duration: " + schord);
-			else
-				duration = Double.parseDouble(chord_parts[1]);
+                        duration = Double.parseDouble(chord_parts[1]);
 			if(duration < 0 || duration > 100)
 				throw new Exception("Invalid duration: " + schord);
 		}

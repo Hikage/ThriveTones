@@ -22,7 +22,12 @@ public class SongTest {
 
 	@Before
 	public void init(){
-		song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4);
+		try{
+			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Test

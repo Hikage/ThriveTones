@@ -36,7 +36,7 @@ public class Song {
 	 * @param bim: beats in measure
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
-	public Song(String nm, String at, String pt, String ky, int md, String sif, double bim) throws IllegalArgumentException{
+	public Song(String nm, String at, String pt, String ky, int md, String sif, double bim) throws Exception{
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
 		if(at.isEmpty() || at.equals(""))
@@ -64,13 +64,8 @@ public class Song {
 		String[] sif_chords = sif.split(",");
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
-			try{
-				Chord chord = new Chord(mode, sif_chord);
-				progression.add(chord);
-			}
-			catch(Exception e){
-				System.out.println(e.getMessage());
-			}
+                        Chord chord = new Chord(mode, sif_chord);
+                        progression.add(chord);
 		}
 
 		calculateRelativeMajor();
