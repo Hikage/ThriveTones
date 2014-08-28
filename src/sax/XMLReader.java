@@ -54,16 +54,30 @@ public class XMLReader extends DefaultHandler {
 
 	    NodeList results = document.getElementsByTagName("resultset");
 	    NodeList rows = results.item(0).getChildNodes();
+	    int valid_songs = 0;
+	    int invalid_songs = 0;
+	    int songs = 35;
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
-			Song song = SIFtoChords(fields);
-			System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
-			System.out.println(song.toString());
-			System.out.println();
-			//PlaySong(song);
-	    }
-    }
+			try{
+				Song song = SIFtoChords(fields);
+				valid_songs++;
+				songs += 11;
+				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				//System.out.println(song.toString());
+				//System.out.println();
+				//PlaySong(song);
+			}
+			catch(Exception e){
+				System.out.println("\n" + e.getMessage());
+				System.out.println(songs++ + ".");
+				System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				invalid_songs++;
+			}
+		}
+		System.out.println("\nValid songs read: " + valid_songs + "\nInvalid songs read: " + invalid_songs);
+	}
 
 	/**
 	 * Extracts an attribute value from the XML

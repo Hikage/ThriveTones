@@ -171,7 +171,7 @@ public class Chord {
 		case 43: seven = true;
 		case 64: changeInversion(2); break;
 		case 42: seven = true; changeInversion(3); break;
-		default: throw new Exception("Invalid inversion: " + inv);
+		default: throw new Exception("Invalid inversion: " + inv + "; " + schord);
 		}
 
 		//Parse any embellishments
