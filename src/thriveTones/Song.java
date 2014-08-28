@@ -43,8 +43,6 @@ public class Song {
 			throw new IllegalArgumentException("Invalid artist value: " + at);
 		if(pt.isEmpty() || pt.equals(""))
 			throw new IllegalArgumentException("Invalid part value: " + pt);
-		if(ky.isEmpty() || ky.equals(""))
-			throw new IllegalArgumentException("Invalid key value: " + ky);
 		if(md < 0 || md > 7)
 			throw new IllegalArgumentException("Invalid mode value: " + md);
 		if(sif.isEmpty() || sif.equals(""))
@@ -55,7 +53,8 @@ public class Song {
 		name = nm;
 		artist = at;
 		part = pt;
-		key = ky;
+		if(ky.isEmpty()) key = "C";
+		else key = ky;
 		mode = md;
 		beats = bim;
 		
@@ -76,7 +75,9 @@ public class Song {
 	 * @param ky: new key
 	 * @param md: new mode
 	 */
-	public void changeKey(String ky, int md){
+	public void changeKey(String ky, int md) throws Exception{
+		if(ky.isEmpty())
+			throw new IllegalArgumentException("ky is empty!");
 		key = ky;
 		mode = md;
 		calculateRelativeMajor();

@@ -44,10 +44,16 @@ public class SongTest {
 	}
 
 	public void ckRelativeMajor(String target, String key, int mode){
-		song.changeKey(key, mode);
-		assertEquals(key, song.getKey());
-		assertEquals(target, song.getRelMajor());
-		assertEquals(mode, song.getMode());
+		try{
+			song.changeKey(key, mode);
+			assertEquals(key, song.getKey());
+			assertEquals(target, song.getRelMajor());
+			assertEquals(mode, song.getMode());
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
@@ -76,17 +82,28 @@ public class SongTest {
 
 	@Test
 	public void testChangeKey(){
-		song.changeKey("C", 1);
-		assertEquals("C", song.getKey());
-		assertEquals("C", song.getRelMajor());
-		assertEquals(1, song.getMode());
-		
-		song.changeKey("Ab", 6);
-		assertEquals("Ab", song.getKey());
-		assertEquals("Cb", song.getRelMajor());
-		assertEquals(6, song.getMode());
+		try{
+			song.changeKey("C", 1);
+			assertEquals("C", song.getKey());
+			assertEquals("C", song.getRelMajor());
+			assertEquals(1, song.getMode());
+
+			song.changeKey("Ab", 6);
+			assertEquals("Ab", song.getKey());
+			assertEquals("Cb", song.getRelMajor());
+			assertEquals(6, song.getMode());
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
-	
+
+	@Test (expected = Exception.class)
+	public void testInvalidKeyChange() throws Exception{
+		song.changeKey("", 1);
+	}
+
 	@Test
 	public void testToString(){
 		assertEquals("KCmaj C5maj/1.0", song.toString());

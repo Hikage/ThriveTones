@@ -135,8 +135,7 @@ public class XMLReader extends DefaultHandler {
 			throw new Exception("Supplied fields list is empty");
 		String xkey = nodeValueByAttName(fields, "songKey");
 		String key = XMLKeytoKey(xkey);
-		if(key == null)
-			throw new Exception("Invalid key: " + xkey);
+		if(key == null) key = "C";
 
 		return key;
 	}
@@ -153,7 +152,7 @@ public class XMLReader extends DefaultHandler {
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
-		
+
 		return new Song(title, artist, part, key, mode, sif, beats);
 	}
 }
