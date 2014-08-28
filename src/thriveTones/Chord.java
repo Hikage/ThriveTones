@@ -23,6 +23,7 @@ public class Chord {
 	private String embellishment = "";
 	private double duration = 4;
 	private boolean seven = false;
+	private boolean eleven = false;
 	private String cmode = "";
 	private int applied_target = 0;
 	
@@ -171,6 +172,7 @@ public class Chord {
 		case 43: seven = true;
 		case 64: changeInversion(2); break;
 		case 42: seven = true; changeInversion(3); break;
+		case 11: eleven = true; break;
 		default: throw new Exception("Invalid inversion: " + inv + "; " + schord);
 		}
 
@@ -340,11 +342,14 @@ public class Chord {
 		if(key < 0) chord += root;
 		else chord += (char)(int)('A' + ((key + root - 1) % 7));
 		chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
-		if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
-			chord += tonality;
-		if(seven) chord += "7";
-		for(int i = 0; i<inversion; i++) chord += "^";
-		chord += embellishment;
+		if(eleven) chord += "dom11";
+		else{
+			if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
+				chord += tonality;
+			if(seven) chord += "7";
+			for(int i = 0; i<inversion; i++) chord += "^";
+			chord += embellishment;
+		}
 		chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
 
 		return chord;
@@ -358,9 +363,12 @@ public class Chord {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + applied_target;
+		result = prime * result + ((cmode == null) ? 0 : cmode.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(duration);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + (eleven ? 1231 : 1237);
 		result = prime * result
 				+ ((embellishment == null) ? 0 : embellishment.hashCode());
 		result = prime * result + inversion;
@@ -383,8 +391,18 @@ public class Chord {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Chord other = (Chord) obj;
+		if (applied_target != other.applied_target)
+			return false;
+		if (cmode == null) {
+			if (other.cmode != null)
+				return false;
+		}
+		else if (!cmode.equals(other.cmode))
+			return false;
 		if (Double.doubleToLongBits(duration) != Double
 				.doubleToLongBits(other.duration))
+			return false;
+		if (eleven != other.eleven)
 			return false;
 		if (embellishment == null) {
 			if (other.embellishment != null)

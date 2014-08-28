@@ -501,6 +501,10 @@ public class ChordTest {
 			chord = new Chord(5, "76add9-4");
 			assertEquals("35dim^add9/1.0", chord.toString());
 			assertEquals("E5dim^add9/1.33", chord.toString(2, 3));
+
+			chord = new Chord(1, "511-4");
+			assertEquals("55dom11/1.0", chord.toString());
+			assertEquals("G5dom11/1.33", chord.toString(2, 3));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
