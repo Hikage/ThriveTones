@@ -1,7 +1,7 @@
 package sax;
 
 /**
- * "Digital Chords" Song Generator
+ * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
@@ -14,14 +14,13 @@ package sax;
 
 import javax.xml.parsers.*;
 
-import markovChords.Chord;
-
-import org.jfugue.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+
+import thriveTones.Song;
 
 import java.io.*;
 
@@ -55,14 +54,30 @@ public class XMLReader extends DefaultHandler {
 
 	    NodeList results = document.getElementsByTagName("resultset");
 	    NodeList rows = results.item(0).getChildNodes();
+	    int valid_songs = 0;
+	    int invalid_songs = 0;
+	    int songs = 35;
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
-			String song = SIFtoChords(fields);
-			System.out.println(song);
-			PlaySong(song);
-	    }
-    }
+			try{
+				Song song = SIFtoChords(fields);
+				valid_songs++;
+				songs += 11;
+				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				//System.out.println(song.toString());
+				//System.out.println();
+				//PlaySong(song);
+			}
+			catch(Exception e){
+				System.out.println("\n" + e.getMessage());
+				System.out.println(songs++ + ".");
+				System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				invalid_songs++;
+			}
+		}
+		System.out.println("\nValid songs read: " + valid_songs + "\nInvalid songs read: " + invalid_songs);
+	}
 
 	/**
 	 * Extracts an attribute value from the XML
@@ -120,51 +135,24 @@ public class XMLReader extends DefaultHandler {
 			throw new Exception("Supplied fields list is empty");
 		String xkey = nodeValueByAttName(fields, "songKey");
 		String key = XMLKeytoKey(xkey);
-		if(key == null)
-			throw new Exception("Invalid key: " + xkey);
+		if(key == null) key = "C";
 
 		return key;
 	}
 
 	/**
-	 * Converts the SIF string into Chord objects
+	 * Converts the SIF string into a Song object
 	 * @param fields: field nodes of the song to convert
-	 * @return: string representation of the song to be played
 	 */
-	public static String SIFtoChords(NodeList fields) throws Exception{
+	public static Song SIFtoChords(NodeList fields) throws Exception{
+		String title = nodeValueByAttName(fields, "song");
+		String artist = nodeValueByAttName(fields, "artist");
+		String part = nodeValueByAttName(fields, "section");
 		String key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
 		String sif = nodeValueByAttName(fields, "SIF");
-		String[] sif_chords = sif.split(",");
-		Chord[] chords = new Chord[sif_chords.length];
-		String playable_chords = "K" + key + "maj ";
-		for(int i = 0; i < chords.length; i++){
-			if(sif_chords[i].isEmpty()) continue;
-			try{
-				chords[i] = new Chord(mode, sif_chords[i]);
-				playable_chords += chords[i].toString(key.charAt(0) - 'A') + " ";
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		return playable_chords.trim();
-	}
+		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-	/**
-	 * Plays the specified song
-	 * @param song: song to be played
-	 */
-	public static void PlaySong(String song){
-		int TEMPO = 120;
-		String INSTRUMENT = "Piano";
-
-		String playable_song = "T" + TEMPO + " I[" + INSTRUMENT + "] " + song;
-
-		System.out.println(playable_song);
-		Pattern pattern = new Pattern();
-		pattern.setMusicString(playable_song);
-		Player player = new Player();
-		player.play(pattern);
+		return new Song(title, artist, part, key, mode, sif, beats);
 	}
 }

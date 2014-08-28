@@ -1,4 +1,4 @@
-package markovChords;
+package thriveTones;
 
 /*
  * Created on Mar 27, 2006
@@ -7,7 +7,7 @@ package markovChords;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 
-public class Song {
+public class FinalSong {
 	
 	Melody tune;
 	Accompaniment accom;		//chords
@@ -21,7 +21,7 @@ public class Song {
 	 * @param key1 - letter of key
 	 * @param key2 - sharp or flat
 	 */
-	public Song(boolean Mm, int l, int f, int notes, char key1, char key2){
+	public FinalSong(boolean Mm, int l, int f, int notes, char key1, char key2){
 		tune = new Melody(Mm, l, f, notes);
 		accom = new Accompaniment(Mm, tune, notes);	
 		Modulate(key1, key2);

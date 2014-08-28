@@ -1,7 +1,7 @@
 package test;
 
 /**
- * "Digital Chords" Song Generator
+ * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
@@ -16,7 +16,7 @@ import java.util.Random;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import markovChords.Chord;
+import thriveTones.Chord;
 
 
 public class ChordTest {
@@ -60,7 +60,7 @@ public class ChordTest {
 			assertEquals(rand_tone, chord.getTonality());
 			assertEquals(rand_octave, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(4, chord.getDuration());
+			assertEquals(4, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -78,7 +78,7 @@ public class ChordTest {
 			assertEquals(rand_tone, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(8, chord.getDuration());
+			assertEquals(8, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -94,7 +94,7 @@ public class ChordTest {
 			assertEquals(Chord.Tonality.aug, chord.getTonality());
 			assertEquals(10, chord.getOctave());
 			assertEquals(3, chord.getInversion());
-			assertEquals(8, chord.getDuration());
+			assertEquals(8, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -110,7 +110,7 @@ public class ChordTest {
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
 			assertEquals(0, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(1, chord.getDuration());
+			assertEquals(1, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -161,21 +161,21 @@ public class ChordTest {
 			assertEquals(Chord.Tonality.maj, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(4, chord.getDuration());
+			assertEquals(4, chord.getDuration(), 0);
 
 			chord = new Chord(1, "3-1");
 			assertEquals(3, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.min, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(1, chord.getDuration());
+			assertEquals(1, chord.getDuration(), 0);
 
 			chord = new Chord(1, "7-8");
 			assertEquals(7, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(8, chord.getDuration());
+			assertEquals(8, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -191,21 +191,21 @@ public class ChordTest {
 			assertEquals(Chord.Tonality.min, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(4, chord.getDuration());
+			assertEquals(4, chord.getDuration(), 0);
 
 			chord = new Chord(6, "1-1");			//III chord
 			assertEquals(3, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.maj, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(1, chord.getDuration());
+			assertEquals(1, chord.getDuration(), 0);
 
 			chord = new Chord(6, "7-8");			//ii* chord
 			assertEquals(2, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(8, chord.getDuration());
+			assertEquals(8, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -221,21 +221,21 @@ public class ChordTest {
 			assertEquals(Chord.Tonality.min, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
-			assertEquals(4, chord.getDuration());
+			assertEquals(4, chord.getDuration(), 0);
 
 			chord = new Chord(3, "764-1");			//v* chord
 			assertEquals(5, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(2, chord.getInversion());
-			assertEquals(1, chord.getDuration());
+			assertEquals(1, chord.getDuration(), 0);
 
 			chord = new Chord(4, "742-8");			//iv*7 chord
 			assertEquals(4, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.dim, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(3, chord.getInversion());
-			assertEquals(8, chord.getDuration());
+			assertEquals(8, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -246,13 +246,13 @@ public class ChordTest {
 	@Test
 	public void testSIFEmbellishedChord(){
 		try{
-			chord = new Chord(5, "56sus2-4");		//I chord
+			chord = new Chord(5, "56sus2-4.5");		//I chord
 			assertEquals(1, (int)chord.getRoot());
 			assertEquals(Chord.Tonality.maj, chord.getTonality());
 			assertEquals(5, chord.getOctave());
 			assertEquals(1, chord.getInversion());
 			assertEquals("sus2", chord.getEmbellishment());
-			assertEquals(4, chord.getDuration());
+			assertEquals(4.5, chord.getDuration(), 0);
 
 			chord = new Chord(6, "37add9-1");		//v79 chord
 			assertEquals(5, (int)chord.getRoot());
@@ -260,7 +260,7 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			assertEquals(0, chord.getInversion());
 			assertEquals("add9", chord.getEmbellishment());
-			assertEquals(1, chord.getDuration());
+			assertEquals(1, chord.getDuration(), 0);
 
 			//TODO: reenable support for sus42 if ever present
 			chord = new Chord(7, "364sus4-8");		//iv chord
@@ -269,7 +269,7 @@ public class ChordTest {
 			assertEquals(5, chord.getOctave());
 			assertEquals(2, chord.getInversion());
 			assertEquals("sus4", chord.getEmbellishment());
-			assertEquals(8, chord.getDuration());
+			assertEquals(8, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -282,11 +282,11 @@ public class ChordTest {
 		try{
 			chord = new Chord(1, "rest");
 			assertEquals(0, chord.getRoot());
-			assertEquals(4, chord.getDuration());
+			assertEquals(4, chord.getDuration(), 0);
 
 			chord = new Chord(6, "REST-10");
 			assertEquals(0, chord.getRoot());
-			assertEquals(10, chord.getDuration());
+			assertEquals(10, chord.getDuration(), 0);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -353,6 +353,21 @@ public class ChordTest {
 		new Chord(12, Chord.Tonality.dim, 0, 0, "", 4);
 	}
 
+	public int checkShift(int root, int offset){
+		chord = new Chord(root, rand_tone, 4);
+		return chord.shiftRoot(root, offset);
+	}
+
+	@Test
+	public void testShiftRoot(){
+		assertEquals(1, checkShift(1, 1));
+		assertEquals(7, checkShift(7, 1));
+		assertEquals(1, checkShift(7, 7));
+		assertEquals(7, checkShift(7, 8));
+		assertEquals(3, checkShift(5, 3));
+		assertEquals(4, checkShift(3, 7));
+	}
+
 	@Test
 	public void testMakeMajor(){
 		int original_octave = chord.getOctave();
@@ -403,27 +418,93 @@ public class ChordTest {
 	}
 
 	@Test
+	public void testChordModes(){
+		try{
+			chord = new Chord(1, "b1");
+			assertEquals(1, chord.getRoot());
+			assertEquals("b", chord.getMode());
+
+			chord = new Chord(1, "S(3)4");
+			assertEquals(4, chord.getRoot());
+			assertEquals("s(3)", chord.getMode());
+
+			chord = new Chord(6, "5");
+			assertEquals("", chord.getMode());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test (expected = Exception.class)
+	public void testInvalidChordMode() throws Exception{
+		chord = new Chord(1, "x1");
+	}
+
+	@Test
+	public void testAppliedTargets(){
+		try{
+			chord = new Chord(1, "4/4");
+			assertEquals(7, chord.getRoot());
+			assertEquals(4, chord.getAppliedTarget());
+
+			chord = new Chord(1, "5/5");
+			assertEquals(2, chord.getRoot());
+			assertEquals(5, chord.getAppliedTarget());
+
+			chord = new Chord(1, "7/6");
+			assertEquals(5, chord.getRoot());
+			assertEquals(6, chord.getAppliedTarget());
+
+			chord = new Chord(1, "4/2");
+			assertEquals(5, chord.getRoot());
+			assertEquals(2, chord.getAppliedTarget());
+
+			chord = new Chord(6, "4/7");
+			assertEquals(5, chord.getRoot());
+			assertEquals(2, chord.getAppliedTarget());
+
+			chord = new Chord(1, "1");
+			assertEquals(0, chord.getAppliedTarget());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test (expected = Exception.class)
+	public void testInvalidTarget() throws Exception{
+		chord = new Chord(1, "1/1");
+	}
+
+	@Test
 	public void testToString(){
 		try{
 			//TODO: Adjust for applied targets and chord modes
 			chord = new Chord(1, "542-3");
-			assertEquals("55maj7^^^w", chord.toString());
-			assertEquals("E5maj7^^^w", chord.toString(0));
-			assertEquals("F5maj7^^^w", chord.toString(1));
-			assertEquals("G5maj7^^^w", chord.toString(2));
-			assertEquals("A5maj7^^^w", chord.toString(3));
-			assertEquals("B5maj7^^^w", chord.toString(4));
-			assertEquals("C5maj7^^^w", chord.toString(5));
-			assertEquals("D5maj7^^^w", chord.toString(6));
-			assertEquals("E5maj7^^^w", chord.toString(7));
+			assertEquals("55maj7^^^/1.0", chord.toString());
+			assertEquals("E5maj7^^^/0.75", chord.toString(0, 4));
+			assertEquals("F5maj7^^^/0.5", chord.toString(1, 6));
+			assertEquals("G5maj7^^^/0.6", chord.toString(2, 5));
+			assertEquals("A5maj7^^^/1.0", chord.toString(3, 3));
+			assertEquals("B5maj7^^^/0.75", chord.toString(4, 4));
+			assertEquals("C5maj7^^^/3.0", chord.toString(5, 1));
+			assertEquals("D5maj7^^^/1.5", chord.toString(6, 2));
+			assertEquals("E5maj7^^^/1.0", chord.toString(7, 3));
 			
 			chord = new Chord(6, "6sus4-4");
-			assertEquals("15sus4w", chord.toString());
-			assertEquals("E5sus4w", chord.toString(4));
+			assertEquals("15sus4/1.0", chord.toString());
+			assertEquals("E5sus4/1.0", chord.toString(4, 4));
 			
 			chord = new Chord(5, "76add9-4");
-			assertEquals("35dim^add9w", chord.toString());
-			assertEquals("E5dim^add9w", chord.toString(2));
+			assertEquals("35dim^add9/1.0", chord.toString());
+			assertEquals("E5dim^add9/1.33", chord.toString(2, 3));
+
+			chord = new Chord(1, "511-4");
+			assertEquals("55dom11/1.0", chord.toString());
+			assertEquals("G5dom11/1.33", chord.toString(2, 3));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

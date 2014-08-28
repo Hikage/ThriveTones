@@ -1,4 +1,4 @@
-package markovChords;
+package thriveTones;
 
 
 /**
