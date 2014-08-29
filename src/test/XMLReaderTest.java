@@ -28,20 +28,24 @@ import sax.XMLReader;
 public class XMLReaderTest {
 
 	protected static NodeList rows;
+	protected static XMLReader reader;
 	
 	@BeforeClass
 	public static void XMLReaderInit() {
 		String file = "Hooktheory-Data.xml";
+		reader = new XMLReader();
 		
 		try{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		    DocumentBuilder builder = factory.newDocumentBuilder();
 		    	    
-		    FileReader reader = new FileReader(file);        
-		    Document document = builder.parse(new InputSource(reader));
+		    FileReader freader = new FileReader(file);
+		    Document document = builder.parse(new InputSource(freader));
 		    
 		    NodeList results = document.getElementsByTagName("resultset");
 		    rows = results.item(0).getChildNodes();
+
+			reader.readIn(file);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -59,48 +63,48 @@ public class XMLReaderTest {
 	@Test
 	public void testNodeValueByAttName(){
 		NodeList fields = rows.item(1).getChildNodes();
-		assertEquals("Jimmy Eat World", XMLReader.nodeValueByAttName(fields, "artist"));
-		assertEquals("The Middle", XMLReader.nodeValueByAttName(fields, "song"));
-		assertEquals("Intro and Verse", XMLReader.nodeValueByAttName(fields, "section"));
-		assertEquals(",1-8,5-8,4-8,1-8,1-8,5-8,4-8,1-8,", XMLReader.nodeValueByAttName(fields, "SIF"));
-		assertEquals("4", XMLReader.nodeValueByAttName(fields, "beatsInMeasure"));
-		assertEquals("Eb", XMLReader.nodeValueByAttName(fields, "songKey"));
-		assertEquals("146", XMLReader.nodeValueByAttName(fields, "bpm"));
-		assertEquals("1", XMLReader.nodeValueByAttName(fields, "mode"));
-		assertEquals("", XMLReader.nodeValueByAttName(fields, "badFieldName"));
+		assertEquals("Jimmy Eat World", reader.nodeValueByAttName(fields, "artist"));
+		assertEquals("The Middle", reader.nodeValueByAttName(fields, "song"));
+		assertEquals("Intro and Verse", reader.nodeValueByAttName(fields, "section"));
+		assertEquals(",1-8,5-8,4-8,1-8,1-8,5-8,4-8,1-8,", reader.nodeValueByAttName(fields, "SIF"));
+		assertEquals("4", reader.nodeValueByAttName(fields, "beatsInMeasure"));
+		assertEquals("Eb", reader.nodeValueByAttName(fields, "songKey"));
+		assertEquals("146", reader.nodeValueByAttName(fields, "bpm"));
+		assertEquals("1", reader.nodeValueByAttName(fields, "mode"));
+		assertEquals("", reader.nodeValueByAttName(fields, "badFieldName"));
 	}
 
 	@Test
 	public void testValidXMLKeytoKey(){
-		assertEquals("A", XMLReader.XMLKeytoKey("A"));
+		assertEquals("A", reader.XMLKeytoKey("A"));
 
-		assertEquals("Bb", XMLReader.XMLKeytoKey("Bb"));
-		assertEquals("Cb", XMLReader.XMLKeytoKey("CB"));
-		assertEquals("Db", XMLReader.XMLKeytoKey("Df"));
-		assertEquals("Eb", XMLReader.XMLKeytoKey("EF"));
+		assertEquals("Bb", reader.XMLKeytoKey("Bb"));
+		assertEquals("Cb", reader.XMLKeytoKey("CB"));
+		assertEquals("Db", reader.XMLKeytoKey("Df"));
+		assertEquals("Eb", reader.XMLKeytoKey("EF"));
 
-		assertEquals("F#", XMLReader.XMLKeytoKey("F#"));
-		assertEquals("G#", XMLReader.XMLKeytoKey("Gs"));
-		assertEquals("A#", XMLReader.XMLKeytoKey("AS"));
-		assertEquals("B#", XMLReader.XMLKeytoKey("bS"));
+		assertEquals("F#", reader.XMLKeytoKey("F#"));
+		assertEquals("G#", reader.XMLKeytoKey("Gs"));
+		assertEquals("A#", reader.XMLKeytoKey("AS"));
+		assertEquals("B#", reader.XMLKeytoKey("bS"));
 	}
 
 	@Test
 	public void testInvalidXMLKeytoKey(){
-		assertNull(XMLReader.XMLKeytoKey("H"));
-		assertNull(XMLReader.XMLKeytoKey("cy"));
-		assertNull(XMLReader.XMLKeytoKey(""));
-		assertNull(XMLReader.XMLKeytoKey("14"));
-		assertNull(XMLReader.XMLKeytoKey("A*"));
-		assertNull(XMLReader.XMLKeytoKey("ABC"));
-		assertNull(XMLReader.XMLKeytoKey("sus"));
+		assertNull(reader.XMLKeytoKey("H"));
+		assertNull(reader.XMLKeytoKey("cy"));
+		assertNull(reader.XMLKeytoKey(""));
+		assertNull(reader.XMLKeytoKey("14"));
+		assertNull(reader.XMLKeytoKey("A*"));
+		assertNull(reader.XMLKeytoKey("ABC"));
+		assertNull(reader.XMLKeytoKey("sus"));
 	}
 
 	@Test
 	public void testExtractKey(){
 		NodeList fields = rows.item(1).getChildNodes();
 		try{
-			assertEquals("Eb", XMLReader.extractKey(fields));
+			assertEquals("Eb", reader.extractKey(fields));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -110,7 +114,7 @@ public class XMLReaderTest {
 
 	@Test (expected = Exception.class)
 	public void testNullExtractKey() throws Exception{
-		XMLReader.extractKey(null);
+		reader.extractKey(null);
 	}
 
 	@Test
@@ -118,7 +122,7 @@ public class XMLReaderTest {
 		NodeList fields = rows.item(1).getChildNodes();
 		try{
 			assertEquals("KEbmaj E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0 E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0",
-					XMLReader.SIFtoChords(fields).toString());
+					reader.SIFtoChords(fields).toString());
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -128,7 +132,7 @@ public class XMLReaderTest {
 
 	@Test (expected = Exception.class)
 	public void testNullSIFtoChords() throws Exception{
-		XMLReader.SIFtoChords(null);
+		reader.SIFtoChords(null);
 	}
 
 }
