@@ -23,6 +23,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import sax.XMLReader;
+import thriveTones.Chord;
 
 
 public class XMLReaderTest {
@@ -58,6 +59,11 @@ public class XMLReaderTest {
 		//assertEquals(3, rows.getLength());
 		assertEquals(17, rows.item(1).getChildNodes().getLength());
 		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
+	}
+
+	@Test
+	public void testReadIn(){
+		assertEquals(229, reader.unique_chords.size());
 	}
 
 	@Test

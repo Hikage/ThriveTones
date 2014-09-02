@@ -20,16 +20,21 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
+import thriveTones.Chord;
 import thriveTones.Song;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class XMLReader extends DefaultHandler {
+	public static ArrayList<Chord> unique_chords;
 
 	/**
 	 * Initializer
 	 */
-	public XMLReader(){	}
+	public XMLReader(){
+		unique_chords = new ArrayList<Chord>();
+	}
 
 	/**
 	 * Reads in the data based on the filename provided
@@ -50,18 +55,19 @@ public class XMLReader extends DefaultHandler {
 	    NodeList rows = results.item(0).getChildNodes();
 	    int valid_songs = 0;
 	    int invalid_songs = 0;
-	    int songs = 35;
+	    int row_number = 35;
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
 				Song song = SIFtoChords(fields);
+				unique_chords = song.getUniqueChords();			//update after creation of a new song
 				valid_songs++;
-				songs += 11;
+				row_number += 11;
 			}
 			catch(Exception e){
 				System.out.println("\n" + e.getMessage());
-				System.out.println(songs++ + ".");
+				System.out.println(row_number++ + ".");
 				System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 				invalid_songs++;
 			}
@@ -143,6 +149,6 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats);
+		return new Song(title, artist, part, key, mode, sif, beats, unique_chords);
 	}
 }

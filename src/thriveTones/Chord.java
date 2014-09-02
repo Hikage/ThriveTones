@@ -391,17 +391,17 @@ public class Chord {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Chord other = (Chord) obj;
-		if (applied_target != other.applied_target)
-			return false;
-		if (cmode == null) {
-			if (other.cmode != null)
-				return false;
-		}
-		else if (!cmode.equals(other.cmode))
-			return false;
-		if (Double.doubleToLongBits(duration) != Double
-				.doubleToLongBits(other.duration))
-			return false;
+		//if (applied_target != other.applied_target)
+		//	return false;
+		//if (cmode == null) {
+		//	if (other.cmode != null)
+		//		return false;
+		//}
+		//else if (!cmode.equals(other.cmode))
+		//	return false;
+		//if (Double.doubleToLongBits(duration) != Double
+		//		.doubleToLongBits(other.duration))
+		//	return false;
 		if (eleven != other.eleven)
 			return false;
 		if (embellishment == null) {

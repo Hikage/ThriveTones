@@ -9,6 +9,7 @@ package thriveTones;
  * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -24,6 +25,7 @@ public class Song {
 	private int mode;
 	private LinkedList<Chord> progression;
 	private double beats;
+	private ArrayList<Chord> unique_chords;
 
 	/**
 	 * Constructor method
@@ -34,9 +36,12 @@ public class Song {
 	 * @param md: song mode (major, minor, dorian, etc)
 	 * @param sif: chords in SIF format
 	 * @param bim: beats in measure
+	 * @param unique_chords: set of unique chords thus far encountered for statistical purposes
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
-	public Song(String nm, String at, String pt, String ky, int md, String sif, double bim) throws Exception{
+	public Song(String nm, String at, String pt, String ky, int md, String sif,
+			double bim, ArrayList<Chord> uc) throws Exception{
+
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
 		if(at.isEmpty() || at.equals(""))
@@ -57,14 +62,21 @@ public class Song {
 		else key = ky;
 		mode = md;
 		beats = bim;
+		unique_chords = uc;
 		
 		progression = new LinkedList<Chord>();
 		
 		String[] sif_chords = sif.split(",");
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
-                        Chord chord = new Chord(mode, sif_chord);
-                        progression.add(chord);
+
+			Chord chord = new Chord(mode, sif_chord);
+			int index = unique_chords.indexOf(chord);
+			if(index < 0){
+				progression.add(chord);
+				unique_chords.add(chord);
+			}
+			else progression.add(unique_chords.get(index));
 		}
 
 		calculateRelativeMajor();
@@ -177,6 +189,14 @@ public class Song {
 	 */
 	public double getBeats(){
 		return beats;
+	}
+
+	/**
+	 * unique_chords accessor
+	 * @return: set of unique_chords
+	 */
+	public ArrayList<Chord> getUniqueChords(){
+		return unique_chords;
 	}
 	
 	/**

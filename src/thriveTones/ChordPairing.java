@@ -9,8 +9,8 @@ import java.util.Random;
  * bshade@pdx.edu
  *
  * ChordPairing.java
- * Keeps track of possible chord pairings, along with their frequency
- * to calculate probabilities
+ * Keeps track of possible Chord pairings for a given Chord, along
+ * with their frequency to calculate probabilities
  */
 
 public class ChordPairing {
