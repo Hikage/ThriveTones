@@ -26,11 +26,13 @@ public class ChordPairingTest {
 	private static ChordPairing pairing;
 	private static Chord chord1;
 	private static Chord chord2;
+	private static Chord chord3;
 
 	@BeforeClass
 	public static void init(){
 		chord1 = new Chord(1, Tonality.maj, 4);
-		chord2 = new Chord(5, Tonality.min, 4);
+		chord2 = new Chord(1, Tonality.maj, 4);
+		chord3 = new Chord(5, Tonality.min, 4);
 	}
 
 	@Before
@@ -41,7 +43,7 @@ public class ChordPairingTest {
 	@Test
 	public void testAddSameChord() {
 		pairing.addChord(chord1);
-		pairing.addChord(chord1);
+		pairing.addChord(chord2);
 		ArrayList<Integer> indices = pairing.getIndices();
 		ArrayList<Chord> next_chords = pairing.getNextChords();
 		assertEquals(3, indices.size());
@@ -53,7 +55,7 @@ public class ChordPairingTest {
 
 	@Test
 	public void testAddDifferentChord() {
-		pairing.addChord(chord2);
+		pairing.addChord(chord3);
 		pairing.addChord(chord1);
 		ArrayList<Integer> indices = pairing.getIndices();
 		ArrayList<Chord> next_chords = pairing.getNextChords();
@@ -66,4 +68,20 @@ public class ChordPairingTest {
 		assertEquals(5, next_chords.get(1).getRoot());
 	}
 
+	@Test
+	public void testGetANextChord(){
+		pairing.addChord(chord1);
+		pairing.addChord(chord2);
+		pairing.addChord(chord3);
+		int ones = 0;
+		int fives = 0;
+		for(int i = 0; i < 100; i++){
+			int root = pairing.getANextChord().getRoot();
+			if(root == 1) ones++;
+			else fives++;
+		}
+		assertTrue(ones >= 70);
+		assertTrue(fives <= 30);
+		assertEquals(100, ones + fives);
+	}
 }
