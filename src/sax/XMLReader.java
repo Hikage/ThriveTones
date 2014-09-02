@@ -58,10 +58,6 @@ public class XMLReader extends DefaultHandler {
 				Song song = SIFtoChords(fields);
 				valid_songs++;
 				songs += 11;
-				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
-				//System.out.println(song.toString());
-				//System.out.println();
-				//PlaySong(song);
 			}
 			catch(Exception e){
 				System.out.println("\n" + e.getMessage());

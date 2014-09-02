@@ -1,19 +1,19 @@
 package thriveTones;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.jfugue.Pattern;
-import org.jfugue.Player;
-
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
  * Song.java
- * TODO details on this class
+ * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
+
+import java.util.LinkedList;
+import java.util.ListIterator;
+
+import org.jfugue.Pattern;
+import org.jfugue.Player;
 
 public class Song {
 	private String name;
