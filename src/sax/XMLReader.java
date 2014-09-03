@@ -66,13 +66,13 @@ public class XMLReader extends DefaultHandler {
 				row_number += 11;
 			}
 			catch(Exception e){
-				System.out.println("\n" + e.getMessage());
-				System.out.println(row_number++ + ".");
-				System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				//System.out.println("\n" + e.getMessage());
+				//System.out.println(row_number++ + ".");
+				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 				invalid_songs++;
 			}
 		}
-		System.out.println("\nValid songs read: " + valid_songs + "\nInvalid songs read: " + invalid_songs);
+		System.out.println("\nValid songs read: " + valid_songs + "\nInvalid songs read: " + invalid_songs + "\n");
 	}
 
 	/**

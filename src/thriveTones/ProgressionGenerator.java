@@ -35,9 +35,9 @@ public class ProgressionGenerator {
 	 * @param start: Chord with which to start the progression
 	 * @param progLength: length of desired progression
 	 */
-	public void buildProgression(Chord start, int progLength){
+	public void buildProgression(Chord start, int prog_length){
 		progression.add(start);
-		for(int i = 1; i < progLength; i++){
+		for(int i = 1; i < prog_length; i++){
 			Chord next = getNextChord(start);
 			progression.add(next);
 			start = next;

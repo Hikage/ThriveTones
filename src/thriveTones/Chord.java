@@ -374,7 +374,7 @@ public class Chord {
 				chord += tonality;
 			if(seven) chord += "7";
 			for(int i = 0; i<inversion; i++) chord += "^";
-			chord += embellishment;
+			//chord += embellishment;
 		}
 		chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
 
