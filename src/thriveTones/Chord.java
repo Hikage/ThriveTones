@@ -350,14 +350,18 @@ public class Chord {
 	 */
 	@Override
 	public String toString(){
-		return toString(-1, duration);
+		return toString('Z', duration);
 	}
 
 	/**
 	 * Converts Chord into a string representation, taking key into account
+	 * @param k: char representation of the key
+	 * @param beats: number of beats per measure
 	 * @return: the JFugue string representation of the Chord
 	 */
-	public String toString(int key, double beats){
+	public String toString(char k, double beats){
+		String keys = "ABCDEFG";
+		int key = keys.indexOf(k);
 		if(root == 0) return "R";	//rest
 
 		String chord = "";

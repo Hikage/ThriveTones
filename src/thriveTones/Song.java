@@ -217,7 +217,7 @@ public class Song {
 		while(it.hasNext())
 			//TODO: cmode
 			//TODO: applied targets
-			playable_chords += it.next().toString(key.charAt(0) - 'A', beats) + " ";
+			playable_chords += it.next().toString(key.charAt(0), beats) + " ";
 		return playable_chords.trim();
 	}
 
