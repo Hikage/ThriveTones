@@ -9,33 +9,16 @@ package thriveTones;
  * Generates a chord progression based on established probabilities
  */
 
-import static org.junit.Assert.fail;
-
 import java.util.LinkedList;
-
-import sax.XMLReader;
-import thriveTones.Chord.Tonality;
 
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
 
 	/**
 	 * Constructor method
-	 * @param filename: file from which to read the data
 	 */
-	public ProgressionGenerator(String filename) {
+	public ProgressionGenerator() {
 		progression = new LinkedList<Chord>();
-		Chord start = new Chord(1, Tonality.maj, 4);
-		XMLReader reader = new XMLReader();
-		try {
-			reader.readIn(filename);
-			//calculate progression probabilities
-			//buildProgression(start, 4);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 	}
 
 	/**
@@ -44,7 +27,7 @@ public class ProgressionGenerator {
 	 * @return: returns the next Chord
 	 */
 	public Chord getNextChord(Chord start){
-		return new Chord(1, Tonality.min, 4);
+		return start.getNextChords().getANextChord();
 	}
 
 	/**

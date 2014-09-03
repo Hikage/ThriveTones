@@ -20,12 +20,10 @@ public class ChordPairing {
 	/**
 	 * Constructor method
 	 * @param next: Chord to be added as a possible next chord
-	 * (no pairing exists without a next chord)
 	 */
-	public ChordPairing(Chord next){
+	public ChordPairing(){
 		next_chords = new ArrayList<Chord>();
 		indices = new ArrayList<Integer>();
-		addChord(next);
 	}
 
 	/**

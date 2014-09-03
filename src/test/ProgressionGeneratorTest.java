@@ -14,29 +14,46 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sax.XMLReader;
 import thriveTones.Chord;
 import thriveTones.Chord.Tonality;
 import thriveTones.ProgressionGenerator;
 
 public class ProgressionGeneratorTest {
 	private static ProgressionGenerator generator;
+	private static final int prog_length = 12;
+	private static XMLReader reader;
 
 	@BeforeClass
 	public static void init(){
-		generator = new ProgressionGenerator("Hooktheory-Data.xml");
+		reader = new XMLReader();
+		try {
+			reader.readIn("Hooktheory-Data.xml");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		generator = new ProgressionGenerator();
 	}
 
 	@Test
 	public void testBuildProgression() {
-		generator.buildProgression(new Chord(1, Tonality.maj, 4), 4);
-		assertEquals(4, generator.getProgression().size());
-		assertEquals(new Chord(1, Tonality.maj, 4), generator.getProgression().get(0));
-		assertEquals(new Chord(1, Tonality.min, 4), generator.getProgression().get(1));
+		Chord start = reader.getUniqueChords().get(0);
+		generator.buildProgression(start, prog_length);
+		assertEquals(prog_length, generator.getProgression().size());
+		assertEquals(start, generator.getProgression().get(0));
+		//assertEquals(new Chord(1, Tonality.min, 4), generator.getProgression().get(1));
+
+		System.out.println();
+		for(Chord chord : generator.getProgression())
+			System.out.print(chord.toString() + " ");
 	}
 
 	@Test
 	public void testGetNextChord() {
-		Chord next = generator.getNextChord(new Chord(1, Tonality.maj, 4));
-		assertEquals(new Chord(1, Tonality.min, 4), next);
+		Chord next = generator.getNextChord(reader.getUniqueChords().get(0));
+		//assertEquals(new Chord(1, Tonality.min, 4), next);
 	}
 }

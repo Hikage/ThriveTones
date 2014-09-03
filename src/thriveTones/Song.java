@@ -67,16 +67,23 @@ public class Song {
 		progression = new LinkedList<Chord>();
 		
 		String[] sif_chords = sif.split(",");
+		Chord previous = null;
+		Chord current;
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
 
-			Chord chord = new Chord(mode, sif_chord);
-			int index = unique_chords.indexOf(chord);
-			if(index < 0){
-				progression.add(chord);
-				unique_chords.add(chord);
-			}
-			else progression.add(unique_chords.get(index));
+			current = new Chord(mode, sif_chord);
+			int index = unique_chords.indexOf(current);
+			if(index < 0)
+				unique_chords.add(current);
+			else
+				current = unique_chords.get(index);
+
+			progression.add(current);
+
+			if(previous != null)
+				previous.addNextChord(current);
+			previous = current;
 		}
 
 		calculateRelativeMajor();

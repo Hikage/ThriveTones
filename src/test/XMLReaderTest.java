@@ -63,7 +63,7 @@ public class XMLReaderTest {
 
 	@Test
 	public void testReadIn(){
-		assertEquals(229, reader.unique_chords.size());
+		assertEquals(229, reader.getUniqueChords().size());
 	}
 
 	@Test

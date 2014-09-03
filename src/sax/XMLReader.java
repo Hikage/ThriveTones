@@ -27,7 +27,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class XMLReader extends DefaultHandler {
-	public static ArrayList<Chord> unique_chords;
+	private static ArrayList<Chord> unique_chords;
 
 	/**
 	 * Initializer
@@ -150,5 +150,13 @@ public class XMLReader extends DefaultHandler {
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
 		return new Song(title, artist, part, key, mode, sif, beats, unique_chords);
+	}
+
+	/**
+	 * unique_chords accessor
+	 * @return: the current list of unique chords available
+	 */
+	public ArrayList<Chord> getUniqueChords(){
+		return unique_chords;
 	}
 }

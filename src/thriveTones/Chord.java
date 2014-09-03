@@ -10,6 +10,7 @@ package thriveTones;
  */
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class Chord {
 
@@ -26,6 +27,7 @@ public class Chord {
 	private boolean eleven = false;
 	private String cmode = "";
 	private int applied_target = 0;
+	private ChordPairing next_chords;
 	
 	/**
 	 * Constructor method
@@ -51,6 +53,7 @@ public class Chord {
 		embellishment = emb;
 
 		duration = dur;
+		next_chords = new ChordPairing();
 	}
 
 	/**
@@ -63,6 +66,7 @@ public class Chord {
 		root = rt;
 		tonality = tone;
 		duration = dur;
+		next_chords = new ChordPairing();
 	}
 
 	/**
@@ -74,6 +78,8 @@ public class Chord {
 	public Chord(int mode, String schord) throws Exception{
 		if(schord.length() < 1)
 			throw new Exception("Empty chord supplied!");
+
+		next_chords = new ChordPairing();
 
 		//Parse incoming string
 		String[] chord_parts = schord.toLowerCase().split("/");
@@ -259,6 +265,14 @@ public class Chord {
 	}
 
 	/**
+	 * Add a linked Chord for use in progressions
+	 * @param next: a Chord that succeeds the current Chord
+	 */
+	public void addNextChord(Chord next){
+		next_chords.addChord(next);
+	}
+
+	/**
 	 * Retrieves Chord's root
 	 * @return: the root of the Chord
 	 */
@@ -320,6 +334,14 @@ public class Chord {
 	 */
 	public int getAppliedTarget(){
 		return applied_target;
+	}
+
+	/**
+	 * Retrieves Chord's possible next Chords
+	 * @return: the list of next possible Chords
+	 */
+	public ChordPairing getNextChords(){
+		return next_chords;
 	}
 
 	/**

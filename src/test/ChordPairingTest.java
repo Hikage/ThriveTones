@@ -37,7 +37,7 @@ public class ChordPairingTest {
 
 	@Before
 	public void pairingInit(){
-		pairing = new ChordPairing(chord1);
+		pairing = new ChordPairing();
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class ChordPairingTest {
 		pairing.addChord(chord2);
 		ArrayList<Integer> indices = pairing.getIndices();
 		ArrayList<Chord> next_chords = pairing.getNextChords();
-		assertEquals(3, indices.size());
+		assertEquals(2, indices.size());
 		for(int index : indices)
 			assertEquals(0, index);
 		assertEquals(1, next_chords.size());
@@ -55,6 +55,7 @@ public class ChordPairingTest {
 
 	@Test
 	public void testAddDifferentChord() {
+		pairing.addChord(chord1);
 		pairing.addChord(chord3);
 		pairing.addChord(chord1);
 		ArrayList<Integer> indices = pairing.getIndices();
@@ -70,6 +71,7 @@ public class ChordPairingTest {
 
 	@Test
 	public void testGetANextChord(){
+		pairing.addChord(chord1);
 		pairing.addChord(chord1);
 		pairing.addChord(chord2);
 		pairing.addChord(chord3);
