@@ -11,9 +11,12 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import thriveTones.Chord;
 import thriveTones.Song;
 
 public class SongTest {
@@ -22,8 +25,9 @@ public class SongTest {
 
 	@Before
 	public void init(){
+		ArrayList<Chord> unique_chords = new ArrayList<Chord>();
 		try{
-			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4);
+			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, unique_chords);
 		}
 		catch(Exception e){
 			e.printStackTrace();

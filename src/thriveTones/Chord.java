@@ -10,6 +10,7 @@ package thriveTones;
  */
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class Chord {
 
@@ -26,6 +27,7 @@ public class Chord {
 	private boolean eleven = false;
 	private String cmode = "";
 	private int applied_target = 0;
+	private ChordPairing next_chords;
 	
 	/**
 	 * Constructor method
@@ -51,6 +53,7 @@ public class Chord {
 		embellishment = emb;
 
 		duration = dur;
+		next_chords = new ChordPairing();
 	}
 
 	/**
@@ -63,6 +66,7 @@ public class Chord {
 		root = rt;
 		tonality = tone;
 		duration = dur;
+		next_chords = new ChordPairing();
 	}
 
 	/**
@@ -74,6 +78,8 @@ public class Chord {
 	public Chord(int mode, String schord) throws Exception{
 		if(schord.length() < 1)
 			throw new Exception("Empty chord supplied!");
+
+		next_chords = new ChordPairing();
 
 		//Parse incoming string
 		String[] chord_parts = schord.toLowerCase().split("/");
@@ -259,6 +265,14 @@ public class Chord {
 	}
 
 	/**
+	 * Add a linked Chord for use in progressions
+	 * @param next: a Chord that succeeds the current Chord
+	 */
+	public void addNextChord(Chord next){
+		next_chords.addChord(next);
+	}
+
+	/**
 	 * Retrieves Chord's root
 	 * @return: the root of the Chord
 	 */
@@ -323,19 +337,31 @@ public class Chord {
 	}
 
 	/**
+	 * Retrieves Chord's possible next Chords
+	 * @return: the list of next possible Chords
+	 */
+	public ChordPairing getNextChords(){
+		return next_chords;
+	}
+
+	/**
 	 * Converts Chord into a key-independent string representation
 	 * @return: the JFugue string representation of the Chord
 	 */
 	@Override
 	public String toString(){
-		return toString(-1, duration);
+		return toString('Z', duration);
 	}
 
 	/**
 	 * Converts Chord into a string representation, taking key into account
+	 * @param k: char representation of the key
+	 * @param beats: number of beats per measure
 	 * @return: the JFugue string representation of the Chord
 	 */
-	public String toString(int key, double beats){
+	public String toString(char k, double beats){
+		String keys = "ABCDEFG";
+		int key = keys.indexOf(k);
 		if(root == 0) return "R";	//rest
 
 		String chord = "";
@@ -348,7 +374,7 @@ public class Chord {
 				chord += tonality;
 			if(seven) chord += "7";
 			for(int i = 0; i<inversion; i++) chord += "^";
-			chord += embellishment;
+			//chord += embellishment;
 		}
 		chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
 
@@ -391,17 +417,17 @@ public class Chord {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Chord other = (Chord) obj;
-		if (applied_target != other.applied_target)
-			return false;
-		if (cmode == null) {
-			if (other.cmode != null)
-				return false;
-		}
-		else if (!cmode.equals(other.cmode))
-			return false;
-		if (Double.doubleToLongBits(duration) != Double
-				.doubleToLongBits(other.duration))
-			return false;
+		//if (applied_target != other.applied_target)
+		//	return false;
+		//if (cmode == null) {
+		//	if (other.cmode != null)
+		//		return false;
+		//}
+		//else if (!cmode.equals(other.cmode))
+		//	return false;
+		//if (Double.doubleToLongBits(duration) != Double
+		//		.doubleToLongBits(other.duration))
+		//	return false;
 		if (eleven != other.eleven)
 			return false;
 		if (embellishment == null) {

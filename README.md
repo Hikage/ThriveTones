@@ -24,10 +24,9 @@ _Note: Original code was a collaborative team effort during a 2006 senior capsto
 [x] Research pertinent literature, and collect relevant strategies (6/29)  
 [x] Obtain pop chords and/or progression statistics (7/2)  
 [x] Build XML reader to process Hooktheory data (7/13)    
-[] Complete data read-in to generate stats (8/24)  
-[] Segregate chorus, verse, and bridge data for modular composition (8/24)  
-[] Refactor GA to build chord progressions using Markov chains based on statistics (8/31)  
-[] Finalize music theory heuristics and develop unit tests (8/31)  
+[x] Complete data read-in to generate stats (8/24)  
+[x] Refactor GA to build chord progressions using Markov chains based on statistics (8/31)  
+[] Segregate chorus, verse, and bridge data for modular composition (9/7)  
 
 ### Optional Enhancements / Future Work  
 [] Add melody over chord structure  
@@ -38,17 +37,31 @@ _Note: Original code was a collaborative team effort during a 2006 senior capsto
 [] Allow for new songs to be saved/downloaded for the user  
 
 ### Currently Working On / Next Steps
-* Continue to refactor old code and clean up!
 * Support for chord modes and targets
-* Create progression stats in preparation for Markov model
+* Bugfixes for string conversion to JFugue
+* Verify progressions are being correctly constructed by controlling the choices
+* Modularize song pieces for more coherent construction
 
 ### Development Challenges
 #### How to best represent chords:  
 These were originally represented literally, as integer frequencies.  This, of course, was impractical, so I strove to represent them more abstractly, to be independent of key.  I initially thought to simply represent them by their Roman numeral, but this quickly proved insufficient, as it did not account for inversions, added 7ths, or even anything so simple as distinguishing between major and minor.  Therefore, I was left with maintaining each's note structure.  I ultimately opted for a hashmapping of notes numbered 0 to 11 to allow for the greatest flexibility (0 being the tonic).  Additionally, values for an octave and for the chord's tonality (merely for convenience) were stored as part of the object.  A root was independently specified, permitting any necessary chord to be built.  This was still flawed, however, as inversions were beyond this representation, and chords built upon higher numerals (e.g.: 11) potentially had their third and/or fifth wrapped to a lower numeral.
 
-It was later discovered that JFugue can accept an arbitrary chord in the format of letter[octave][tonality][duration].  Accidentals are automatically inserted depending on the specified key.  For example, "KEbmaj E5majw" would play an Eb major triad - the tonic in the key of Eb major - for a whole note (4 beats).  This greatly simplified the chord representation, necessitating only the root, and a few other elements if they deviate from the key (tonality, octave, etc).
+It was later discovered that JFugue can accept an arbitrary chord in the format of letter\[octave\]\[tonality\]\[duration\].  Accidentals are automatically inserted depending on the specified key.  For example, "KEbmaj E5majw" would play an Eb major triad - the tonic in the key of Eb major - for a whole note (4 beats).  This greatly simplified the chord representation, necessitating only the root, and a few other elements if they deviate from the key (tonality, octave, etc).  Inversions are also supported, as are some sustained and additional notes.  Modes and borrowed chords still prove challenging, but these have been shelved for the time being to allow for further advancement with the construction portion.
 
 Chords could also possibly be represented with a bitmap.  At this time, I have not yet explored this option, but it would provide a lighter-weight (if less legible) implementation.
+
+#### Hooktheory data:
+Reading in the Hooktheory data proved more difficult than initially thought.  For one, all representations aren't consistent (for example, b and f both denote "flat").  Not all songs have an associated key, and some contain unsupported chords (like 11 chords).  The representation also wasn't immediately intuitive, delaying progress.  However, this forced a greater understanding of the data, prompting a write-up on the structure for future developers.  This may be greatly due to the fact that the data itself is crowd-sourced, making it challenging to maintain consistency.
+
+#### Chord progression statistics:
+In order to build progression statistics, a dynamic list of encountered chords must be maintained and visible across all classes of this project.  I experimented with various implementations, including having a dedicated class, having the set of chords live in XMLReader, and having them exist as an extention of the Chord instances.  Ultimately, I opted for storing the unique list of chords in XMLReader, as they're read in (being careful to not create a new chord if one already exists).
+
+Chord pairings are an attribute of Chord (each chord has a list of subsequent chords that can follow), and this object maintains both the set of available chords, as well as a bag of indices, representing each's frequency.  For example, if 3 of 4 V chords are followed by a I chord and 1 of 4 is followed by another V, then the set would contain {I, V} and the bag would contain {0, 0, 0, 1}.  This builds a roulette incrementally, making probabilities easy; selecting a random index, a I chord will be selected 75% of the time.
+
+Unfortunately, the set of unique chords has to be passed between the classes, but the number of unique chords is managable in this manner, so this method is acceptable for now to ensure probabilities are calculated correctly.
+
+#### JFugue:
+Some complicated chords are far more difficult to represent in JFugue.  Therefore, some of the more intricate chords will need to be represented with literal intervals instead of the condensed representation of Cmaj, etc.  This creates a need for some more obsure representation and consideration for unusual edge cases.  For now, this has been disregarded for the sake of simplicity, but it will need to be addressed eventually.
 
 ### Useful Resources
 http://arstechnica.com/science/2009/09/virtual-composer-makes-beautiful-musicand-stirs-controversy/

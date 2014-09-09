@@ -20,29 +20,28 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
+import thriveTones.Chord;
 import thriveTones.Song;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class XMLReader extends DefaultHandler {
+	private static ArrayList<Chord> unique_chords;
 
 	/**
-	 * Usage function
+	 * Initializer
 	 */
-	private static void usage(){
-		System.err.println("Usage: java XMLReader filename.xml");
-		System.exit(1);
+	public XMLReader(){
+		unique_chords = new ArrayList<Chord>();
 	}
 
 	/**
-	 * Main class
-	 * @param args
+	 * Reads in the data based on the filename provided
+	 * @param filename: file to be read in
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception{
-		if(args.length < 1 || args[0] == null) usage();
-
-        String filename = args[0];
+	public void readIn(String filename) throws Exception{
         File file = new File(filename);
         if(!file.exists() || file.isDirectory()) throw new Exception("File not found! " + filename);
 
@@ -56,27 +55,24 @@ public class XMLReader extends DefaultHandler {
 	    NodeList rows = results.item(0).getChildNodes();
 	    int valid_songs = 0;
 	    int invalid_songs = 0;
-	    int songs = 35;
+	    int row_number = 35;
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
 				Song song = SIFtoChords(fields);
+				unique_chords = song.getUniqueChords();			//update after creation of a new song
 				valid_songs++;
-				songs += 11;
-				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
-				//System.out.println(song.toString());
-				//System.out.println();
-				//PlaySong(song);
+				row_number += 11;
 			}
 			catch(Exception e){
-				System.out.println("\n" + e.getMessage());
-				System.out.println(songs++ + ".");
-				System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				//System.out.println("\n" + e.getMessage());
+				//System.out.println(row_number++ + ".");
+				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 				invalid_songs++;
 			}
 		}
-		System.out.println("\nValid songs read: " + valid_songs + "\nInvalid songs read: " + invalid_songs);
+		System.out.println("\nValid songs read: " + valid_songs + "\nInvalid songs read: " + invalid_songs + "\n");
 	}
 
 	/**
@@ -85,7 +81,7 @@ public class XMLReader extends DefaultHandler {
 	 * @param att_name: name of the field for which to search
 	 * @return: the value of the specified field
 	 */
-	public static String nodeValueByAttName(NodeList fields, String att_name){
+	public String nodeValueByAttName(NodeList fields, String att_name){
 		String node_value = "";
 		for(int j = 0; j < fields.getLength(); j++){
     		Node node = fields.item(j);
@@ -104,7 +100,7 @@ public class XMLReader extends DefaultHandler {
 	 * @param xkey: raw key from XML
 	 * @return: standardized key
 	 */
-	public static String XMLKeytoKey(String xkey){
+	public String XMLKeytoKey(String xkey){
 		if(xkey.length() < 1 || xkey.length() > 2
 				|| xkey.toUpperCase().charAt(0) < 'A' || xkey.toUpperCase().charAt(0) > 'G'){
 			return null;
@@ -130,7 +126,7 @@ public class XMLReader extends DefaultHandler {
 	 * @param fields: field nodes amongst which to search for the key
 	 * @return: the standardized key value
 	 */
-	public static String extractKey(NodeList fields) throws Exception{
+	public String extractKey(NodeList fields) throws Exception{
 		if(fields == null)
 			throw new Exception("Supplied fields list is empty");
 		String xkey = nodeValueByAttName(fields, "songKey");
@@ -144,7 +140,7 @@ public class XMLReader extends DefaultHandler {
 	 * Converts the SIF string into a Song object
 	 * @param fields: field nodes of the song to convert
 	 */
-	public static Song SIFtoChords(NodeList fields) throws Exception{
+	public Song SIFtoChords(NodeList fields) throws Exception{
 		String title = nodeValueByAttName(fields, "song");
 		String artist = nodeValueByAttName(fields, "artist");
 		String part = nodeValueByAttName(fields, "section");
@@ -153,6 +149,14 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats);
+		return new Song(title, artist, part, key, mode, sif, beats, unique_chords);
+	}
+
+	/**
+	 * unique_chords accessor
+	 * @return: the current list of unique chords available
+	 */
+	public ArrayList<Chord> getUniqueChords(){
+		return unique_chords;
 	}
 }
