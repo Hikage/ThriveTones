@@ -12,6 +12,7 @@ package thriveTones;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Scanner;
 
 import org.jfugue.Pattern;
 import org.jfugue.Player;
@@ -89,6 +90,19 @@ public class Song {
 		calculateRelativeMajor();
 	}
 	
+	public Song(String pt, String ky, int md, double bim, LinkedList<Chord> pg){
+		name = "AI Creation";
+		artist = "Music Bot";
+		part = pt;
+		key = ky;
+		mode = md;
+		beats = bim;
+		progression = pg;
+		unique_chords = null;
+
+		calculateRelativeMajor();
+	}
+
 	/**
 	 * Adjusts the song's key
 	 * @param ky: new key
@@ -235,6 +249,39 @@ public class Song {
 		pattern.setMusicString(playable_song);
 		Player player = new Player();
 		player.play(pattern);
+
+		/**
+		//Gives user option to save song as midi; loops in case cancels exit
+		boolean exit = false;
+		do{
+			System.out.println("\nWould you like to save this song? (y or n)");
+			Scanner in = new Scanner(System.in);
+			String save = in.nextLine();
+			if (save.equalsIgnoreCase("y")){
+				exit = true;
+				export(player, pattern);
+			}
+			else{
+				System.out.println("Data will be lost. Are you sure?");
+				in = new Scanner(System.in);
+				save = in.nextLine();
+				if(save.equalsIgnoreCase("y")) exit = true;
+			}
+		}while(!exit);
+		**/
+	}
+
+	/**
+	 * Saves generated song to a midi file for later playback
+	 * @param player: Player object
+	 * @param pattern: Pattern object
+	 */
+	public void export(Player player, Pattern pattern){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Type a name for the song");
+		String songName = sc.next();
+		pattern.setMusicString(this.toString());
+		player.save(pattern, songName + ".mid");
 	}
 
 	/**
