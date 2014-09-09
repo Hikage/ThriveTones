@@ -10,7 +10,6 @@ package thriveTones;
  */
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class Chord {
 
@@ -367,16 +366,16 @@ public class Chord {
 		String chord = "";
 		if(key < 0) chord += root;
 		else chord += (char)(int)('A' + ((key + root - 1) % 7));
-		chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
+		//chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
 		if(eleven) chord += "dom11";
 		else{
-			if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
+			//if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
 				chord += tonality;
 			if(seven) chord += "7";
-			for(int i = 0; i<inversion; i++) chord += "^";
+			//for(int i = 0; i<inversion; i++) chord += "^";
 			//chord += embellishment;
 		}
-		chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
+		//chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
 
 		return chord;
 	}

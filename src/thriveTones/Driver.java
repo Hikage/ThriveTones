@@ -46,8 +46,9 @@ public class Driver {
 		Chord start = reader.getUniqueChords().get(index);
 
 		//User input to determine song specifics
-		int song_length = 0;
-		while(true){
+		int song_length = 8;
+		/**
+		do{
 			System.out.println("How many chords would you like?");
 			Scanner in = new Scanner(System.in);
 			if (in.hasNextInt()){
@@ -55,10 +56,12 @@ public class Driver {
 				if(song_length > 0)
 					break;
 			}
-		}
+		}while(true);
+		**/
 
 		int beats = 4;
-		while(true){
+		/**
+		do{
 			System.out.println("How many beats per measure?");
 			Scanner in = new Scanner(System.in);
 			if (in.hasNextInt()){
@@ -66,7 +69,8 @@ public class Driver {
 				if(beats > 0)
 					break;
 			}
-		}
+		}while(true);
+		**/
 
 		//Generate progression
 		generator.buildProgression(start, song_length);
