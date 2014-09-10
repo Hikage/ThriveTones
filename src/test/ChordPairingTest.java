@@ -78,9 +78,16 @@ public class ChordPairingTest {
 		int ones = 0;
 		int fives = 0;
 		for(int i = 0; i < 100; i++){
-			int root = pairing.getANextChord().getRoot();
-			if(root == 1) ones++;
-			else fives++;
+			int root;
+			try {
+				root = pairing.getANextChord().getRoot();
+				if(root == 1) ones++;
+				else fives++;
+			}
+			catch (Exception e) {
+				fail(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		assertTrue(ones >= 70);
 		assertTrue(fives <= 30);

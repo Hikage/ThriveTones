@@ -36,7 +36,7 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator();
+		generator = new ProgressionGenerator(reader.getUniqueChords(), reader.getUniqueChordPairs());
 	}
 
 	@Test
@@ -54,8 +54,14 @@ public class ProgressionGeneratorTest {
 
 	@Test
 	public void testGetNextChord() {
-		Chord next = generator.getNextChord(reader.getUniqueChords().get(0));
-		//assertEquals(new Chord(1, Tonality.min, 4), next);
+		try {
+			Chord next = generator.getNextChord(null, reader.getUniqueChords().get(0));
+			//assertEquals(new Chord(1, Tonality.min, 4), next);
+		}
+		catch (Exception e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -69,7 +75,7 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator();
+		generator = new ProgressionGenerator(reader2.getUniqueChords(), reader2.getUniqueChordPairs());
 		Chord start = reader.getUniqueChords().get(0);
 		assertEquals(1, start.getRoot());
 

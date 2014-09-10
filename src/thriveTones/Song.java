@@ -27,6 +27,7 @@ public class Song {
 	private LinkedList<Chord> progression;
 	private double beats;
 	private ArrayList<Chord> unique_chords;
+	private ArrayList<ChordPair> unique_chord_pairs;
 
 	/**
 	 * Constructor method
@@ -41,7 +42,7 @@ public class Song {
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
 	public Song(String nm, String at, String pt, String ky, int md, String sif,
-			double bim, ArrayList<Chord> uc) throws Exception{
+			double bim, ArrayList<Chord> uc, ArrayList<ChordPair> ucp) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
@@ -64,26 +65,44 @@ public class Song {
 		mode = md;
 		beats = bim;
 		unique_chords = uc;
+		unique_chord_pairs = ucp;
 		
 		progression = new LinkedList<Chord>();
 		
 		String[] sif_chords = sif.split(",");
+		Chord two_prev = null;
 		Chord previous = null;
 		Chord current;
+		ChordPair current_pair;
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
 
 			current = new Chord(mode, sif_chord);
-			int index = unique_chords.indexOf(current);
-			if(index < 0)
+			int chord_ind = unique_chords.indexOf(current);
+			if(chord_ind < 0)
 				unique_chords.add(current);
 			else
-				current = unique_chords.get(index);
+				current = unique_chords.get(chord_ind);
 
 			progression.add(current);
 
-			if(previous != null)
+			if(previous != null){
 				previous.addNextChord(current);
+				current_pair = new ChordPair(previous, current);
+				int pair_ind = unique_chord_pairs.indexOf(current_pair);
+				if(pair_ind < 0)
+					unique_chord_pairs.add(current_pair);
+
+				if(two_prev != null){
+					ChordPair prev_pair = new ChordPair(two_prev, previous);
+					int prev_pair_ind = unique_chord_pairs.indexOf(prev_pair);
+					if(prev_pair_ind < 0)
+						throw new Exception("Previous ChordPair isn't in the list when it should be");
+					prev_pair = unique_chord_pairs.get(prev_pair_ind);
+					prev_pair.addNextChord(current);
+				}
+			}
+			two_prev = previous;
 			previous = current;
 		}
 
@@ -218,6 +237,14 @@ public class Song {
 	 */
 	public ArrayList<Chord> getUniqueChords(){
 		return unique_chords;
+	}
+
+	/**
+	 * unique_chord_pairs accessor
+	 * @return: set of unique_chord_pairs
+	 */
+	public ArrayList<ChordPair> getUniqueChordPairs(){
+		return unique_chord_pairs;
 	}
 	
 	/**

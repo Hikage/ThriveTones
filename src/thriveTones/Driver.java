@@ -31,7 +31,7 @@ public class Driver {
 			e.printStackTrace();
 		}
 
-		ProgressionGenerator generator = new ProgressionGenerator();
+		ProgressionGenerator generator = new ProgressionGenerator(reader.getUniqueChords(), reader.getUniqueChordPairs());
 
 		//Get starting chord
 		//TODO: use stats to determine best starting chord

@@ -21,6 +21,7 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import thriveTones.Chord;
+import thriveTones.ChordPair;
 import thriveTones.Song;
 
 import java.io.*;
@@ -28,12 +29,14 @@ import java.util.ArrayList;
 
 public class XMLReader extends DefaultHandler {
 	private static ArrayList<Chord> unique_chords;
+	private static ArrayList<ChordPair> unique_chord_pairs;
 
 	/**
 	 * Initializer
 	 */
 	public XMLReader(){
 		unique_chords = new ArrayList<Chord>();
+		unique_chord_pairs = new ArrayList<ChordPair>();
 	}
 
 	/**
@@ -62,6 +65,7 @@ public class XMLReader extends DefaultHandler {
 			try{
 				Song song = SIFtoChords(fields);
 				unique_chords = song.getUniqueChords();			//update after creation of a new song
+				unique_chord_pairs = song.getUniqueChordPairs();
 				valid_songs++;
 				row_number += 11;
 			}
@@ -149,7 +153,7 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, unique_chords);
+		return new Song(title, artist, part, key, mode, sif, beats, unique_chords, unique_chord_pairs);
 	}
 
 	/**
@@ -158,5 +162,13 @@ public class XMLReader extends DefaultHandler {
 	 */
 	public ArrayList<Chord> getUniqueChords(){
 		return unique_chords;
+	}
+
+	/**
+	 * unique_chord_pairs accessor
+	 * @return: the current list of unique chord pairs available
+	 */
+	public ArrayList<ChordPair> getUniqueChordPairs(){
+		return unique_chord_pairs;
 	}
 }

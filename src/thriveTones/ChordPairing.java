@@ -50,8 +50,11 @@ public class ChordPairing {
 	 * needs only select a random index from the indices list and
 	 * retrieve the corresponding Chord from the next_chords list
 	 * @return: the next chord selected from those available
+	 * @throws Exception
 	 */
-	public Chord getANextChord(){
+	public Chord getANextChord() throws Exception{
+		if(indices.size() < 1)
+			throw new Exception("Indices is somehow unpopulated!");
 		int rand = new Random().nextInt(indices.size());
 		return next_chords.get(indices.get(rand));
 	}
