@@ -11,13 +11,10 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import thriveTones.Chord;
-import thriveTones.ChordPair;
+import sax.XMLReader;
 import thriveTones.Song;
 
 public class SongTest {
@@ -26,10 +23,9 @@ public class SongTest {
 
 	@Before
 	public void init(){
-		ArrayList<Chord> unique_chords = new ArrayList<Chord>();
-		ArrayList<ChordPair> unique_chord_pairs = new ArrayList<ChordPair>();
+		XMLReader xreader = new XMLReader();
 		try{
-			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, unique_chords, unique_chord_pairs);
+			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
 		}
 		catch(Exception e){
 			e.printStackTrace();

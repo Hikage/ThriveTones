@@ -23,8 +23,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import sax.XMLReader;
-import thriveTones.Chord;
-
 
 public class XMLReaderTest {
 

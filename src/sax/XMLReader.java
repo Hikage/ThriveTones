@@ -64,8 +64,6 @@ public class XMLReader extends DefaultHandler {
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
 				Song song = SIFtoChords(fields);
-				unique_chords = song.getUniqueChords();			//update after creation of a new song
-				unique_chord_pairs = song.getUniqueChordPairs();
 				valid_songs++;
 				row_number += 11;
 			}
@@ -153,7 +151,7 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, unique_chords, unique_chord_pairs);
+		return new Song(title, artist, part, key, mode, sif, beats, this);
 	}
 
 	/**
@@ -165,10 +163,39 @@ public class XMLReader extends DefaultHandler {
 	}
 
 	/**
+	 * Retrieves the unique Chord object or creates a new one
+	 * @return: the unique Chord requested
+	 */
+	public Chord getChord(Chord chord){
+		int index = unique_chords.indexOf(chord);
+		if(index < 0){
+			unique_chords.add(chord);
+			return chord;
+		}
+		return unique_chords.get(index);
+	}
+
+	/**
 	 * unique_chord_pairs accessor
 	 * @return: the current list of unique chord pairs available
 	 */
 	public ArrayList<ChordPair> getUniqueChordPairs(){
 		return unique_chord_pairs;
+	}
+
+	/**
+	 * Retrieves a ChordPair from the unique list
+	 * @param first: first Chord of the pair
+	 * @param second: second Chord of the pair
+	 * @return: a ChordPair with the requested first and second Chords
+	 */
+	public ChordPair getChordPair(Chord first, Chord second){
+		ChordPair pair = new ChordPair(first, second);
+		int index = unique_chord_pairs.indexOf(pair);
+		if(index < 0){
+			unique_chord_pairs.add(pair);
+			return pair;
+		}
+		return unique_chord_pairs.get(index);
 	}
 }

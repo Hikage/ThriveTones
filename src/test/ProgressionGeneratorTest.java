@@ -36,7 +36,7 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator(reader.getUniqueChords(), reader.getUniqueChordPairs());
+		generator = new ProgressionGenerator(reader);
 	}
 
 	@Test
@@ -75,11 +75,11 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator(reader2.getUniqueChords(), reader2.getUniqueChordPairs());
+		generator = new ProgressionGenerator(reader2);
 		Chord start = reader.getUniqueChords().get(0);
 		assertEquals(1, start.getRoot());
 
-		generator.buildProgression(start, 8);
+		generator.buildProgression(start, 16);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(1, progression.get(0).getRoot());
 		System.out.print(progression.get(0).getRoot() + " ");

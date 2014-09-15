@@ -17,6 +17,8 @@ import java.util.Scanner;
 import org.jfugue.Pattern;
 import org.jfugue.Player;
 
+import sax.XMLReader;
+
 public class Song {
 	private String name;
 	private String artist;
@@ -26,8 +28,7 @@ public class Song {
 	private int mode;
 	private LinkedList<Chord> progression;
 	private double beats;
-	private ArrayList<Chord> unique_chords;
-	private ArrayList<ChordPair> unique_chord_pairs;
+	private XMLReader xreader;
 
 	/**
 	 * Constructor method
@@ -42,7 +43,7 @@ public class Song {
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
 	public Song(String nm, String at, String pt, String ky, int md, String sif,
-			double bim, ArrayList<Chord> uc, ArrayList<ChordPair> ucp) throws Exception{
+			double bim, XMLReader xr) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
@@ -64,8 +65,7 @@ public class Song {
 		else key = ky;
 		mode = md;
 		beats = bim;
-		unique_chords = uc;
-		unique_chord_pairs = ucp;
+		xreader = xr;
 		
 		progression = new LinkedList<Chord>();
 		
@@ -73,28 +73,21 @@ public class Song {
 		Chord two_prev = null;
 		Chord previous = null;
 		Chord current;
-		ChordPair current_pair;
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
 
 			current = new Chord(mode, sif_chord);
-			int chord_ind = unique_chords.indexOf(current);
-			if(chord_ind < 0)
-				unique_chords.add(current);
-			else
-				current = unique_chords.get(chord_ind);
+			xreader.getChord(current);
 
 			progression.add(current);
 
 			if(previous != null){
 				previous.addNextChord(current);
-				current_pair = new ChordPair(previous, current);
-				int pair_ind = unique_chord_pairs.indexOf(current_pair);
-				if(pair_ind < 0)
-					unique_chord_pairs.add(current_pair);
+				xreader.getChordPair(previous, current);
 
 				if(two_prev != null){
 					ChordPair prev_pair = new ChordPair(two_prev, previous);
+					ArrayList<ChordPair> unique_chord_pairs = xreader.getUniqueChordPairs();
 					int prev_pair_ind = unique_chord_pairs.indexOf(prev_pair);
 					if(prev_pair_ind < 0)
 						throw new Exception("Previous ChordPair isn't in the list when it should be");
@@ -117,7 +110,7 @@ public class Song {
 		mode = md;
 		beats = bim;
 		progression = pg;
-		unique_chords = null;
+		xreader = null;
 
 		calculateRelativeMajor();
 	}
@@ -229,22 +222,6 @@ public class Song {
 	 */
 	public double getBeats(){
 		return beats;
-	}
-
-	/**
-	 * unique_chords accessor
-	 * @return: set of unique_chords
-	 */
-	public ArrayList<Chord> getUniqueChords(){
-		return unique_chords;
-	}
-
-	/**
-	 * unique_chord_pairs accessor
-	 * @return: set of unique_chord_pairs
-	 */
-	public ArrayList<ChordPair> getUniqueChordPairs(){
-		return unique_chord_pairs;
 	}
 	
 	/**

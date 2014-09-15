@@ -12,18 +12,18 @@ package thriveTones;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import sax.XMLReader;
+
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
-	private ArrayList<Chord> unique_chords;
-	private ArrayList<ChordPair> unique_chord_pairs;
+	private XMLReader xreader;
 
 	/**
 	 * Constructor method
 	 */
-	public ProgressionGenerator(ArrayList<Chord> uc, ArrayList<ChordPair> ucp) {
+	public ProgressionGenerator(XMLReader xr) {
 		progression = new LinkedList<Chord>();
-		unique_chords = uc;
-		unique_chord_pairs = ucp;
+		xreader = xr;
 	}
 
 	/**
@@ -37,6 +37,7 @@ public class ProgressionGenerator {
 			return start.getNextChords().getANextChord();
 		else{
 			ChordPair pair = new ChordPair(previous, start);
+			ArrayList<ChordPair> unique_chord_pairs = xreader.getUniqueChordPairs();
 			if(!unique_chord_pairs.contains(pair))
 				throw new Exception("Pair should already exist within the unique list");
 			pair = unique_chord_pairs.get(unique_chord_pairs.indexOf(pair));
