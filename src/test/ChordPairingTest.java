@@ -41,6 +41,12 @@ public class ChordPairingTest {
 	}
 
 	@Test
+	public void testInitialization(){
+		assertEquals(0, pairing.getNextChords().size());
+		assertEquals(0, pairing.getIndices().size());
+	}
+
+	@Test
 	public void testAddSameChord() {
 		pairing.addChord(chord1);
 		pairing.addChord(chord2);

@@ -324,39 +324,45 @@ public class Song {
 		if (getClass() != obj.getClass())
 			return false;
 		Song other = (Song) obj;
-		if (artist == null)
+		if (artist == null){
 			if (other.artist != null)
 				return false;
+		}
 		else if (!artist.equals(other.artist))
 			return false;
 		if (Double.doubleToLongBits(beats) != Double
 				.doubleToLongBits(other.beats))
 			return false;
-		if (key == null)
+		if (key == null){
 			if (other.key != null)
 				return false;
+		}
 		else if (!key.equals(other.key))
 			return false;
 		if (mode != other.mode)
 			return false;
-		if (name == null)
+		if (name == null){
 			if (other.name != null)
 				return false;
+		}
 		else if (!name.equals(other.name))
 			return false;
-		if (part == null)
+		if (part == null){
 			if (other.part != null)
 				return false;
+		}
 		else if (!part.equals(other.part))
 			return false;
-		if (progression == null)
+		if (progression == null){
 			if (other.progression != null)
 				return false;
+		}
 		else if (!progression.equals(other.progression))
 			return false;
-		if (rel_major == null)
+		if (rel_major == null){
 			if (other.rel_major != null)
 				return false;
+		}
 		else if (!rel_major.equals(other.rel_major))
 			return false;
 		return true;

@@ -18,12 +18,12 @@ import sax.XMLReader;
 import thriveTones.Song;
 
 public class SongTest {
-
+	private XMLReader xreader;
 	private static Song song;
 
 	@Before
 	public void init(){
-		XMLReader xreader = new XMLReader();
+		xreader = new XMLReader();
 		try{
 			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
 		}
@@ -43,6 +43,25 @@ public class SongTest {
 		assertEquals(1, song.getMode());
 		assertEquals(1, song.getChords().size());
 		assertEquals(4, song.getBeats(), 0);
+	}
+
+	@Test
+	public void testChangeKey(){
+		try{
+			song.changeKey("C", 1);
+			assertEquals("C", song.getKey());
+			assertEquals("C", song.getRelMajor());
+			assertEquals(1, song.getMode());
+
+			song.changeKey("Ab", 6);
+			assertEquals("Ab", song.getKey());
+			assertEquals("Cb", song.getRelMajor());
+			assertEquals(6, song.getMode());
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	public void ckRelativeMajor(String target, String key, int mode){
@@ -82,25 +101,6 @@ public class SongTest {
 		ckRelativeMajor("F##", "B#", 4);
 	}
 
-	@Test
-	public void testChangeKey(){
-		try{
-			song.changeKey("C", 1);
-			assertEquals("C", song.getKey());
-			assertEquals("C", song.getRelMajor());
-			assertEquals(1, song.getMode());
-
-			song.changeKey("Ab", 6);
-			assertEquals("Ab", song.getKey());
-			assertEquals("Cb", song.getRelMajor());
-			assertEquals(6, song.getMode());
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
-
 	@Test (expected = Exception.class)
 	public void testInvalidKeyChange() throws Exception{
 		song.changeKey("", 1);
@@ -109,5 +109,21 @@ public class SongTest {
 	@Test
 	public void testToString(){
 		assertEquals("KCmaj C5maj/1.0", song.toString());
+	}
+
+	@Test
+	public void testEquivelantSongs(){
+		try{
+			Song song2 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
+			Song song3 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
+			assertEquals(song2, song3);
+
+			Song song4 = new Song("Title", "Artist", "Part", "G", 1, "1-4", 4, xreader);
+			assertNotEquals(song2, song4);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }
