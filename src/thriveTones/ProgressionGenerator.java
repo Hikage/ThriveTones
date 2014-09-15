@@ -41,10 +41,10 @@ public class ProgressionGenerator {
 			if(!unique_chord_pairs.contains(pair))
 				throw new Exception("Pair should already exist within the unique list");
 			pair = unique_chord_pairs.get(unique_chord_pairs.indexOf(pair));
-			if(pair.getNextChords() == null)
+			if(pair.getChordPairing() == null)
 				throw new Exception("Pair should already have an established next_chords list");
 			else
-				return pair.getNextChords().getANextChord();
+				return pair.getChordPairing().getANextChord();
 		}
 	}
 

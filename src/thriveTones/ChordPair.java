@@ -12,7 +12,7 @@ package thriveTones;
 public class ChordPair {
 	private Chord first;
 	private Chord second;
-	private ChordPairing next_chords;
+	private ChordPairing pairing;
 
 	/**
 	 * Constructor
@@ -22,7 +22,7 @@ public class ChordPair {
 	public ChordPair(Chord f, Chord s){
 		first = f;
 		second = s;
-		next_chords = new ChordPairing();
+		pairing = new ChordPairing();
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class ChordPair {
 	 * @param next: a Chord that succeeds the current Chord
 	 */
 	public void addNextChord(Chord next){
-		next_chords.addChord(next);
+		pairing.addChord(next);
 	}
 
 	/**
@@ -53,8 +53,8 @@ public class ChordPair {
 	 * Retrieves ChordPair's possible next Chords
 	 * @return: the list of next possible Chords
 	 */
-	public ChordPairing getNextChords(){
-		return next_chords;
+	public ChordPairing getChordPairing(){
+		return pairing;
 	}
 
 	/**
