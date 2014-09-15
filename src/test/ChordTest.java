@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import thriveTones.Chord;
+import thriveTones.Chord.Tonality;
 
 
 public class ChordTest {
@@ -415,6 +416,15 @@ public class ChordTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+
+	@Test
+	public void testAddNextChord(){
+		assertEquals(0, chord.getChordPairing().getNextChords().size());
+		Chord second = new Chord(1, Tonality.maj, 4);
+		chord.addNextChord(second);
+		assertEquals(1, chord.getChordPairing().getNextChords().size());
+		assertEquals(second, chord.getChordPairing().getNextChords().get(0));
 	}
 
 	@Test

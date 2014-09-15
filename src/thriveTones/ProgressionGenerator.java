@@ -34,7 +34,7 @@ public class ProgressionGenerator {
 	 */
 	public Chord getNextChord(Chord previous, Chord start) throws Exception{
 		if(previous == null)
-			return start.getNextChords().getANextChord();
+			return start.getChordPairing().getANextChord();
 		else{
 			ChordPair pair = new ChordPair(previous, start);
 			ArrayList<ChordPair> unique_chord_pairs = xreader.getUniqueChordPairs();
