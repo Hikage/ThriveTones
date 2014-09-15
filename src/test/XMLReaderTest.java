@@ -23,15 +23,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import sax.XMLReader;
+import thriveTones.Chord;
+import thriveTones.Chord.Tonality;
+import thriveTones.ChordPair;
 
 public class XMLReaderTest {
 
-	protected static NodeList rows;
-	protected static XMLReader reader;
+	private static NodeList rows;
+	private static XMLReader reader;
+	private static String file = "Hooktheory-Data.xml";
 	
 	@BeforeClass
 	public static void XMLReaderInit() {
-		String file = "Hooktheory-Data.xml";
 		reader = new XMLReader();
 		
 		try{
@@ -43,25 +46,26 @@ public class XMLReaderTest {
 		    
 		    NodeList results = document.getElementsByTagName("resultset");
 		    rows = results.item(0).getChildNodes();
-
-			reader.readIn(file);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
-	
-	@Test
-	public void testInitialization() {		
-		//assertEquals(3, rows.getLength());
-		assertEquals(17, rows.item(1).getChildNodes().getLength());
-		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
-	}
 
 	@Test
 	public void testReadIn(){
+		try {
+			reader.readIn(file);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
 		assertEquals(229, reader.getUniqueChords().size());
+		assertEquals(17, rows.item(1).getChildNodes().getLength());
+		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
 	}
 
 	@Test
@@ -139,4 +143,52 @@ public class XMLReaderTest {
 		reader.SIFtoChords(null);
 	}
 
+	@Test
+	public void testGetChord(){
+		reader = new XMLReader();
+		assertEquals(0, reader.getUniqueChords().size());
+
+		Chord chord = new Chord(1, Tonality.maj, 4);
+		Chord stored_chord = reader.getChord(chord);
+		assertEquals(1, reader.getUniqueChords().size());
+		assertEquals(chord, stored_chord);
+		assertEquals(chord, reader.getUniqueChords().get(0));
+
+		//doesn't re-add the same Chord
+		reader.getChord(chord);
+		assertEquals(1, reader.getUniqueChords().size());
+
+		//shouldn't re-add the same Chord, even if it's a different object
+		Chord chord2 = new Chord(1, Tonality.maj, 4);
+		stored_chord = reader.getChord(chord2);
+		assertEquals(1, reader.getUniqueChords().size());
+		assertEquals(chord, stored_chord);
+		assertEquals(chord2, stored_chord);
+	}
+
+	@Test
+	public void testGetChordPair(){
+		reader = new XMLReader();
+		assertEquals(0, reader.getUniqueChordPairs().size());
+
+		Chord chord1 = new Chord(5, Tonality.maj, 4);
+		Chord chord2 = new Chord(1, Tonality.maj, 4);
+		ChordPair chord_pair = new ChordPair(chord1, chord2);
+		ChordPair stored_chord_pair = reader.getChordPair(chord1, chord2);
+		assertEquals(1, reader.getUniqueChordPairs().size());
+		assertEquals(chord_pair, stored_chord_pair);
+		assertEquals(chord_pair, reader.getUniqueChordPairs().get(0));
+
+		//doesn't re-add the same ChordPair
+		reader.getChordPair(chord1, chord2);
+		assertEquals(1, reader.getUniqueChordPairs().size());
+
+		//shouldn't re-add the same ChordPair, even if it's a different object
+		Chord chord3 = new Chord(1, Tonality.maj, 4);
+		ChordPair chord_pair2 = new ChordPair(chord1, chord3);
+		stored_chord_pair = reader.getChordPair(chord1, chord3);
+		assertEquals(1, reader.getUniqueChordPairs().size());
+		assertEquals(chord_pair, stored_chord_pair);
+		assertEquals(chord_pair2, stored_chord_pair);
+	}
 }
