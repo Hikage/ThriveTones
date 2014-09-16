@@ -14,6 +14,7 @@ import java.util.Random;
  */
 
 public class ChordPairing {
+	private Random random_generator = new Random();
 	private ArrayList<Chord> next_chords;
 	private ArrayList<Integer> indices;
 
@@ -55,7 +56,7 @@ public class ChordPairing {
 	public Chord getANextChord() throws Exception{
 		if(indices.size() < 1)
 			throw new Exception("Indices is somehow unpopulated!");
-		int rand = new Random().nextInt(indices.size());
+		int rand = random_generator.nextInt(indices.size());
 		return next_chords.get(indices.get(rand));
 	}
 
