@@ -19,6 +19,11 @@ public class Driver {
 	 * @param args
 	 */
 	public static void main (String args[]){
+		if(args.length != 1){
+			System.err.println("Usage: java thriveTones.Driver data_file_to_read_in.xml");
+			System.exit(0);
+		}
+
 		String filename = args[0];
 
 		//Read in the data
