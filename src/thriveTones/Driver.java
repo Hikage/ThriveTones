@@ -33,11 +33,6 @@ public class Driver {
 
 		ProgressionGenerator generator = new ProgressionGenerator(reader);
 
-		//Get starting chord
-		//TODO: use stats to determine best starting chord
-		int index = new Random().nextInt(reader.getUniqueChords().size());
-		Chord start = reader.getUniqueChords().get(index);
-
 		//User input to determine song specifics
 		int song_length = 8;
 		/**
@@ -62,6 +57,11 @@ public class Driver {
 			}
 		}while(true);
 		**/
+
+		//Get starting chord
+		//TODO: use stats to determine best starting chord
+		//currently relying on the fact that the first chord read in is a I chord
+		Chord start = reader.getUniqueChords().get(0);
 
 		//Generate progression
 		generator.buildProgression(start, song_length);
