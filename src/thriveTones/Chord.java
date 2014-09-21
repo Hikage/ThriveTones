@@ -91,7 +91,7 @@ public class Chord {
 				applied_target = Integer.parseInt(chord_parts[1]);
 		}
 
-		if(schord.contains("-")){		//has duration
+		if(schord.contains("-")){		//has duration - currently ignored
 			chord_parts = chord_parts[0].split("-");
 			if(chord_parts.length != 2 || !Character.isDigit(chord_parts[1].charAt(0))
 					|| chord_parts[1].length() > 4 || chord_parts[1].length() < 1)
@@ -264,6 +264,14 @@ public class Chord {
 	}
 
 	/**
+	 * Sets Chord's duration
+	 * @param dur
+	 */
+	public void setDuration(double dur){
+		duration = dur;
+	}
+
+	/**
 	 * Add a linked Chord for use in progressions
 	 * @param next: a Chord that succeeds the current Chord
 	 */
@@ -390,9 +398,6 @@ public class Chord {
 		int result = 1;
 		result = prime * result + applied_target;
 		result = prime * result + ((cmode == null) ? 0 : cmode.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(duration);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + (eleven ? 1231 : 1237);
 		result = prime * result
 				+ ((embellishment == null) ? 0 : embellishment.hashCode());
@@ -416,17 +421,14 @@ public class Chord {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Chord other = (Chord) obj;
-		//if (applied_target != other.applied_target)
-		//	return false;
-		//if (cmode == null) {
-		//	if (other.cmode != null)
-		//		return false;
-		//}
-		//else if (!cmode.equals(other.cmode))
-		//	return false;
-		//if (Double.doubleToLongBits(duration) != Double
-		//		.doubleToLongBits(other.duration))
-		//	return false;
+		if (applied_target != other.applied_target)
+			return false;
+		if (cmode == null) {
+			if (other.cmode != null)
+				return false;
+		}
+		else if (!cmode.equals(other.cmode))
+			return false;
 		if (eleven != other.eleven)
 			return false;
 		if (embellishment == null) {
