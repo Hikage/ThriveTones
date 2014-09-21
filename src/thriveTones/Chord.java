@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 public class Chord {
 
 	public enum Tonality {maj, min, dim, aug};
-	
+
 	//TODO: bitmap chord representation?
 	private int root;									//relative note upon which to build the chord (1-7, 1 = tonic)
 	private Tonality tonality;
@@ -27,7 +27,7 @@ public class Chord {
 	private String cmode = "";
 	private int applied_target = 0;
 	private ChordPairing pairing;
-	
+
 	/**
 	 * Constructor method
 	 * @param root: integer representation of Chord's root
@@ -41,7 +41,7 @@ public class Chord {
 		if(rt-1 < 0 || rt-1 > 7)
 			throw new Exception("Invalid root (1-7): " + rt);
 		root = rt;
-		
+
 		tonality = tone;
 		octave = oct;
 
@@ -294,7 +294,7 @@ public class Chord {
 	public int getOctave(){
 		return octave;
 	}
-	
+
 	/**
 	 * Retrieves Chord's inversion
 	 * @return: the Chord's inversion
@@ -302,7 +302,7 @@ public class Chord {
 	public int getInversion(){
 		return inversion;
 	}
-	
+
 	/**
 	 * Retrieves Chord's embellishment
 	 * @return: the Chord's embellishment
