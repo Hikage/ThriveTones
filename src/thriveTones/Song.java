@@ -28,7 +28,7 @@ public class Song {
 	private int mode;
 	private LinkedList<Chord> progression;
 	private double beats;
-	private XMLReader xreader;
+	private ChordDictionary dictionary;
 
 	/**
 	 * Constructor method
@@ -39,11 +39,11 @@ public class Song {
 	 * @param md: song mode (major, minor, dorian, etc)
 	 * @param sif: chords in SIF format
 	 * @param bim: beats in measure
-	 * @param unique_chords: set of unique chords thus far encountered for statistical purposes
+	 * @param dict: Chord dictionary
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
 	public Song(String nm, String at, String pt, String ky, int md, String sif,
-			double bim, XMLReader xr) throws Exception{
+			double bim, ChordDictionary dict) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
@@ -65,38 +65,23 @@ public class Song {
 		else key = ky;
 		mode = md;
 		beats = bim;
-		xreader = xr;
+		dictionary = dict;
 		
 		progression = new LinkedList<Chord>();
 		
 		String[] sif_chords = sif.split(",");
-		Chord two_prev = null;
-		Chord previous = null;
-		Chord current;
+		LinkedList<Chord> sequence = new LinkedList<Chord>();
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
 
-			current = new Chord(mode, sif_chord);
-			xreader.getChord(current);
-
+			Chord current = new Chord(mode, sif_chord);
 			progression.add(current);
 
-			if(previous != null){
-				previous.addNextChord(current);
-				xreader.getChordPair(previous, current);
-
-				if(two_prev != null){
-					ChordPair prev_pair = new ChordPair(two_prev, previous);
-					ArrayList<ChordPair> unique_chord_pairs = xreader.getUniqueChordPairs();
-					int prev_pair_ind = unique_chord_pairs.indexOf(prev_pair);
-					if(prev_pair_ind < 0)
-						throw new Exception("Previous ChordPair isn't in the list when it should be");
-					prev_pair = unique_chord_pairs.get(prev_pair_ind);
-					prev_pair.addNextChord(current);
-				}
-			}
-			two_prev = previous;
-			previous = current;
+			//add to dictionary
+			if(sequence.size() > 3)
+				sequence.remove();
+			sequence.add(current);
+			dictionary.put(sequence, current);
 		}
 
 		calculateRelativeMajor();
@@ -110,7 +95,7 @@ public class Song {
 		mode = md;
 		beats = bim;
 		progression = pg;
-		xreader = null;
+		dictionary = null;
 
 		calculateRelativeMajor();
 	}

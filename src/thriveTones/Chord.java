@@ -26,7 +26,6 @@ public class Chord {
 	private boolean eleven = false;
 	private String cmode = "";
 	private int applied_target = 0;
-	private ChordPairing pairing;
 
 	/**
 	 * Constructor method
@@ -52,7 +51,6 @@ public class Chord {
 		embellishment = emb;
 
 		duration = dur;
-		pairing = new ChordPairing();
 	}
 
 	/**
@@ -65,7 +63,6 @@ public class Chord {
 		root = rt;
 		tonality = tone;
 		duration = dur;
-		pairing = new ChordPairing();
 	}
 
 	/**
@@ -77,8 +74,6 @@ public class Chord {
 	public Chord(int mode, String schord) throws Exception{
 		if(schord.length() < 1)
 			throw new Exception("Empty chord supplied!");
-
-		pairing = new ChordPairing();
 
 		//Parse incoming string
 		String[] chord_parts = schord.toLowerCase().split("/");
@@ -272,14 +267,6 @@ public class Chord {
 	}
 
 	/**
-	 * Add a linked Chord for use in progressions
-	 * @param next: a Chord that succeeds the current Chord
-	 */
-	public void addNextChord(Chord next){
-		pairing.addChord(next);
-	}
-
-	/**
 	 * Retrieves Chord's root
 	 * @return: the root of the Chord
 	 */
@@ -341,14 +328,6 @@ public class Chord {
 	 */
 	public int getAppliedTarget(){
 		return applied_target;
-	}
-
-	/**
-	 * Retrieves Chord's possible next Chords
-	 * @return: the list of next possible Chords
-	 */
-	public ChordPairing getChordPairing(){
-		return pairing;
 	}
 
 	/**

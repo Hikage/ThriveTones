@@ -16,36 +16,14 @@ import sax.XMLReader;
 
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
-	private XMLReader xreader;
+	private ChordDictionary dictionary;
 
 	/**
 	 * Constructor method
 	 */
-	public ProgressionGenerator(XMLReader xr) {
+	public ProgressionGenerator(ChordDictionary dict) {
 		progression = new LinkedList<Chord>();
-		xreader = xr;
-	}
-
-	/**
-	 * Given a starting Chord, provides the next
-	 * @param start: Chord with which to start
-	 * @return: returns the next Chord
-	 * @throws Exception
-	 */
-	public Chord getNextChord(Chord previous, Chord start) throws Exception{
-		if(previous == null)
-			return start.getChordPairing().getANextChord();
-		else{
-			ChordPair pair = new ChordPair(previous, start);
-			ArrayList<ChordPair> unique_chord_pairs = xreader.getUniqueChordPairs();
-			if(!unique_chord_pairs.contains(pair))
-				throw new Exception("Pair should already exist within the unique list");
-			pair = unique_chord_pairs.get(unique_chord_pairs.indexOf(pair));
-			if(pair.getChordPairing() == null)
-				throw new Exception("Pair should already have an established next_chords list");
-			else
-				return pair.getChordPairing().getANextChord();
-		}
+		dictionary = dict;
 	}
 
 	/**
@@ -53,23 +31,15 @@ public class ProgressionGenerator {
 	 * @param current: Chord with which to start the progression
 	 * @param progLength: length of desired progression
 	 */
-	public void buildProgression(Chord current, int prog_length){
+	public void buildProgression(Chord current, int prog_length, int hist_length){
 		progression.add(current);
+		LinkedList<Chord> history = new LinkedList<Chord>();
 
-		Chord previous = null;
-		for(int i = 1; i < prog_length; i++){
-			Chord next;
-			try {
-				next = getNextChord(previous, current);
-				progression.add(next);
-				previous = current;
-				current = next;
-			}
-			catch (Exception e) {
-				System.err.println(e.getMessage());
-				e.printStackTrace();
-			}
-		}
+		for(int i = Math.max(0, progression.size() - hist_length); i < progression.size(); i++)
+			history.add(progression.get(i));
+
+		for(int i = 1; i < prog_length; i++)
+			progression.add(dictionary.getANextChord(history));
 	}
 
 	/**

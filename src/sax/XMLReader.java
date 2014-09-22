@@ -20,23 +20,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
-import thriveTones.Chord;
-import thriveTones.ChordPair;
+import thriveTones.ChordDictionary;
 import thriveTones.Song;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class XMLReader extends DefaultHandler {
-	private static ArrayList<Chord> unique_chords;
-	private static ArrayList<ChordPair> unique_chord_pairs;
+	private static ChordDictionary dictionary;
 
 	/**
 	 * Initializer
 	 */
 	public XMLReader(){
-		unique_chords = new ArrayList<Chord>();
-		unique_chord_pairs = new ArrayList<ChordPair>();
+		dictionary = new ChordDictionary();
 	}
 
 	/**
@@ -151,51 +147,14 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, this);
+		return new Song(title, artist, part, key, mode, sif, beats, dictionary);
 	}
 
 	/**
-	 * unique_chords accessor
-	 * @return: the current list of unique chords available
+	 * dictionary accessor
+	 * @return: the current Chord dictionary
 	 */
-	public ArrayList<Chord> getUniqueChords(){
-		return unique_chords;
-	}
-
-	/**
-	 * Retrieves the unique Chord object or creates a new one
-	 * @return: the unique Chord requested
-	 */
-	public Chord getChord(Chord chord){
-		int index = unique_chords.indexOf(chord);
-		if(index < 0){
-			unique_chords.add(chord);
-			return chord;
-		}
-		return unique_chords.get(index);
-	}
-
-	/**
-	 * unique_chord_pairs accessor
-	 * @return: the current list of unique chord pairs available
-	 */
-	public ArrayList<ChordPair> getUniqueChordPairs(){
-		return unique_chord_pairs;
-	}
-
-	/**
-	 * Retrieves a ChordPair from the unique list
-	 * @param first: first Chord of the pair
-	 * @param second: second Chord of the pair
-	 * @return: a ChordPair with the requested first and second Chords
-	 */
-	public ChordPair getChordPair(Chord first, Chord second){
-		ChordPair pair = new ChordPair(first, second);
-		int index = unique_chord_pairs.indexOf(pair);
-		if(index < 0){
-			unique_chord_pairs.add(pair);
-			return pair;
-		}
-		return unique_chord_pairs.get(index);
+	public ChordDictionary getChordDictionary(){
+		return dictionary;
 	}
 }

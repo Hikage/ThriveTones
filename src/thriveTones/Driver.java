@@ -36,7 +36,8 @@ public class Driver {
 			e.printStackTrace();
 		}
 
-		ProgressionGenerator generator = new ProgressionGenerator(reader);
+		ChordDictionary dictionary = reader.getChordDictionary();
+		ProgressionGenerator generator = new ProgressionGenerator(dictionary);
 
 		//User input to determine song specifics
 		int song_length = 8;
@@ -64,12 +65,10 @@ public class Driver {
 		**/
 
 		//Get starting chord
-		//TODO: use stats to determine best starting chord
-		//currently relying on the fact that the first chord read in is a I chord
-		Chord start = reader.getUniqueChords().get(0);
+		Chord start = dictionary.getANextChord(null);
 
 		//Generate progression
-		generator.buildProgression(start, song_length);
+		generator.buildProgression(start, song_length, 3);
 		LinkedList<Chord> progression = generator.getProgression();
 
 		Song new_hit = new Song("random part", "C", 1, beats, progression);
