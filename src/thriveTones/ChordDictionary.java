@@ -34,8 +34,10 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 		dictionary.put(sequence, available_chords);
 
 		//add entire history
-		sequence.remove();
-		if(sequence.size() > 0)
+		if(sequence != null && !sequence.isEmpty())
+			sequence.remove();
+
+		if(sequence != null && !sequence.isEmpty())
 			put(sequence, chord);
 		else							//add the zeroth history (overall chord frequencies)
 			all_chords.add(chord);
@@ -44,6 +46,7 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 	public Chord getANextChord(LinkedList<Chord> sequence){
 		//pull new random chord if the history doesn't yield anything
 		if(sequence == null || sequence.size() < 1){
+			if(all_chords.size() < 1) return null;
 			int index = random_generator.nextInt(all_chords.size());
 			return all_chords.get(0);
 		}
@@ -59,5 +62,15 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 
 	public boolean contains(LinkedList<Chord> sequence){
 		return dictionary.containsKey(sequence);
+	}
+
+	public ArrayList<Chord> getAllChords(){
+		return all_chords;
+	}
+
+	@Override
+	public void clear(){
+		dictionary.clear();
+		all_chords.clear();
 	}
 }
