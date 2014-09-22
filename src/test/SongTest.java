@@ -15,17 +15,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sax.XMLReader;
+import thriveTones.ChordDictionary;
 import thriveTones.Song;
 
 public class SongTest {
-	private XMLReader xreader;
+	private ChordDictionary dictionary;
 	private static Song song;
 
 	@Before
 	public void init(){
-		xreader = new XMLReader();
+		dictionary = new XMLReader().getChordDictionary();
 		try{
-			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
+			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -114,11 +115,11 @@ public class SongTest {
 	@Test
 	public void testEquivelantSongs(){
 		try{
-			Song song2 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
-			Song song3 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, xreader);
+			Song song2 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
+			Song song3 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
 			assertEquals(song2, song3);
 
-			Song song4 = new Song("Title", "Artist", "Part", "G", 1, "1-4", 4, xreader);
+			Song song4 = new Song("Title", "Artist", "Part", "G", 1, "1-4", 4, dictionary);
 			assertNotEquals(song2, song4);
 		}
 		catch(Exception e){

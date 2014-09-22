@@ -23,9 +23,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import sax.XMLReader;
-import thriveTones.Chord;
-import thriveTones.Chord.Tonality;
-import thriveTones.ChordPair;
 
 public class XMLReaderTest {
 
@@ -63,7 +60,6 @@ public class XMLReaderTest {
 			fail(e.getMessage());
 		}
 
-		assertEquals(229, reader.getUniqueChords().size());
 		assertEquals(17, rows.item(1).getChildNodes().getLength());
 		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
 	}
@@ -141,54 +137,5 @@ public class XMLReaderTest {
 	@Test (expected = Exception.class)
 	public void testNullSIFtoChords() throws Exception{
 		reader.SIFtoChords(null);
-	}
-
-	@Test
-	public void testGetChord(){
-		reader = new XMLReader();
-		assertEquals(0, reader.getUniqueChords().size());
-
-		Chord chord = new Chord(1, Tonality.maj, 4);
-		Chord stored_chord = reader.getChord(chord);
-		assertEquals(1, reader.getUniqueChords().size());
-		assertEquals(chord, stored_chord);
-		assertEquals(chord, reader.getUniqueChords().get(0));
-
-		//doesn't re-add the same Chord
-		reader.getChord(chord);
-		assertEquals(1, reader.getUniqueChords().size());
-
-		//shouldn't re-add the same Chord, even if it's a different object
-		Chord chord2 = new Chord(1, Tonality.maj, 4);
-		stored_chord = reader.getChord(chord2);
-		assertEquals(1, reader.getUniqueChords().size());
-		assertEquals(chord, stored_chord);
-		assertEquals(chord2, stored_chord);
-	}
-
-	@Test
-	public void testGetChordPair(){
-		reader = new XMLReader();
-		assertEquals(0, reader.getUniqueChordPairs().size());
-
-		Chord chord1 = new Chord(5, Tonality.maj, 4);
-		Chord chord2 = new Chord(1, Tonality.maj, 4);
-		ChordPair chord_pair = new ChordPair(chord1, chord2);
-		ChordPair stored_chord_pair = reader.getChordPair(chord1, chord2);
-		assertEquals(1, reader.getUniqueChordPairs().size());
-		assertEquals(chord_pair, stored_chord_pair);
-		assertEquals(chord_pair, reader.getUniqueChordPairs().get(0));
-
-		//doesn't re-add the same ChordPair
-		reader.getChordPair(chord1, chord2);
-		assertEquals(1, reader.getUniqueChordPairs().size());
-
-		//shouldn't re-add the same ChordPair, even if it's a different object
-		Chord chord3 = new Chord(1, Tonality.maj, 4);
-		ChordPair chord_pair2 = new ChordPair(chord1, chord3);
-		stored_chord_pair = reader.getChordPair(chord1, chord3);
-		assertEquals(1, reader.getUniqueChordPairs().size());
-		assertEquals(chord_pair, stored_chord_pair);
-		assertEquals(chord_pair2, stored_chord_pair);
 	}
 }

@@ -18,12 +18,15 @@ import org.junit.Test;
 
 import sax.XMLReader;
 import thriveTones.Chord;
+import thriveTones.ChordDictionary;
 import thriveTones.ProgressionGenerator;
 
 public class ProgressionGeneratorTest {
 	private static ProgressionGenerator generator;
 	private static final int prog_length = 12;
+	private static final int hist_length = 3;
 	private static XMLReader reader;
+	private static ChordDictionary dictionary;
 
 	@BeforeClass
 	public static void init(){
@@ -36,25 +39,24 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator(reader);
+		dictionary = reader.getChordDictionary();
+		generator = new ProgressionGenerator(dictionary);
 	}
 
 	@Test
 	public void testGetNextChord() {
-		try {
-			Chord next = generator.getNextChord(null, reader.getUniqueChords().get(0));
-			//assertEquals(new Chord(1, Tonality.min, 4), next);
+		int frequency = 0;
+		for(int i = 0; i < 100; i++){
+			Chord next = dictionary.getANextChord(null);
+			if(next.getRoot() == 1) frequency++;
 		}
-		catch (Exception e) {
-			fail(e.getMessage());
-			e.printStackTrace();
-		}
+		assertTrue(frequency > 70);
 	}
 
 	@Test
 	public void testBuildProgression() {
-		Chord start = reader.getUniqueChords().get(0);
-		generator.buildProgression(start, prog_length);
+		Chord start = dictionary.getANextChord(null);
+		generator.buildProgression(start, prog_length, hist_length);
 		assertEquals(prog_length, generator.getProgression().size());
 		assertEquals(start, generator.getProgression().get(0));
 		//assertEquals(new Chord(1, Tonality.min, 4), generator.getProgression().get(1));
@@ -75,11 +77,11 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator(reader2);
-		Chord start = reader.getUniqueChords().get(0);
+		generator = new ProgressionGenerator(reader2.getChordDictionary());
+		Chord start = reader.getChordDictionary().getAllChords().get(0);
 		assertEquals(1, start.getRoot());
 
-		generator.buildProgression(start, 16);
+		generator.buildProgression(start, 16, 2);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(1, progression.get(0).getRoot());
 		System.out.print(progression.get(0).getRoot() + " ");
