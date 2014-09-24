@@ -16,61 +16,45 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>>{
-	private HashMap<LinkedList<Chord>, ArrayList<Chord>> dictionary;
 	private Random random_generator;
-	private ArrayList<Chord> all_chords;
 
 	public ChordDictionary(){
-		dictionary = new HashMap<LinkedList<Chord>, ArrayList<Chord>>();
 		random_generator = new Random();
-		all_chords = new ArrayList<Chord>();
 	}
 
 	public void put(LinkedList<Chord> sequence, Chord chord){
-		ArrayList<Chord> available_chords = dictionary.get(sequence);
+		if(sequence == null)
+			sequence = new LinkedList<Chord>();
+
+		ArrayList<Chord> available_chords = this.get(sequence);
 		if(available_chords == null)
 			available_chords = new ArrayList<Chord>();
 		available_chords.add(chord);
-		dictionary.put(sequence, available_chords);
+
+		this.put(sequence, available_chords);
 
 		//add entire history
-		if(sequence != null && !sequence.isEmpty())
-			sequence.remove();
-
-		if(sequence != null && !sequence.isEmpty())
-			put(sequence, chord);
-		else							//add the zeroth history (overall chord frequencies)
-			all_chords.add(chord);
+		if(!sequence.isEmpty()){
+			LinkedList<Chord> seq = new LinkedList<Chord>();
+			if(sequence.size() > 0) seq.addAll(sequence.subList(1, sequence.size()));
+			put(seq, chord);
+		}
 	}
 
-	public Chord getANextChord(LinkedList<Chord> sequence){
-		//pull new random chord if the history doesn't yield anything
-		if(sequence == null || sequence.size() < 1){
-			if(all_chords.size() < 1) return null;
-			int index = random_generator.nextInt(all_chords.size());
-			return all_chords.get(0);
-		}
+	public Chord getANextChord(LinkedList<Chord> sequence) throws Exception{
+		if(sequence == null)
+			sequence = new LinkedList<Chord>();
 
-		ArrayList<Chord> available_chords = dictionary.get(sequence);
+		ArrayList<Chord> available_chords = this.get(sequence);
 		if(available_chords == null){
-			sequence.remove();
-			return getANextChord(sequence);
+			if(sequence.isEmpty())
+				throw new Exception("Sequence is empty and has no next chords!");
+			LinkedList<Chord> seq = new LinkedList<Chord>();
+			seq.addAll(sequence.subList(1, sequence.size()));
+			return getANextChord(seq);
 		}
+		//pull new random chord if the history doesn't yield anything
 		int index = random_generator.nextInt(available_chords.size());
 		return available_chords.get(index);
-	}
-
-	public boolean contains(LinkedList<Chord> sequence){
-		return dictionary.containsKey(sequence);
-	}
-
-	public ArrayList<Chord> getAllChords(){
-		return all_chords;
-	}
-
-	@Override
-	public void clear(){
-		dictionary.clear();
-		all_chords.clear();
 	}
 }

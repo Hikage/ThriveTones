@@ -9,15 +9,12 @@ package thriveTones;
  * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Scanner;
 
 import org.jfugue.Pattern;
 import org.jfugue.Player;
-
-import sax.XMLReader;
 
 public class Song {
 	private String name;

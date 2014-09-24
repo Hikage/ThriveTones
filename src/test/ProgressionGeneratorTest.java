@@ -26,7 +26,7 @@ public class ProgressionGeneratorTest {
 	private static final int prog_length = 12;
 	private static final int hist_length = 3;
 	private static XMLReader reader;
-	private static ChordDictionary dictionary;
+	private static ChordDictionary chord_dictionary;
 
 	@BeforeClass
 	public static void init(){
@@ -39,31 +39,56 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		dictionary = reader.getChordDictionary();
-		generator = new ProgressionGenerator(dictionary);
+		chord_dictionary = reader.getChordDictionary();
+		generator = new ProgressionGenerator(chord_dictionary);
 	}
 
 	@Test
 	public void testGetNextChord() {
-		int frequency = 0;
+		int[] roots = new int[8];
 		for(int i = 0; i < 100; i++){
-			Chord next = dictionary.getANextChord(null);
-			if(next.getRoot() == 1) frequency++;
+			Chord next;
+			try {
+				next = chord_dictionary.getANextChord(null);
+				roots[next.getRoot()]++;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
 		}
-		assertTrue(frequency > 70);
+		for(int count : roots)
+			System.out.println("Root count: " + count + "/" + chord_dictionary.get(new LinkedList<Chord>()).size());
+		assertTrue(roots[1] > 18);
+		assertTrue(roots[1] > roots[5]);
+		assertTrue(roots[5] >= roots[2]);
 	}
 
 	@Test
 	public void testBuildProgression() {
-		Chord start = dictionary.getANextChord(null);
-		generator.buildProgression(start, prog_length, hist_length);
-		assertEquals(prog_length, generator.getProgression().size());
-		assertEquals(start, generator.getProgression().get(0));
-		//assertEquals(new Chord(1, Tonality.min, 4), generator.getProgression().get(1));
+		Chord start;
+		try {
+			start = chord_dictionary.getANextChord(null);
+			generator.buildProgression(start, prog_length, hist_length);
+			LinkedList<Chord> progression = generator.getProgression();
+			assertEquals(prog_length, progression.size());
+			assertEquals(start, progression.get(0));
 
-		System.out.println();
-		for(Chord chord : generator.getProgression())
-			System.out.print(chord.toString() + " ");
+			boolean same = true;
+			for(int i = 1; i < progression.size(); i++){
+				same = progression.get(i-1).equals(progression.get(i));
+				if(!same) break;
+			}
+			assertFalse(same);
+
+			System.out.println();
+			for(Chord chord : generator.getProgression())
+				System.out.print(chord.toString() + " ");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
@@ -78,7 +103,7 @@ public class ProgressionGeneratorTest {
 		}
 
 		generator = new ProgressionGenerator(reader2.getChordDictionary());
-		Chord start = reader.getChordDictionary().getAllChords().get(0);
+		Chord start = reader.getChordDictionary().get(new LinkedList<Chord>()).get(0);
 		assertEquals(1, start.getRoot());
 
 		generator.buildProgression(start, 16, 2);

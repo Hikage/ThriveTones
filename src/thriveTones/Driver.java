@@ -10,6 +10,7 @@ package thriveTones;
  */
 
 import java.util.*;
+
 import sax.XMLReader;
 
 public class Driver {
@@ -32,7 +33,7 @@ public class Driver {
 			reader.readIn(filename);
 		}
 		catch (Exception e) {
-			System.err.println(e.getMessage());
+			System.err.println("Error reading in file: " + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -65,7 +66,15 @@ public class Driver {
 		**/
 
 		//Get starting chord
-		Chord start = dictionary.getANextChord(null);
+		Chord start = null;
+		try {
+			start = dictionary.getANextChord(null);
+		}
+		catch (Exception e) {
+			System.err.println("Something went wrong with getting an initial chord! " + e.getMessage());
+			e.printStackTrace();
+			System.exit(0);
+		}
 
 		//Generate progression
 		generator.buildProgression(start, song_length, 3);

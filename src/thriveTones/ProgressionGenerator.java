@@ -9,10 +9,7 @@ package thriveTones;
  * Generates a chord progression based on established probabilities
  */
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-
-import sax.XMLReader;
 
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
@@ -38,8 +35,16 @@ public class ProgressionGenerator {
 		for(int i = Math.max(0, progression.size() - hist_length); i < progression.size(); i++)
 			history.add(progression.get(i));
 
-		for(int i = 1; i < prog_length; i++)
-			progression.add(dictionary.getANextChord(history));
+		for(int i = 1; i < prog_length; i++){
+			try {
+				progression.add(dictionary.getANextChord(history));
+			}
+			catch (Exception e) {
+				System.err.println("Something went wrong with building the progression: " + e.getMessage());
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
 	}
 
 	/**
