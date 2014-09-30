@@ -11,6 +11,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.junit.BeforeClass;
@@ -74,16 +75,17 @@ public class ProgressionGeneratorTest {
 			assertEquals(prog_length, progression.size());
 			assertEquals(start, progression.get(0));
 
+			System.out.println();
+			System.out.println("Chords length: " + chord_dictionary.get(new LinkedList<Chord>()).size());
+			for(Chord chord : generator.getProgression())
+				System.out.print(chord.toString() + " ");
+
 			boolean same = true;
 			for(int i = 1; i < progression.size(); i++){
 				same = progression.get(i-1).equals(progression.get(i));
 				if(!same) break;
 			}
 			assertFalse(same);
-
-			System.out.println();
-			for(Chord chord : generator.getProgression())
-				System.out.print(chord.toString() + " ");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -102,16 +104,28 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		generator = new ProgressionGenerator(reader2.getChordDictionary());
-		Chord start = reader.getChordDictionary().get(new LinkedList<Chord>()).get(0);
+		chord_dictionary = reader2.getChordDictionary();
+		generator = new ProgressionGenerator(chord_dictionary);
+		Chord start = reader2.getChordDictionary().get(new LinkedList<Chord>()).get(0);
 		assertEquals(1, start.getRoot());
 
-		generator.buildProgression(start, 16, 2);
+		ArrayList<Chord> sequence = new ArrayList<Chord>();
+		sequence.add(start);
+		ArrayList<Chord> available_chords = chord_dictionary.get(sequence);
+
+		boolean same = true;
+		for(int i = 1; i < available_chords.size(); i++)
+			same = (available_chords.get(i) == available_chords.get(i-1));
+		assertFalse(same);
+
+		generator.buildProgression(start, 16, 3);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(1, progression.get(0).getRoot());
 		System.out.print(progression.get(0).getRoot() + " ");
 
+		same = true;
 		for(int i = 1; i < progression.size(); i++){
+			same = (progression.get(i) == progression.get(i-1));
 			int prev_chord = progression.get(i-1).getRoot();
 			int curr_chord = progression.get(i).getRoot();
 			System.out.print(curr_chord + " ");
@@ -123,5 +137,6 @@ public class ProgressionGeneratorTest {
 			default: fail("Invalid chord: " + curr_chord);
 			}
 		}
+		assertFalse(same);
 	}
 }

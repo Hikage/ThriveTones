@@ -13,31 +13,39 @@ import java.util.LinkedList;
 
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
-	private ChordDictionary dictionary;
+	private ChordDictionary chord_dictionary;
 
 	/**
 	 * Constructor method
 	 */
 	public ProgressionGenerator(ChordDictionary dict) {
-		progression = new LinkedList<Chord>();
-		dictionary = dict;
+		chord_dictionary = dict;
 	}
 
 	/**
 	 * Builds a chord progression based on a supplied starting Chord
-	 * @param current: Chord with which to start the progression
-	 * @param progLength: length of desired progression
+	 * @param start: Chord with which to start the progression
+	 * @param prog_length: length of desired progression
+	 * @param hist_length: length of the history to use
 	 */
-	public void buildProgression(Chord current, int prog_length, int hist_length){
-		progression.add(current);
-		LinkedList<Chord> history = new LinkedList<Chord>();
+	public void buildProgression(Chord start, int prog_length, int hist_length){
+		progression = new LinkedList<Chord>();
+		progression.add(start);
 
-		for(int i = Math.max(0, progression.size() - hist_length); i < progression.size(); i++)
-			history.add(progression.get(i));
+		LinkedList<Chord> history = new LinkedList<Chord>();
+		if(hist_length >= 1)
+			history.add(start);
 
 		for(int i = 1; i < prog_length; i++){
 			try {
-				progression.add(dictionary.getANextChord(history));
+				System.out.print("History: ");
+				for(Chord h : history)
+					System.out.print(h.toString() + " ");
+				System.out.println();
+				Chord next = chord_dictionary.getANextChord(history);
+				progression.add(next);
+				history.add(next);
+				if(history.size() > hist_length) history.remove();
 			}
 			catch (Exception e) {
 				System.err.println("Something went wrong with building the progression: " + e.getMessage());

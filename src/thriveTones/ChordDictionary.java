@@ -23,38 +23,40 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 	}
 
 	public void put(LinkedList<Chord> sequence, Chord chord){
-		if(sequence == null)
-			sequence = new LinkedList<Chord>();
+		LinkedList<Chord> key = new LinkedList<Chord>();
+		if(sequence != null) key.addAll(sequence);					//make local copy to avoid it changing from under us
 
-		ArrayList<Chord> available_chords = this.get(sequence);
+		ArrayList<Chord> available_chords = this.get(key);
 		if(available_chords == null)
 			available_chords = new ArrayList<Chord>();
-		available_chords.add(chord);
+		available_chords.add(chord);								//available chords might change, but put will overwrite anyway
 
-		this.put(sequence, available_chords);
+		this.put(key, available_chords);
 
 		//add entire history
-		if(!sequence.isEmpty()){
+		if(!key.isEmpty()){
 			LinkedList<Chord> seq = new LinkedList<Chord>();
-			if(sequence.size() > 0) seq.addAll(sequence.subList(1, sequence.size()));
+			if(key.size() > 1) seq.addAll(key.subList(1, key.size()));
 			put(seq, chord);
 		}
 	}
 
 	public Chord getANextChord(LinkedList<Chord> sequence) throws Exception{
-		if(sequence == null)
-			sequence = new LinkedList<Chord>();
+		LinkedList<Chord> key = new LinkedList<Chord>();
+		if(sequence != null) key.addAll(sequence);					//make local copy to avoid it changing from under us
 
-		ArrayList<Chord> available_chords = this.get(sequence);
+		ArrayList<Chord> available_chords = this.get(key);
 		if(available_chords == null){
-			if(sequence.isEmpty())
+			if(key.isEmpty())
 				throw new Exception("Sequence is empty and has no next chords!");
 			LinkedList<Chord> seq = new LinkedList<Chord>();
-			seq.addAll(sequence.subList(1, sequence.size()));
+			seq.addAll(key.subList(1, key.size()));
 			return getANextChord(seq);
 		}
 		//pull new random chord if the history doesn't yield anything
 		int index = random_generator.nextInt(available_chords.size());
+		System.out.println("Index: " + index);
+		System.out.println("Chord: " + available_chords.get(index).toString());
 		return available_chords.get(index);
 	}
 }

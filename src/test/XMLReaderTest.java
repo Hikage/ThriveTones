@@ -12,6 +12,8 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,12 +25,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import sax.XMLReader;
+import thriveTones.Chord;
+import thriveTones.ChordDictionary;
 
 public class XMLReaderTest {
 
 	private static NodeList rows;
 	private static XMLReader reader;
 	private static String file = "Hooktheory-Data.xml";
+	private static ChordDictionary chord_dictionary;
 	
 	@BeforeClass
 	public static void XMLReaderInit() {
@@ -62,6 +67,58 @@ public class XMLReaderTest {
 
 		assertEquals(17, rows.item(1).getChildNodes().getLength());
 		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
+	}
+
+	@Test
+	public void testDictionaryBuild(){
+		chord_dictionary = reader.getChordDictionary();
+		if(chord_dictionary == null || chord_dictionary.isEmpty()){
+			try {
+				reader.readIn(file);
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+		}
+
+		// Test empty chord pull
+		int[] roots = new int[8];
+		for(int i = 0; i < 100; i++){
+			Chord next;
+			try {
+				next = chord_dictionary.getANextChord(null);
+				roots[next.getRoot()]++;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+		}
+		assertTrue(roots[1] > 18);
+		assertTrue(roots[1] > roots[5]);
+		assertTrue(roots[5] >= roots[2]);
+
+		// Test single-chord lookups
+		for(int i = 0; i < 10; i++){
+			Chord next;
+			LinkedList<Chord> sequence = new LinkedList<Chord>();
+			try {
+				next = chord_dictionary.getANextChord(null);
+				sequence.add(next);
+				ArrayList<Chord> available_chords = chord_dictionary.get(sequence);
+
+				boolean same = true;
+				for(int j = 1; j < available_chords.size(); j++){
+					same = (available_chords.get(j) == available_chords.get(j-1));
+				}
+				assertFalse(same);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+		}
 	}
 
 	@Test

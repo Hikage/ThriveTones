@@ -26,13 +26,13 @@ import thriveTones.Song;
 import java.io.*;
 
 public class XMLReader extends DefaultHandler {
-	private static ChordDictionary dictionary;
+	private static ChordDictionary chord_dictionary;
 
 	/**
 	 * Initializer
 	 */
 	public XMLReader(){
-		dictionary = new ChordDictionary();
+		chord_dictionary = new ChordDictionary();
 	}
 
 	/**
@@ -147,14 +147,14 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, dictionary);
+		return new Song(title, artist, part, key, mode, sif, beats, chord_dictionary);
 	}
 
 	/**
-	 * dictionary accessor
-	 * @return: the current Chord dictionary
+	 * chord_dictionary accessor
+	 * @return: the current Chord chord_dictionary
 	 */
 	public ChordDictionary getChordDictionary(){
-		return dictionary;
+		return chord_dictionary;
 	}
 }
