@@ -12,6 +12,7 @@ package thriveTones;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 @SuppressWarnings("serial")
@@ -41,19 +42,17 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 		}
 	}
 
-	public Chord getANextChord(LinkedList<Chord> sequence) throws Exception{
-		LinkedList<Chord> key = new LinkedList<Chord>();
-		if(sequence != null) key.addAll(sequence);					//make local copy to avoid it changing from under us
-
-		ArrayList<Chord> available_chords = this.get(key);
+	public Chord getANextChord(List<Chord> sequence) throws Exception{
+		if(sequence == null)
+			sequence = new LinkedList<Chord>();
+		ArrayList<Chord> available_chords = this.get(sequence);
 		if(available_chords == null){
-			if(key.isEmpty())
-				throw new Exception("Sequence is empty and has no next chords!");
-			LinkedList<Chord> seq = new LinkedList<Chord>();
-			seq.addAll(key.subList(1, key.size()));
-			return getANextChord(seq);
+			// history had nothing
+			assert(sequence.size() > 0);
+			// shorten the history by one and try again
+			return getANextChord(sequence.subList(1, sequence.size()));
 		}
-		//pull new random chord if the history doesn't yield anything
+		//pull new random chord from the history choices
 		int index = random_generator.nextInt(available_chords.size());
 		System.out.println("Index: " + index);
 		System.out.println("Chord: " + available_chords.get(index).toString());
