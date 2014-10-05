@@ -52,12 +52,8 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 	public Chord getANextChord(List<Chord> sequence){
 		if(sequence == null)
 			sequence = new LinkedList<Chord>();
+
 		ArrayList<Chord> available_chords = this.get(sequence);
-		if(available_chords != null){
-			System.out.println("Available chords:");
-			for(Chord c : available_chords) System.out.print(c.toString() + " ");
-			System.out.println();
-		}
 		if(available_chords == null){
 			// history had nothing
 			assert(sequence.size() > 0);
@@ -66,8 +62,6 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 		}
 		//pull new random chord from the history choices
 		int index = random_generator.nextInt(available_chords.size());
-		System.out.println("Index: " + index + "/" + available_chords.size());
-		System.out.println("Chord: " + available_chords.get(index).toString());
 		return available_chords.get(index);
 	}
 }

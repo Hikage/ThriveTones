@@ -38,10 +38,6 @@ public class ProgressionGenerator {
 
 		for(int i = 1; i < prog_length; i++){
 			try {
-				System.out.print("History: ");
-				for(Chord h : history)
-					System.out.print(h.toString() + " ");
-				System.out.println();
 				Chord next = chord_dictionary.getANextChord(history);
 				progression.add(next);
 				history.add(next);

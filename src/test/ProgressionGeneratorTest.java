@@ -105,6 +105,7 @@ public class ProgressionGeneratorTest {
 		}
 
 		chord_dictionary = reader2.getChordDictionary();
+		System.out.println("Dictionary:\n" + chord_dictionary.toString() + "\n");
 		generator = new ProgressionGenerator(chord_dictionary);
 		Chord start = reader2.getChordDictionary().get(new LinkedList<Chord>()).get(0);
 		assertEquals(1, start.getRoot());
@@ -121,6 +122,7 @@ public class ProgressionGeneratorTest {
 		generator.buildProgression(start, 16, 3);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(1, progression.get(0).getRoot());
+		System.out.println();
 		System.out.print(progression.get(0).getRoot() + " ");
 
 		same = true;
