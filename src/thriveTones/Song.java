@@ -26,6 +26,7 @@ public class Song {
 	private LinkedList<Chord> progression;
 	private double beats;
 	private ChordDictionary dictionary;
+	private static final int MAX_HISTORY_LENGTH = 3;
 
 	/**
 	 * Constructor method
@@ -75,10 +76,10 @@ public class Song {
 			progression.add(current);
 
 			//add to dictionary
-			if(sequence.size() > 3)
+			if(sequence.size() > MAX_HISTORY_LENGTH)
 				sequence.remove();
-			sequence.add(current);
 			dictionary.put(sequence, current);
+			sequence.add(current);
 		}
 
 		calculateRelativeMajor();
