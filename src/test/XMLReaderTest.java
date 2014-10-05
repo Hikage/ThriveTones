@@ -85,15 +85,8 @@ public class XMLReaderTest {
 		// Test empty chord pull
 		int[] roots = new int[8];
 		for(int i = 0; i < 100; i++){
-			Chord next;
-			try {
-				next = chord_dictionary.getANextChord(null);
-				roots[next.getRoot()]++;
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				fail(e.getMessage());
-			}
+			Chord next = chord_dictionary.getANextChord(null);
+			roots[next.getRoot()]++;
 		}
 		assertTrue(roots[1] > 18);
 		assertTrue(roots[1] > roots[5]);
@@ -103,21 +96,15 @@ public class XMLReaderTest {
 		for(int i = 0; i < 10; i++){
 			Chord next;
 			LinkedList<Chord> sequence = new LinkedList<Chord>();
-			try {
-				next = chord_dictionary.getANextChord(null);
-				sequence.add(next);
-				ArrayList<Chord> available_chords = chord_dictionary.get(sequence);
+			next = chord_dictionary.getANextChord(null);
+			sequence.add(next);
+			ArrayList<Chord> available_chords = chord_dictionary.get(sequence);
 
-				boolean same = true;
-				for(int j = 1; j < available_chords.size(); j++){
-					same = (available_chords.get(j) == available_chords.get(j-1));
-				}
-				assertFalse(same);
+			boolean same = true;
+			for(int j = 1; j < available_chords.size(); j++){
+				same = (available_chords.get(j) == available_chords.get(j-1));
 			}
-			catch (Exception e) {
-				e.printStackTrace();
-				fail(e.getMessage());
-			}
+			assertFalse(same);
 		}
 	}
 

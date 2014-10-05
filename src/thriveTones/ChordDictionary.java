@@ -25,6 +25,7 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 	 * @param chord: next chord possibility, hash value
 	 */
 	public void put(List<Chord> sequence, Chord chord){
+		if(sequence == null) sequence = new LinkedList<Chord>();
 		// shallow copy the sequence for key storage
 		LinkedList<Chord> key = new LinkedList<Chord>(sequence);
 

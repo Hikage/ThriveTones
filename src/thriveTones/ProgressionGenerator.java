@@ -37,17 +37,10 @@ public class ProgressionGenerator {
 			history.add(start);
 
 		for(int i = 1; i < prog_length; i++){
-			try {
-				Chord next = chord_dictionary.getANextChord(history);
-				progression.add(next);
-				history.add(next);
-				if(history.size() > hist_length) history.remove();
-			}
-			catch (Exception e) {
-				System.err.println("Something went wrong with building the progression: " + e.getMessage());
-				e.printStackTrace();
-				System.exit(0);
-			}
+			Chord next = chord_dictionary.getANextChord(history);
+			progression.add(next);
+			history.add(next);
+			if(history.size() > hist_length) history.remove();
 		}
 	}
 

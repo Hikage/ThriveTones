@@ -48,15 +48,8 @@ public class ProgressionGeneratorTest {
 	public void testGetNextChord() {
 		int[] roots = new int[8];
 		for(int i = 0; i < 100; i++){
-			Chord next;
-			try {
-				next = chord_dictionary.getANextChord(null);
-				roots[next.getRoot()]++;
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				fail(e.getMessage());
-			}
+			Chord next = chord_dictionary.getANextChord(null);
+			roots[next.getRoot()]++;
 		}
 		for(int count : roots)
 			System.out.println("Root count: " + count + "/" + chord_dictionary.get(new LinkedList<Chord>()).size());
@@ -67,30 +60,23 @@ public class ProgressionGeneratorTest {
 
 	@Test
 	public void testBuildProgression() {
-		Chord start;
-		try {
-			start = chord_dictionary.getANextChord(null);
-			generator.buildProgression(start, prog_length, hist_length);
-			LinkedList<Chord> progression = generator.getProgression();
-			assertEquals(prog_length, progression.size());
-			assertEquals(start, progression.get(0));
+		Chord start = chord_dictionary.getANextChord(null);
+		generator.buildProgression(start, prog_length, hist_length);
+		LinkedList<Chord> progression = generator.getProgression();
+		assertEquals(prog_length, progression.size());
+		assertEquals(start, progression.get(0));
 
-			System.out.println();
-			System.out.println("Chords length: " + chord_dictionary.get(new LinkedList<Chord>()).size());
-			for(Chord chord : generator.getProgression())
-				System.out.print(chord.toString() + " ");
+		System.out.println();
+		System.out.println("Chords length: " + chord_dictionary.get(new LinkedList<Chord>()).size());
+		for(Chord chord : generator.getProgression())
+			System.out.print(chord.toString() + " ");
 
-			boolean same = true;
-			for(int i = 1; i < progression.size(); i++){
-				same = progression.get(i-1).equals(progression.get(i));
-				if(!same) break;
-			}
-			assertFalse(same);
+		boolean same = true;
+		for(int i = 1; i < progression.size(); i++){
+			same = progression.get(i-1).equals(progression.get(i));
+			if(!same) break;
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertFalse(same);
 	}
 
 	@Test

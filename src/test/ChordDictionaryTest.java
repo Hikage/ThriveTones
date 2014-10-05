@@ -39,22 +39,11 @@ public class ChordDictionaryTest {
 		assertFalse(chord_dictionary == null);
 	}
 
-	@Test (expected = Exception.class)
-	public void testEmptyGet() throws Exception{
-		chord_dictionary.getANextChord(null);
-	}
-
 	@Test
 	public void testPutSingleChord(){
 		Chord chord = new Chord(1, Tonality.maj, 4);
 		chord_dictionary.put(null, chord);
-		try {
-			assertEquals(chord, chord_dictionary.getANextChord(null));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertEquals(chord, chord_dictionary.getANextChord(null));
 	}
 
 	@Test
@@ -63,24 +52,18 @@ public class ChordDictionaryTest {
 		Chord chord2 = new Chord(5, Tonality.maj, 4);
 		chord_dictionary.put(null, chord1);
 		chord_dictionary.put(null, chord1);
-		try {
-			assertEquals(chord1, chord_dictionary.getANextChord(null));
-			assertEquals(2, chord_dictionary.get(new LinkedList<Chord>()).size());
+		assertEquals(chord1, chord_dictionary.getANextChord(null));
+		assertEquals(2, chord_dictionary.get(new LinkedList<Chord>()).size());
 
-			chord_dictionary.put(null, chord2);
+		chord_dictionary.put(null, chord2);
 
-			int frequency = 0;
-			for(int i = 0; i < 100; i++){
-				Chord next = chord_dictionary.getANextChord(null);
-				if(next.getRoot() == 1) frequency++;
-			}
-			System.out.println("Chord frequency: " + frequency);
-			assertTrue(frequency > 55);
+		int frequency = 0;
+		for(int i = 0; i < 100; i++){
+			Chord next = chord_dictionary.getANextChord(null);
+			if(next.getRoot() == 1) frequency++;
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		System.out.println("Chord frequency: " + frequency);
+		assertTrue(frequency > 55);
 	}
 
 	@Test
@@ -98,22 +81,16 @@ public class ChordDictionaryTest {
 		chord_dictionary.put(sequence, chord3);
 		chord_dictionary.put(sequence, chord3);
 
-		try {
-			assertEquals(4, chord_dictionary.get(sequence).size());
-			assertEquals(2, chord_dictionary.size());
+		assertEquals(4, chord_dictionary.get(sequence).size());
+		assertEquals(2, chord_dictionary.size());
 
-			int frequency = 0;
-			for(int i = 0; i < 100; i++){
-				Chord next = chord_dictionary.getANextChord(sequence);
-				if(next.getRoot() == 4) frequency++;
-			}
-			System.out.println("50/50 sequence frequency: " + frequency);
-			assertTrue(frequency >= 40 && frequency <= 60);
+		int frequency = 0;
+		for(int i = 0; i < 100; i++){
+			Chord next = chord_dictionary.getANextChord(sequence);
+			if(next.getRoot() == 4) frequency++;
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		System.out.println("50/50 sequence frequency: " + frequency);
+		assertTrue(frequency >= 40 && frequency <= 60);
 	}
 
 	@Test
@@ -137,23 +114,17 @@ public class ChordDictionaryTest {
 		chord_dictionary.put(sequence2, chord1);
 		chord_dictionary.put(sequence2, chord1);
 
-		try {
-			assertEquals(3, chord_dictionary.get(sequence1).size());
-			assertEquals(4, chord_dictionary.size());
-			assertEquals(chord_dictionary.get(sequence1), chord_dictionary.get(sequence2));
+		assertEquals(3, chord_dictionary.get(sequence1).size());
+		assertEquals(4, chord_dictionary.size());
+		assertEquals(chord_dictionary.get(sequence1), chord_dictionary.get(sequence2));
 
-			int frequency = 0;
-			for(int i = 0; i < 100; i++){
-				Chord next = chord_dictionary.getANextChord(sequence1);
-				if(next.getRoot() == 1) frequency++;
-			}
-			System.out.println("Sequence frequency: " + frequency);
-			assertTrue(frequency > 55);
+		int frequency = 0;
+		for(int i = 0; i < 100; i++){
+			Chord next = chord_dictionary.getANextChord(sequence1);
+			if(next.getRoot() == 1) frequency++;
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		System.out.println("Sequence frequency: " + frequency);
+		assertTrue(frequency > 55);
 	}
 
 	@Test
@@ -173,13 +144,7 @@ public class ChordDictionaryTest {
 		assertEquals(chord2, chord_dictionary.get(new LinkedList<Chord>()).get(1));
 
 		assertEquals(chord2, chord_dictionary.get(sequence).get(0));
-		try {
-			assertEquals(chord2, chord_dictionary.getANextChord(sequence));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertEquals(chord2, chord_dictionary.getANextChord(sequence));
 	}
 
 	@Test
@@ -204,24 +169,11 @@ public class ChordDictionaryTest {
 		assertEquals(chord1, chord_dictionary.get(new LinkedList<Chord>()).get(0));
 		assertEquals(chord2, chord_dictionary.get(new LinkedList<Chord>()).get(1));
 		assertEquals(chord3, chord_dictionary.get(new LinkedList<Chord>()).get(2));
-
-		try {
-			assertEquals(chord3, chord_dictionary.getANextChord(sequence));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
 
 		sequence.remove();
 		assertTrue(chord_dictionary.containsKey(sequence));
-		try {
-			assertEquals(chord3, chord_dictionary.getANextChord(sequence));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
 	}
 
 	@Test
@@ -241,19 +193,13 @@ public class ChordDictionaryTest {
 
 		sequence.add(chord3);
 
-		try {
-			assertNotNull(chord_dictionary.getANextChord(sequence));
-			sequence.remove(sequence.size()-1);
-			assertEquals(chord3, chord_dictionary.getANextChord(sequence));
-			sequence.remove(sequence.size()-1);
-			assertEquals(chord2, chord_dictionary.getANextChord(sequence));
-			sequence.remove(sequence.size()-1);
-			assertNotNull(chord_dictionary.getANextChord(sequence));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertNotNull(chord_dictionary.getANextChord(sequence));
+		sequence.remove(sequence.size()-1);
+		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
+		sequence.remove(sequence.size()-1);
+		assertEquals(chord2, chord_dictionary.getANextChord(sequence));
+		sequence.remove(sequence.size()-1);
+		assertNotNull(chord_dictionary.getANextChord(sequence));
 	}
 
 	@Test
@@ -278,23 +224,17 @@ public class ChordDictionaryTest {
 		LinkedList<Chord> sequence3 = new LinkedList<Chord>();
 		sequence3.add(chord3);
 
-		try {
-			assertEquals(chord2, chord_dictionary.getANextChord(sequence2));
+		assertEquals(chord2, chord_dictionary.getANextChord(sequence2));
 
-			int[] roots = new int[8];
-			for(int i = 0; i < 100; i++){
-				Chord next;
-				next = chord_dictionary.getANextChord(null);
-				roots[next.getRoot()]++;
-			}
-			assertTrue(roots[1] > 20);
-			assertTrue(roots[4] > 20);
-			assertTrue(roots[5] > 20);
+		int[] roots = new int[8];
+		for(int i = 0; i < 100; i++){
+			Chord next;
+			next = chord_dictionary.getANextChord(null);
+			roots[next.getRoot()]++;
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		assertTrue(roots[1] > 20);
+		assertTrue(roots[4] > 20);
+		assertTrue(roots[5] > 20);
 	}
 
 }

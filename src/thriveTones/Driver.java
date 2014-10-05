@@ -67,14 +67,7 @@ public class Driver {
 
 		//Get starting chord
 		Chord start = null;
-		try {
-			start = dictionary.getANextChord(null);
-		}
-		catch (Exception e) {
-			System.err.println("Something went wrong with getting an initial chord! " + e.getMessage());
-			e.printStackTrace();
-			System.exit(0);
-		}
+		start = dictionary.getANextChord(null);
 
 		//Generate progression
 		generator.buildProgression(start, song_length, 3);
