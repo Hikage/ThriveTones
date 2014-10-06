@@ -10,12 +10,11 @@ package thriveTones;
  */
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class Chord {
 
 	public enum Tonality {maj, min, dim, aug};
-	
+
 	//TODO: bitmap chord representation?
 	private int root;									//relative note upon which to build the chord (1-7, 1 = tonic)
 	private Tonality tonality;
@@ -27,8 +26,7 @@ public class Chord {
 	private boolean eleven = false;
 	private String cmode = "";
 	private int applied_target = 0;
-	private ChordPairing next_chords;
-	
+
 	/**
 	 * Constructor method
 	 * @param root: integer representation of Chord's root
@@ -42,7 +40,7 @@ public class Chord {
 		if(rt-1 < 0 || rt-1 > 7)
 			throw new Exception("Invalid root (1-7): " + rt);
 		root = rt;
-		
+
 		tonality = tone;
 		octave = oct;
 
@@ -53,7 +51,6 @@ public class Chord {
 		embellishment = emb;
 
 		duration = dur;
-		next_chords = new ChordPairing();
 	}
 
 	/**
@@ -66,7 +63,6 @@ public class Chord {
 		root = rt;
 		tonality = tone;
 		duration = dur;
-		next_chords = new ChordPairing();
 	}
 
 	/**
@@ -79,8 +75,6 @@ public class Chord {
 		if(schord.length() < 1)
 			throw new Exception("Empty chord supplied!");
 
-		next_chords = new ChordPairing();
-
 		//Parse incoming string
 		String[] chord_parts = schord.toLowerCase().split("/");
 
@@ -92,7 +86,7 @@ public class Chord {
 				applied_target = Integer.parseInt(chord_parts[1]);
 		}
 
-		if(schord.contains("-")){		//has duration
+		if(schord.contains("-")){		//has duration - currently ignored
 			chord_parts = chord_parts[0].split("-");
 			if(chord_parts.length != 2 || !Character.isDigit(chord_parts[1].charAt(0))
 					|| chord_parts[1].length() > 4 || chord_parts[1].length() < 1)
@@ -265,11 +259,11 @@ public class Chord {
 	}
 
 	/**
-	 * Add a linked Chord for use in progressions
-	 * @param next: a Chord that succeeds the current Chord
+	 * Sets Chord's duration
+	 * @param dur
 	 */
-	public void addNextChord(Chord next){
-		next_chords.addChord(next);
+	public void setDuration(double dur){
+		duration = dur;
 	}
 
 	/**
@@ -295,7 +289,7 @@ public class Chord {
 	public int getOctave(){
 		return octave;
 	}
-	
+
 	/**
 	 * Retrieves Chord's inversion
 	 * @return: the Chord's inversion
@@ -303,7 +297,7 @@ public class Chord {
 	public int getInversion(){
 		return inversion;
 	}
-	
+
 	/**
 	 * Retrieves Chord's embellishment
 	 * @return: the Chord's embellishment
@@ -337,14 +331,6 @@ public class Chord {
 	}
 
 	/**
-	 * Retrieves Chord's possible next Chords
-	 * @return: the list of next possible Chords
-	 */
-	public ChordPairing getNextChords(){
-		return next_chords;
-	}
-
-	/**
 	 * Converts Chord into a key-independent string representation
 	 * @return: the JFugue string representation of the Chord
 	 */
@@ -367,16 +353,16 @@ public class Chord {
 		String chord = "";
 		if(key < 0) chord += root;
 		else chord += (char)(int)('A' + ((key + root - 1) % 7));
-		chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
+		//chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
 		if(eleven) chord += "dom11";
 		else{
-			if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
+			//if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
 				chord += tonality;
 			if(seven) chord += "7";
-			for(int i = 0; i<inversion; i++) chord += "^";
+			//for(int i = 0; i<inversion; i++) chord += "^";
 			//chord += embellishment;
 		}
-		chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
+		//chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
 
 		return chord;
 	}
@@ -391,9 +377,6 @@ public class Chord {
 		int result = 1;
 		result = prime * result + applied_target;
 		result = prime * result + ((cmode == null) ? 0 : cmode.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(duration);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + (eleven ? 1231 : 1237);
 		result = prime * result
 				+ ((embellishment == null) ? 0 : embellishment.hashCode());
@@ -417,17 +400,14 @@ public class Chord {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Chord other = (Chord) obj;
-		//if (applied_target != other.applied_target)
-		//	return false;
-		//if (cmode == null) {
-		//	if (other.cmode != null)
-		//		return false;
-		//}
-		//else if (!cmode.equals(other.cmode))
-		//	return false;
-		//if (Double.doubleToLongBits(duration) != Double
-		//		.doubleToLongBits(other.duration))
-		//	return false;
+		if (applied_target != other.applied_target)
+			return false;
+		if (cmode == null) {
+			if (other.cmode != null)
+				return false;
+		}
+		else if (!cmode.equals(other.cmode))
+			return false;
 		if (eleven != other.eleven)
 			return false;
 		if (embellishment == null) {

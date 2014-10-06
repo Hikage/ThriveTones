@@ -11,23 +11,22 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import thriveTones.Chord;
+import sax.XMLReader;
+import thriveTones.ChordDictionary;
 import thriveTones.Song;
 
 public class SongTest {
-
+	private ChordDictionary dictionary;
 	private static Song song;
 
 	@Before
 	public void init(){
-		ArrayList<Chord> unique_chords = new ArrayList<Chord>();
+		dictionary = new XMLReader().getChordDictionary();
 		try{
-			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, unique_chords);
+			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -45,6 +44,25 @@ public class SongTest {
 		assertEquals(1, song.getMode());
 		assertEquals(1, song.getChords().size());
 		assertEquals(4, song.getBeats(), 0);
+	}
+
+	@Test
+	public void testChangeKey(){
+		try{
+			song.changeKey("C", 1);
+			assertEquals("C", song.getKey());
+			assertEquals("C", song.getRelMajor());
+			assertEquals(1, song.getMode());
+
+			song.changeKey("Ab", 6);
+			assertEquals("Ab", song.getKey());
+			assertEquals("Cb", song.getRelMajor());
+			assertEquals(6, song.getMode());
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	public void ckRelativeMajor(String target, String key, int mode){
@@ -84,25 +102,6 @@ public class SongTest {
 		ckRelativeMajor("F##", "B#", 4);
 	}
 
-	@Test
-	public void testChangeKey(){
-		try{
-			song.changeKey("C", 1);
-			assertEquals("C", song.getKey());
-			assertEquals("C", song.getRelMajor());
-			assertEquals(1, song.getMode());
-
-			song.changeKey("Ab", 6);
-			assertEquals("Ab", song.getKey());
-			assertEquals("Cb", song.getRelMajor());
-			assertEquals(6, song.getMode());
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
-
 	@Test (expected = Exception.class)
 	public void testInvalidKeyChange() throws Exception{
 		song.changeKey("", 1);
@@ -111,5 +110,21 @@ public class SongTest {
 	@Test
 	public void testToString(){
 		assertEquals("KCmaj C5maj/1.0", song.toString());
+	}
+
+	@Test
+	public void testEquivelantSongs(){
+		try{
+			Song song2 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
+			Song song3 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
+			assertEquals(song2, song3);
+
+			Song song4 = new Song("Title", "Artist", "Part", "G", 1, "1-4", 4, dictionary);
+			assertNotEquals(song2, song4);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }

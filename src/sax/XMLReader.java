@@ -20,20 +20,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
-import thriveTones.Chord;
+import thriveTones.ChordDictionary;
 import thriveTones.Song;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class XMLReader extends DefaultHandler {
-	private static ArrayList<Chord> unique_chords;
+	private static ChordDictionary chord_dictionary;
 
 	/**
 	 * Initializer
 	 */
 	public XMLReader(){
-		unique_chords = new ArrayList<Chord>();
+		chord_dictionary = new ChordDictionary();
 	}
 
 	/**
@@ -61,7 +60,6 @@ public class XMLReader extends DefaultHandler {
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
 				Song song = SIFtoChords(fields);
-				unique_chords = song.getUniqueChords();			//update after creation of a new song
 				valid_songs++;
 				row_number += 11;
 			}
@@ -149,14 +147,14 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, unique_chords);
+		return new Song(title, artist, part, key, mode, sif, beats, chord_dictionary);
 	}
 
 	/**
-	 * unique_chords accessor
-	 * @return: the current list of unique chords available
+	 * chord_dictionary accessor
+	 * @return: the current Chord chord_dictionary
 	 */
-	public ArrayList<Chord> getUniqueChords(){
-		return unique_chords;
+	public ChordDictionary getChordDictionary(){
+		return chord_dictionary;
 	}
 }

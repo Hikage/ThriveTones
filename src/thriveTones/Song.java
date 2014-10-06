@@ -9,9 +9,9 @@ package thriveTones;
  * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Scanner;
 
 import org.jfugue.Pattern;
 import org.jfugue.Player;
@@ -25,7 +25,7 @@ public class Song {
 	private int mode;
 	private LinkedList<Chord> progression;
 	private double beats;
-	private ArrayList<Chord> unique_chords;
+	private ChordDictionary dictionary;
 
 	/**
 	 * Constructor method
@@ -36,11 +36,11 @@ public class Song {
 	 * @param md: song mode (major, minor, dorian, etc)
 	 * @param sif: chords in SIF format
 	 * @param bim: beats in measure
-	 * @param unique_chords: set of unique chords thus far encountered for statistical purposes
+	 * @param dict: Chord dictionary
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
 	public Song(String nm, String at, String pt, String ky, int md, String sif,
-			double bim, ArrayList<Chord> uc) throws Exception{
+			double bim, ChordDictionary dict) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
@@ -62,33 +62,41 @@ public class Song {
 		else key = ky;
 		mode = md;
 		beats = bim;
-		unique_chords = uc;
+		dictionary = dict;
 		
 		progression = new LinkedList<Chord>();
 		
 		String[] sif_chords = sif.split(",");
-		Chord previous = null;
-		Chord current;
+		LinkedList<Chord> sequence = new LinkedList<Chord>();
 		for(String sif_chord : sif_chords){
 			if(sif_chord.isEmpty()) continue;
 
-			current = new Chord(mode, sif_chord);
-			int index = unique_chords.indexOf(current);
-			if(index < 0)
-				unique_chords.add(current);
-			else
-				current = unique_chords.get(index);
-
+			Chord current = new Chord(mode, sif_chord);
 			progression.add(current);
 
-			if(previous != null)
-				previous.addNextChord(current);
-			previous = current;
+			//add to dictionary
+			if(sequence.size() > dictionary.getMaxHistoryLength())
+				sequence.remove();
+			dictionary.put(sequence, current);
+			sequence.add(current);
 		}
 
 		calculateRelativeMajor();
 	}
 	
+	public Song(String pt, String ky, int md, double bim, LinkedList<Chord> pg){
+		name = "AI Creation";
+		artist = "Music Bot";
+		part = pt;
+		key = ky;
+		mode = md;
+		beats = bim;
+		progression = pg;
+		dictionary = null;
+
+		calculateRelativeMajor();
+	}
+
 	/**
 	 * Adjusts the song's key
 	 * @param ky: new key
@@ -197,14 +205,6 @@ public class Song {
 	public double getBeats(){
 		return beats;
 	}
-
-	/**
-	 * unique_chords accessor
-	 * @return: set of unique_chords
-	 */
-	public ArrayList<Chord> getUniqueChords(){
-		return unique_chords;
-	}
 	
 	/**
 	 * Converts the song into a string representation
@@ -235,6 +235,39 @@ public class Song {
 		pattern.setMusicString(playable_song);
 		Player player = new Player();
 		player.play(pattern);
+
+		/**
+		//Gives user option to save song as midi; loops in case cancels exit
+		boolean exit = false;
+		do{
+			System.out.println("\nWould you like to save this song? (y or n)");
+			Scanner in = new Scanner(System.in);
+			String save = in.nextLine();
+			if (save.equalsIgnoreCase("y")){
+				exit = true;
+				export(player, pattern);
+			}
+			else{
+				System.out.println("Data will be lost. Are you sure?");
+				in = new Scanner(System.in);
+				save = in.nextLine();
+				if(save.equalsIgnoreCase("y")) exit = true;
+			}
+		}while(!exit);
+		**/
+	}
+
+	/**
+	 * Saves generated song to a midi file for later playback
+	 * @param player: Player object
+	 * @param pattern: Pattern object
+	 */
+	public void export(Player player, Pattern pattern){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Type a name for the song");
+		String songName = sc.next();
+		pattern.setMusicString(this.toString());
+		player.save(pattern, songName + ".mid");
 	}
 
 	/**
@@ -273,39 +306,45 @@ public class Song {
 		if (getClass() != obj.getClass())
 			return false;
 		Song other = (Song) obj;
-		if (artist == null)
+		if (artist == null){
 			if (other.artist != null)
 				return false;
+		}
 		else if (!artist.equals(other.artist))
 			return false;
 		if (Double.doubleToLongBits(beats) != Double
 				.doubleToLongBits(other.beats))
 			return false;
-		if (key == null)
+		if (key == null){
 			if (other.key != null)
 				return false;
+		}
 		else if (!key.equals(other.key))
 			return false;
 		if (mode != other.mode)
 			return false;
-		if (name == null)
+		if (name == null){
 			if (other.name != null)
 				return false;
+		}
 		else if (!name.equals(other.name))
 			return false;
-		if (part == null)
+		if (part == null){
 			if (other.part != null)
 				return false;
+		}
 		else if (!part.equals(other.part))
 			return false;
-		if (progression == null)
+		if (progression == null){
 			if (other.progression != null)
 				return false;
+		}
 		else if (!progression.equals(other.progression))
 			return false;
-		if (rel_major == null)
+		if (rel_major == null){
 			if (other.rel_major != null)
 				return false;
+		}
 		else if (!rel_major.equals(other.rel_major))
 			return false;
 		return true;

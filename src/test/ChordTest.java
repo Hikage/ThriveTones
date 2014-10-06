@@ -11,12 +11,14 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import thriveTones.Chord;
+import thriveTones.Chord.Tonality;
 
 
 public class ChordTest {
@@ -536,11 +538,37 @@ public class ChordTest {
 			chord.makeMinor();
 			assertFalse(chord.equals(chord2));
 			assertFalse(chord2.equals(chord));
+
+			chord = new Chord(1, Tonality.maj, 4);
+			chord2 = new Chord(1, Tonality.maj, 4);
+			assertTrue(chord.equals(chord2));
+			assertTrue(chord2.equals(chord));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+
+	@Test
+	public void testEquivalentSequences(){
+		chord = new Chord(1, Tonality.maj, 4);
+		Chord chord2 = new Chord(1, Tonality.maj, 4);
+		assertTrue(chord.equals(chord2));
+		assertTrue(chord2.equals(chord));
+
+		LinkedList<Chord> sequence = new LinkedList<Chord>();
+		LinkedList<Chord> sequence2 = new LinkedList<Chord>();
+
+		sequence.add(chord);
+		sequence.add(chord2);
+		sequence2.add(chord);
+		sequence2.add(chord2);
+		assertEquals(sequence, sequence2);
+
+		sequence2.clear();
+		sequence2.addAll(sequence);
+		assertEquals(sequence, sequence2);
 	}
 
 }

@@ -13,34 +13,37 @@ import java.util.LinkedList;
 
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
+	private ChordDictionary chord_dictionary;
 
 	/**
 	 * Constructor method
 	 */
-	public ProgressionGenerator() {
-		progression = new LinkedList<Chord>();
-	}
-
-	/**
-	 * Given a starting Chord, provides the next
-	 * @param start: Chord with which to start
-	 * @return: returns the next Chord
-	 */
-	public Chord getNextChord(Chord start){
-		return start.getNextChords().getANextChord();
+	public ProgressionGenerator(ChordDictionary dict) {
+		chord_dictionary = dict;
 	}
 
 	/**
 	 * Builds a chord progression based on a supplied starting Chord
 	 * @param start: Chord with which to start the progression
-	 * @param progLength: length of desired progression
+	 * @param prog_length: length of desired progression
+	 * @param hist_length: length of the history to use
 	 */
-	public void buildProgression(Chord start, int prog_length){
+	public void buildProgression(Chord start, int prog_length, int hist_length){
+		progression = new LinkedList<Chord>();
 		progression.add(start);
+
+		if(hist_length > chord_dictionary.getMaxHistoryLength())
+			hist_length = chord_dictionary.getMaxHistoryLength();
+
+		LinkedList<Chord> history = new LinkedList<Chord>();
+		if(hist_length >= 1)
+			history.add(start);
+
 		for(int i = 1; i < prog_length; i++){
-			Chord next = getNextChord(start);
+			Chord next = chord_dictionary.getANextChord(history);
 			progression.add(next);
-			start = next;
+			history.add(next);
+			if(history.size() > hist_length) history.remove();
 		}
 	}
 

@@ -12,6 +12,8 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,16 +26,17 @@ import org.xml.sax.InputSource;
 
 import sax.XMLReader;
 import thriveTones.Chord;
-
+import thriveTones.ChordDictionary;
 
 public class XMLReaderTest {
 
-	protected static NodeList rows;
-	protected static XMLReader reader;
+	private static NodeList rows;
+	private static XMLReader reader;
+	private static String file = "Hooktheory-Data.xml";
+	private static ChordDictionary chord_dictionary;
 	
 	@BeforeClass
 	public static void XMLReaderInit() {
-		String file = "Hooktheory-Data.xml";
 		reader = new XMLReader();
 		
 		try{
@@ -45,25 +48,64 @@ public class XMLReaderTest {
 		    
 		    NodeList results = document.getElementsByTagName("resultset");
 		    rows = results.item(0).getChildNodes();
-
-			reader.readIn(file);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
-	public void testInitialization() {		
-		//assertEquals(3, rows.getLength());
+	public void testReadIn(){
+		try {
+			reader.readIn(file);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
 		assertEquals(17, rows.item(1).getChildNodes().getLength());
 		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
 	}
 
 	@Test
-	public void testReadIn(){
-		assertEquals(229, reader.getUniqueChords().size());
+	public void testDictionaryBuild(){
+		chord_dictionary = reader.getChordDictionary();
+		if(chord_dictionary == null || chord_dictionary.isEmpty()){
+			try {
+				reader.readIn(file);
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+		}
+
+		// Test empty chord pull
+		int[] roots = new int[8];
+		for(int i = 0; i < 100; i++){
+			Chord next = chord_dictionary.getANextChord(null);
+			roots[next.getRoot()]++;
+		}
+		assertTrue(roots[1] > 18);
+		assertTrue(roots[1] > roots[5]);
+		assertTrue(roots[5] >= roots[2]);
+
+		// Test single-chord lookups
+		for(int i = 0; i < 10; i++){
+			Chord next;
+			LinkedList<Chord> sequence = new LinkedList<Chord>();
+			next = chord_dictionary.getANextChord(null);
+			sequence.add(next);
+			ArrayList<Chord> available_chords = chord_dictionary.get(sequence);
+
+			boolean same = true;
+			for(int j = 1; j < available_chords.size(); j++){
+				same = (available_chords.get(j) == available_chords.get(j-1));
+			}
+			assertFalse(same);
+		}
 	}
 
 	@Test
@@ -140,5 +182,4 @@ public class XMLReaderTest {
 	public void testNullSIFtoChords() throws Exception{
 		reader.SIFtoChords(null);
 	}
-
 }
