@@ -26,7 +26,6 @@ public class Song {
 	private LinkedList<Chord> progression;
 	private double beats;
 	private ChordDictionary dictionary;
-	private static final int MAX_HISTORY_LENGTH = 3;
 
 	/**
 	 * Constructor method
@@ -76,7 +75,7 @@ public class Song {
 			progression.add(current);
 
 			//add to dictionary
-			if(sequence.size() > MAX_HISTORY_LENGTH)
+			if(sequence.size() > dictionary.getMaxHistoryLength())
 				sequence.remove();
 			dictionary.put(sequence, current);
 			sequence.add(current);

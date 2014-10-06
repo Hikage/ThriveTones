@@ -18,6 +18,7 @@ import java.util.Random;
 @SuppressWarnings("serial")
 public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>>{
 	private Random random_generator = new Random();
+	private static final int MAX_HISTORY_LENGTH = 3;
 
 	/**
 	 * Overloaded with native HashMap put
@@ -64,5 +65,9 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 		//pull new random chord from the history choices
 		int index = random_generator.nextInt(available_chords.size());
 		return available_chords.get(index);
+	}
+
+	public int getMaxHistoryLength(){
+		return MAX_HISTORY_LENGTH;
 	}
 }

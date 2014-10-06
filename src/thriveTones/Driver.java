@@ -14,6 +14,9 @@ import java.util.*;
 import sax.XMLReader;
 
 public class Driver {
+	private static int song_length = 8;
+	private static int beats = 4;
+	private static int history = 3;
 
 	/**
 	 * Main Class
@@ -41,7 +44,6 @@ public class Driver {
 		ProgressionGenerator generator = new ProgressionGenerator(dictionary);
 
 		//User input to determine song specifics
-		int song_length = 8;
 		/**
 		do{
 			System.out.println("How many chords would you like?");
@@ -51,10 +53,7 @@ public class Driver {
 				if(song_length > 0) break;
 			}
 		}while(true);
-		**/
 
-		int beats = 4;
-		/**
 		do{
 			System.out.println("How many beats per measure?");
 			Scanner in = new Scanner(System.in);
@@ -70,7 +69,7 @@ public class Driver {
 		start = dictionary.getANextChord(null);
 
 		//Generate progression
-		generator.buildProgression(start, song_length, 3);
+		generator.buildProgression(start, song_length, history);
 		LinkedList<Chord> progression = generator.getProgression();
 
 		Song new_hit = new Song("random part", "C", 1, beats, progression);

@@ -32,6 +32,9 @@ public class ProgressionGenerator {
 		progression = new LinkedList<Chord>();
 		progression.add(start);
 
+		if(hist_length > chord_dictionary.getMaxHistoryLength())
+			hist_length = chord_dictionary.getMaxHistoryLength();
+
 		LinkedList<Chord> history = new LinkedList<Chord>();
 		if(hist_length >= 1)
 			history.add(start);
