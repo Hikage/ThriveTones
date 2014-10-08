@@ -17,9 +17,10 @@ import org.jfugue.Pattern;
 import org.jfugue.Player;
 
 public class Song {
+	public enum SongPart {chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus};
 	private String name;
 	private String artist;
-	private String part;
+	private SongPart part;
 	private String key;
 	private String rel_major;
 	private int mode;
@@ -57,7 +58,11 @@ public class Song {
 		
 		name = nm;
 		artist = at;
-		part = pt;
+
+        part = partToEnum(pt);
+        if(part == null)
+            throw new IllegalArgumentException("Invalid song part: " + pt);
+
 		if(ky.isEmpty()) key = "C";
 		else key = ky;
 		mode = md;
@@ -87,7 +92,7 @@ public class Song {
 	public Song(String pt, String ky, int md, double bim, LinkedList<Chord> pg){
 		name = "AI Creation";
 		artist = "Music Bot";
-		part = pt;
+		part = partToEnum(pt);
 		key = ky;
 		mode = md;
 		beats = bim;
@@ -95,6 +100,42 @@ public class Song {
 		dictionary = null;
 
 		calculateRelativeMajor();
+	}
+
+	/**
+	 * Converts a string representation of song part to the standard enum
+	 * @param pt: string representation of song part
+	 * @return: the corresponding enum value
+	 */
+	public SongPart partToEnum(String pt){
+        pt = pt.toLowerCase();
+		if(pt.contains("instrumental") || pt.contains("solo"))
+            return SongPart.solo;
+        if(pt.contains("bridge"))
+            return SongPart.bridge;
+        if(pt.contains("outro"))
+            return SongPart.outro;
+        if(pt.contains("intro")){
+            if(pt.contains("verse"))
+                return SongPart.introverse;
+            else
+                return SongPart.intro;
+        }
+        if(pt.contains("verse")){
+            if(pt.contains("pre-chorus"))
+                return SongPart.verseprechorus;
+            else
+                return SongPart.verse;
+        }
+        if(pt.contains("pre-chorus")){
+            if(pt.contains(" chorus"))
+                return SongPart.prechoruschorus;
+            else
+                return SongPart.prechorus;
+        }
+        if(pt.contains("chorus"))
+            return SongPart.chorus;
+        return null;
 	}
 
 	/**
@@ -162,7 +203,7 @@ public class Song {
 	 * part accessor
 	 * @return: song part
 	 */
-	public String getPart(){
+	public SongPart getPart(){
 		return part;
 	}
 	
