@@ -12,6 +12,7 @@ package thriveTones;
 import java.util.*;
 
 import sax.XMLReader;
+import thriveTones.Song.SongPart;
 
 public class Driver {
 	private static int song_length = 8;
@@ -40,8 +41,8 @@ public class Driver {
 			e.printStackTrace();
 		}
 
-		ChordDictionary dictionary = reader.getChordDictionary();
-		ProgressionGenerator generator = new ProgressionGenerator(dictionary);
+		ChordDictionary chord_dictionary = reader.getChordDictionary(SongPart.chorus);
+		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
 
 		//User input to determine song specifics
 		/**
@@ -66,7 +67,7 @@ public class Driver {
 
 		//Get starting chord
 		Chord start = null;
-		start = dictionary.getANextChord(null);
+		start = chord_dictionary.getANextChord(null);
 
 		//Generate progression
 		generator.buildProgression(start, song_length, history);

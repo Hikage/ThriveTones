@@ -11,6 +11,8 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,14 +22,14 @@ import thriveTones.Song;
 import thriveTones.Song.SongPart;
 
 public class SongTest {
-	private ChordDictionary dictionary;
+	private HashMap<SongPart, ChordDictionary> parts_dictionary;
 	private static Song song;
 
 	@Before
 	public void init(){
-		dictionary = new XMLReader().getChordDictionary();
+		parts_dictionary = new XMLReader().getPartsDictionary();
 		try{
-			song = new Song("Title", "Artist", "Chorus", "C", 1, "1-4", 4, dictionary);
+			song = new Song("Title", "Artist", "Chorus", "C", 1, "1-4", 4, parts_dictionary);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -143,12 +145,15 @@ public class SongTest {
 	@Test
 	public void testEquivelantSongs(){
 		try{
-			Song song2 = new Song("Title", "Artist", "Chorus", "C", 1, "1-4", 4, dictionary);
-			Song song3 = new Song("Title", "Artist", "Chorus", "C", 1, "1-4", 4, dictionary);
+			Song song2 = new Song("Title", "Artist", "Chorus", "C", 1, "1-4", 4, parts_dictionary);
+			Song song3 = new Song("Title", "Artist", "Chorus", "C", 1, "1-4", 4, parts_dictionary);
 			assertEquals(song2, song3);
 
-			Song song4 = new Song("Title", "Artist", "Chorus", "G", 1, "1-4", 4, dictionary);
+			Song song4 = new Song("Title", "Artist", "Chorus", "G", 1, "1-4", 4, parts_dictionary);
 			assertNotEquals(song2, song4);
+
+			Song song5 = new Song("Title", "Artist", "Bridge", "C", 1, "1-4", 4, parts_dictionary);
+			assertNotEquals(song2, song5);
 		}
 		catch(Exception e){
 			e.printStackTrace();

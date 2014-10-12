@@ -9,6 +9,7 @@ package thriveTones;
  * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Scanner;
@@ -26,7 +27,7 @@ public class Song {
 	private int mode;
 	private LinkedList<Chord> progression;
 	private double beats;
-	private ChordDictionary dictionary;
+	private HashMap<SongPart, ChordDictionary> parts_dictionary;
 
 	/**
 	 * Constructor method
@@ -41,7 +42,7 @@ public class Song {
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
 	public Song(String nm, String at, String pt, String ky, int md, String sif,
-			double bim, ChordDictionary dict) throws Exception{
+			double bim, HashMap<SongPart, ChordDictionary> dict) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
@@ -67,7 +68,7 @@ public class Song {
 		else key = ky;
 		mode = md;
 		beats = bim;
-		dictionary = dict;
+		parts_dictionary = dict;
 		
 		progression = new LinkedList<Chord>();
 		
@@ -80,9 +81,11 @@ public class Song {
 			progression.add(current);
 
 			//add to dictionary
-			if(sequence.size() > dictionary.getMaxHistoryLength())
+			if(!parts_dictionary.containsKey(part))
+				parts_dictionary.put(part, new ChordDictionary());
+			if(sequence.size() > parts_dictionary.get(part).getMaxHistoryLength())
 				sequence.remove();
-			dictionary.put(sequence, current);
+			parts_dictionary.get(part).put(sequence, current);
 			sequence.add(current);
 		}
 
@@ -93,11 +96,13 @@ public class Song {
 		name = "AI Creation";
 		artist = "Music Bot";
 		part = partToEnum(pt);
+        if(part == null)
+            throw new IllegalArgumentException("Invalid song part: " + pt);
 		key = ky;
 		mode = md;
 		beats = bim;
 		progression = pg;
-		dictionary = null;
+		parts_dictionary = null;
 
 		calculateRelativeMajor();
 	}

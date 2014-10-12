@@ -22,17 +22,19 @@ import org.xml.sax.helpers.*;
 
 import thriveTones.ChordDictionary;
 import thriveTones.Song;
+import thriveTones.Song.SongPart;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class XMLReader extends DefaultHandler {
-	private static ChordDictionary chord_dictionary;
+	private static HashMap<SongPart, ChordDictionary> parts_dictionary;
 
 	/**
 	 * Initializer
 	 */
 	public XMLReader(){
-		chord_dictionary = new ChordDictionary();
+		parts_dictionary = new HashMap<SongPart, ChordDictionary>();
 	}
 
 	/**
@@ -147,14 +149,23 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, chord_dictionary);
+		return new Song(title, artist, part, key, mode, sif, beats, parts_dictionary);
 	}
 
 	/**
-	 * chord_dictionary accessor
-	 * @return: the current Chord chord_dictionary
+	 * parts_dictionary accessor
+	 * @return: the current full parts_dictionary hashmap
 	 */
-	public ChordDictionary getChordDictionary(){
-		return chord_dictionary;
+	public HashMap<SongPart, ChordDictionary> getPartsDictionary(){
+		return parts_dictionary;
+	}
+
+	/**
+	 * Part chord_dictionary accessor
+	 * @param part: specific dictionary requested
+	 * @return: a chord_dictionary for the song part indicated
+	 */
+	public ChordDictionary getChordDictionary(SongPart part){
+		return parts_dictionary.get(part);
 	}
 }

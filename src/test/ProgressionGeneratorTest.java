@@ -21,6 +21,7 @@ import sax.XMLReader;
 import thriveTones.Chord;
 import thriveTones.ChordDictionary;
 import thriveTones.ProgressionGenerator;
+import thriveTones.Song.SongPart;
 
 public class ProgressionGeneratorTest {
 	private static ProgressionGenerator generator;
@@ -28,6 +29,7 @@ public class ProgressionGeneratorTest {
 	private static final int hist_length = 3;
 	private static XMLReader reader;
 	private static ChordDictionary chord_dictionary;
+	private static SongPart part = SongPart.chorus;
 
 	@BeforeClass
 	public static void init(){
@@ -40,7 +42,7 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		chord_dictionary = reader.getChordDictionary();
+		chord_dictionary = reader.getChordDictionary(part);
 		generator = new ProgressionGenerator(chord_dictionary);
 	}
 
@@ -53,8 +55,8 @@ public class ProgressionGeneratorTest {
 		}
 		for(int count : roots)
 			System.out.println("Root count: " + count + "/" + chord_dictionary.get(new LinkedList<Chord>()).size());
-		assertTrue(roots[1] > 18);
-		assertTrue(roots[1] > roots[5]);
+		assertTrue(roots[1] >= 15);
+		assertTrue(roots[1] >= roots[5]);
 		assertTrue(roots[5] >= roots[2]);
 	}
 
@@ -90,10 +92,13 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		chord_dictionary = reader2.getChordDictionary();
+		chord_dictionary = reader2.getChordDictionary(SongPart.introverse);
+		assertNotNull(chord_dictionary);
+		assertFalse(chord_dictionary.isEmpty());
 		System.out.println("Dictionary:\n" + chord_dictionary.toString() + "\n");
+
 		generator = new ProgressionGenerator(chord_dictionary);
-		Chord start = reader2.getChordDictionary().get(new LinkedList<Chord>()).get(0);
+		Chord start = chord_dictionary.get(new LinkedList<Chord>()).get(0);
 		assertEquals(1, start.getRoot());
 
 		ArrayList<Chord> sequence = new ArrayList<Chord>();
