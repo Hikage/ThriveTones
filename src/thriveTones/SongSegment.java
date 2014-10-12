@@ -5,7 +5,7 @@ package thriveTones;
  * Copyright © 2014 Brianna Shade
  * bshade@pdx.edu
  *
- * Song.java
+ * SongSegment.java
  * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
 
@@ -17,7 +17,7 @@ import java.util.Scanner;
 import org.jfugue.Pattern;
 import org.jfugue.Player;
 
-public class Song {
+public class SongSegment {
 	public enum SongPart {chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus};
 	private String name;
 	private String artist;
@@ -41,7 +41,7 @@ public class Song {
 	 * @param dict: Chord dictionary
 	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
 	 */
-	public Song(String nm, String at, String pt, String ky, int md, String sif,
+	public SongSegment(String nm, String at, String pt, String ky, int md, String sif,
 			double bim, HashMap<SongPart, ChordDictionary> dict) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
@@ -92,7 +92,7 @@ public class Song {
 		calculateRelativeMajor();
 	}
 	
-	public Song(SongPart pt, String ky, int md, double bim, LinkedList<Chord> pg){
+	public SongSegment(SongPart pt, String ky, int md, double bim, LinkedList<Chord> pg){
 		name = "AI Creation";
 		artist = "Music Bot";
 		part = pt;
@@ -349,7 +349,7 @@ public class Song {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Song other = (Song) obj;
+		SongSegment other = (SongSegment) obj;
 		if (artist == null){
 			if (other.artist != null)
 				return false;

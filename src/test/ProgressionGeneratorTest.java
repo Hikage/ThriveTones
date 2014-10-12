@@ -22,7 +22,7 @@ import sax.XMLReader;
 import thriveTones.Chord;
 import thriveTones.ChordDictionary;
 import thriveTones.ProgressionGenerator;
-import thriveTones.Song.SongPart;
+import thriveTones.SongSegment.SongPart;
 
 public class ProgressionGeneratorTest {
 	private static ProgressionGenerator generator;

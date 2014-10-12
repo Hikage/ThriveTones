@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
 import sax.XMLReader;
 import thriveTones.Chord;
 import thriveTones.ChordDictionary;
-import thriveTones.Song.SongPart;
+import thriveTones.SongSegment.SongPart;
 
 public class XMLReaderTest {
 

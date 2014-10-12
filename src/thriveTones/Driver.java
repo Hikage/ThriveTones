@@ -12,7 +12,7 @@ package thriveTones;
 import java.util.*;
 
 import sax.XMLReader;
-import thriveTones.Song.SongPart;
+import thriveTones.SongSegment.SongPart;
 
 public class Driver {
 	private static XMLReader reader;
@@ -99,7 +99,7 @@ public class Driver {
 
 		//Generate progression and create new song
 		generator.buildProgression(start, song_length, history);
-		Song new_hit = new Song(part, "C", 1, beats, generator.getProgression());
+		SongSegment new_hit = new SongSegment(part, "C", 1, beats, generator.getProgression());
 
 		System.out.print(part.toString() + ": ");
 		if(play) new_hit.play();

@@ -21,8 +21,8 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import thriveTones.ChordDictionary;
-import thriveTones.Song;
-import thriveTones.Song.SongPart;
+import thriveTones.SongSegment;
+import thriveTones.SongSegment.SongPart;
 
 import java.io.*;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class XMLReader extends DefaultHandler {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
-				Song song = SIFtoChords(fields);
+				SongSegment song_segment = SIFtoChords(fields);
 				valid_songs++;
 				row_number += 11;
 			}
@@ -140,7 +140,7 @@ public class XMLReader extends DefaultHandler {
 	 * Converts the SIF string into a Song object
 	 * @param fields: field nodes of the song to convert
 	 */
-	public Song SIFtoChords(NodeList fields) throws Exception{
+	public SongSegment SIFtoChords(NodeList fields) throws Exception{
 		String title = nodeValueByAttName(fields, "song");
 		String artist = nodeValueByAttName(fields, "artist");
 		String part = nodeValueByAttName(fields, "section");
@@ -149,7 +149,7 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new Song(title, artist, part, key, mode, sif, beats, parts_dictionary);
+		return new SongSegment(title, artist, part, key, mode, sif, beats, parts_dictionary);
 	}
 
 	/**
