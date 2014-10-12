@@ -12,6 +12,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.junit.BeforeClass;
@@ -29,7 +30,6 @@ public class ProgressionGeneratorTest {
 	private static final int hist_length = 3;
 	private static XMLReader reader;
 	private static ChordDictionary chord_dictionary;
-	private static SongPart part = SongPart.chorus;
 
 	@BeforeClass
 	public static void init(){
@@ -42,7 +42,7 @@ public class ProgressionGeneratorTest {
 			fail(e.getMessage());
 		}
 
-		chord_dictionary = reader.getChordDictionary(part);
+		chord_dictionary = reader.getChordDictionary(SongPart.chorus);
 		generator = new ProgressionGenerator(chord_dictionary);
 	}
 
@@ -131,5 +131,41 @@ public class ProgressionGeneratorTest {
 			}
 		}
 		assertFalse(same);
+	}
+
+	@Test
+	public void testControlledSongParts(){
+		XMLReader reader3 = new XMLReader();
+		try {
+			reader3.readIn("test2.xml");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		HashMap<SongPart, ChordDictionary> parts_dictionary = reader3.getPartsDictionary();
+		assertNotNull(parts_dictionary);
+		assertFalse(parts_dictionary.isEmpty());
+
+		SongPart[] parts = {SongPart.chorus, SongPart.verse, SongPart.bridge, SongPart.outro, SongPart.solo, SongPart.introverse};
+		int[] first_roots = {0, 1, 6, 3, 4, 1};
+		for(int i = 0; i < parts.length; i++){
+			SongPart part = parts[i];
+			chord_dictionary = reader3.getChordDictionary(part);
+			assertNotNull(chord_dictionary);
+			assertFalse(chord_dictionary.isEmpty());
+
+			generator = new ProgressionGenerator(chord_dictionary);
+			Chord start = chord_dictionary.get(new LinkedList<Chord>()).get(0);
+			assertEquals(first_roots[i], start.getRoot());
+
+			generator.buildProgression(start, 16, 3);
+			LinkedList<Chord> progression = generator.getProgression();
+			System.out.print(part.toString() + ": ");
+			for(Chord chord : progression)
+				System.out.print(chord.toString() + " ");
+			System.out.println();
+		}
 	}
 }

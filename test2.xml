@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<resultset>
+    <row>
+        <field name="artist">  Jimmy Eat World</field>
+        <field name="song">The Middle</field>
+        <field name="section">Intro and Verse</field>
+        <field name="SIF">,1-8,5-8,4-8,1-8,1-8,5-8,4-8,1-8,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">Eb</field>
+        <field name="bpm">146</field>
+        <field name="mode">1</field>
+    </row>
+
+    <row>
+        <field name="artist">Adam Lambert</field>
+        <field name="song">If i had you</field>
+        <field name="section">Verse</field>
+        <field name="SIF">,6-4,1-4,3-4,5-4,6-4,1-4,3-4,5-4,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">E</field>
+        <field name="bpm">131</field>
+        <field name="mode">6</field>
+    </row>
+
+    <row>
+        <field name="artist">Backstreet Boys</field>
+        <field name="song">Shape of My Heart</field>
+        <field name="section">Chorus</field>
+        <field name="SIF">,rest,1-4,4-2,1-2,5-2,542-2,3-4,6-2,164-2,5-4/5,4-4,5-4,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">D</field>
+        <field name="bpm">96</field>
+        <field name="mode">1</field>
+    </row>
+
+    <row>
+        <field name="artist">Calvin Harris</field>
+        <field name="song">I'm Not Alone</field>
+        <field name="section">Instrumental</field>
+        <field name="SIF">,2-1.5,3-1.5,4-1,rest,4-2,6-1.5,1-1.5,4-1,rest,4-2,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">E</field>
+        <field name="bpm">128</field>
+        <field name="mode">6</field>
+    </row>
+
+    <row>
+        <field name="artist">Dusty Springfield</field>
+        <field name="song">I Only Want To Be With You</field>
+        <field name="section">Bridge</field>
+        <field name="SIF">,b6-4,b6-4,1-4,1-4,5-4,5-2,3-2,6-2,5-2/5,5-4,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">G</field>
+        <field name="bpm">128</field>
+        <field name="mode">1</field>
+    </row>
+
+    <row>
+        <field name="artist">Queen</field>
+        <field name="song">Bohemian Rhapsody</field>
+        <field name="section">Pre-Outro</field>
+        <field name="SIF">,Y37-1,57-1,1-1,rest,1-3,5-2,1-2,4-2,57-2/3,3-2,57-16,</field>
+        <field name="beatsInMeasure">4</field>
+        <field name="songKey">Eb</field>
+        <field name="bpm">146</field>
+        <field name="mode">1</field>
+    </row>
+</resultset>
