@@ -15,6 +15,7 @@ import sax.XMLReader;
 import thriveTones.Song.SongPart;
 
 public class Driver {
+	private static XMLReader reader;
 	private static int song_length = 8;
 	private static int beats = 4;
 	private static int history = 3;
@@ -29,10 +30,29 @@ public class Driver {
 			System.exit(0);
 		}
 
-		String filename = args[0];
+		readInData(args[0]);
+		//getUserInputs();
 
-		//Read in the data
-		XMLReader reader = new XMLReader();
+		boolean play = false;
+
+		buildSongPart(SongPart.chorus, play);
+		buildSongPart(SongPart.chorus, play);
+		buildSongPart(SongPart.verse, play);
+		buildSongPart(SongPart.bridge, play);
+		buildSongPart(SongPart.solo, play);
+		buildSongPart(SongPart.verse, play);
+		buildSongPart(SongPart.prechorus, play);
+
+		System.out.println("\nEnd of program.\nThank you for playing!");
+		System.exit(0);
+	}
+
+	/**
+	 * Reads in the data from the provided filename
+	 * @param filename: file containing data to be read in
+	 */
+	public static void readInData(String filename){
+		reader = new XMLReader();
 		try {
 			reader.readIn(filename);
 		}
@@ -40,12 +60,12 @@ public class Driver {
 			System.err.println("Error reading in file: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
 
-		ChordDictionary chord_dictionary = reader.getChordDictionary(SongPart.chorus);
-		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
-
-		//User input to determine song specifics
-		/**
+	/**
+	 * Prompts user for inputs pertaining to song length, etc
+	 */
+	public static void getUserInputs(){
 		do{
 			System.out.println("How many chords would you like?");
 			Scanner in = new Scanner(System.in);
@@ -63,22 +83,26 @@ public class Driver {
 				if(beats > 0) break;
 			}
 		}while(true);
-		**/
+	}
+
+	/**
+	 * Builds the specified song part
+	 * @param part: song part to be built
+	 */
+	public static void buildSongPart(SongPart part, boolean play){
+		ChordDictionary chord_dictionary = reader.getChordDictionary(part);
+		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
 
 		//Get starting chord
 		Chord start = null;
 		start = chord_dictionary.getANextChord(null);
 
-		//Generate progression
+		//Generate progression and create new song
 		generator.buildProgression(start, song_length, history);
-		LinkedList<Chord> progression = generator.getProgression();
+		Song new_hit = new Song(part, "C", 1, beats, generator.getProgression());
 
-		Song new_hit = new Song("random part", "C", 1, beats, progression);
-
-		//System.out.println(new_hit.toString());
-		new_hit.play();
-
-		System.out.println("\nEnd of program.\nThank you for playing!");
-		System.exit(0);
+		System.out.print(part.toString() + ": ");
+		if(play) new_hit.play();
+		else System.out.println(new_hit.toString());
 	}
 }

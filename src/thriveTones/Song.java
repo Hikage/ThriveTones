@@ -92,12 +92,10 @@ public class Song {
 		calculateRelativeMajor();
 	}
 	
-	public Song(String pt, String ky, int md, double bim, LinkedList<Chord> pg){
+	public Song(SongPart pt, String ky, int md, double bim, LinkedList<Chord> pg){
 		name = "AI Creation";
 		artist = "Music Bot";
-		part = partToEnum(pt);
-        if(part == null)
-            throw new IllegalArgumentException("Invalid song part: " + pt);
+		part = pt;
 		key = ky;
 		mode = md;
 		beats = bim;
