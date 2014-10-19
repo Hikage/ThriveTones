@@ -23,65 +23,65 @@
 package org.jfugue;
 
 /**
- * Represents voice changes, also known as <i>track changes</i>.
+ * Represents a timing value, which can be used to indicate when certain events are played.
  *
  *@author David Koelle
- *@version 1.0
+ *@version 3.0
  */
-public final class Voice implements JFugueElement
+public final class Time implements JFugueElement
 {
-    private byte voice;
+    private long time;
 
     /**
-     * Creates a new Voice object, with the specified voice value.
-     * @param voice the voice for this object
+     * Creates a new Time object, with the specified time number.
+     * @param time the number of the time to use
      */
-    public Voice(byte voice)
+    public Time(long time)
     {
-        setVoice(voice);
+        setTime(time);
     }
 
     /**
-     * Sets the value of the voice for this object.
-     * @param tempo the voice for this object
+     * Sets the value of the time for this object.
+     * @param time the number of the time to use
      */
-    public void setVoice(byte voice)
+    public void setTime(long time)
     {
-        this.voice = voice;
+        this.time = time;
     }
 
     /**
-     * Returns the voice used in this object
-     * @return the voice used in this object
+     * Returns the time used in this object
+     * @return the time used in this object
      */
-    public byte getVoice()
+    public long getTime()
     {
-        return voice;
+        return time;
     }
 
     /**
      * Returns the Music String representing this element and all of its settings.
-     * For a Voice object, the Music String is <code>V</code><i>voice</i>
+     * For a Time object, the Music String is <code>@</code><i>time</i>
      * @return the Music String for this element
      */
     public String getMusicString()
     {
         StringBuffer buffy = new StringBuffer();
-        buffy.append("V");
-        buffy.append(getVoice());
+        buffy.append("@");
+        buffy.append(getTime());
         return buffy.toString();
     }
 
     /**
      * Returns verification string in this format:
-     * Voice: voice={#}
+     * Time: time={#}
      * @version 4.0
      */
     public String getVerifyString()
     {
         StringBuffer buffy = new StringBuffer();
-        buffy.append("Voice: voice=");
-        buffy.append(getVoice());
+        buffy.append("Time: time=");
+        buffy.append(getTime());
         return buffy.toString();
     }
 

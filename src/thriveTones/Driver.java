@@ -17,7 +17,7 @@ import thriveTones.SongSegment.SongPart;
 public class Driver {
 	private static XMLReader reader;
 	private static int song_length = 8;
-	private static int tempo = 60;
+	private static int tempo = 240;
 	private static int beats = 4;
 	private static int history = 3;
 

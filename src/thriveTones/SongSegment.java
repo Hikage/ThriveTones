@@ -9,6 +9,8 @@ package thriveTones;
  * This class represents a song part, containing metadata, key, mode, and a chord progression
  */
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -308,9 +310,16 @@ public class SongSegment {
 	public void export(Player player, Pattern pattern){
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Type a name for the song");
-		String songName = sc.next();
+		String songName = sc.next() + ".mid";
 		pattern.setMusicString(this.toString());
-		player.save(pattern, songName + ".mid");
+		File outFile = new File(songName);
+		try {
+			player.saveMidi(pattern, outFile);
+		}
+		catch (IOException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	/**

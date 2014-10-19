@@ -23,66 +23,68 @@
 package org.jfugue;
 
 /**
- * Represents voice changes, also known as <i>track changes</i>.
+ * Represents layer changes.  A Layer allows multiple sounds to be played at the same
+ * time on a single track (also known as a voice), without those notes being specified
+ * as a chord.  This is particularly helpful when sing Track 9, the percussion track,
+ * so multiple percussion sounds can occur at the same time.
  *
  *@author David Koelle
- *@version 1.0
+ *@version 3.0
  */
-public final class Voice implements JFugueElement
+public final class Layer implements JFugueElement
 {
-    private byte voice;
+    private byte layer;
 
     /**
-     * Creates a new Voice object, with the specified voice value.
-     * @param voice the voice for this object
+     * Creates a new Layer object, with the specified layer number.
+     * @param layer the number of the layer to use
      */
-    public Voice(byte voice)
+    public Layer(byte layer)
     {
-        setVoice(voice);
+        setLayer(layer);
     }
 
     /**
-     * Sets the value of the voice for this object.
-     * @param tempo the voice for this object
+     * Sets the value of the layer for this object.
+     * @param layer the number of the layer to use
      */
-    public void setVoice(byte voice)
+    public void setLayer(byte layer)
     {
-        this.voice = voice;
+        this.layer = layer;
     }
 
     /**
-     * Returns the voice used in this object
-     * @return the voice used in this object
+     * Returns the layer used in this object
+     * @return the layer used in this object
      */
-    public byte getVoice()
+    public byte getLayer()
     {
-        return voice;
+        return layer;
     }
 
     /**
      * Returns the Music String representing this element and all of its settings.
-     * For a Voice object, the Music String is <code>V</code><i>voice</i>
+     * For a Layer object, the Music String is <code>L</code><i>layer-number</i>
      * @return the Music String for this element
      */
     public String getMusicString()
     {
         StringBuffer buffy = new StringBuffer();
-        buffy.append("V");
-        buffy.append(getVoice());
+        buffy.append("L");
+        buffy.append(getLayer());
         return buffy.toString();
     }
 
     /**
      * Returns verification string in this format:
-     * Voice: voice={#}
+     * Layer: layer={#}
      * @version 4.0
      */
     public String getVerifyString()
     {
         StringBuffer buffy = new StringBuffer();
-        buffy.append("Voice: voice=");
-        buffy.append(getVoice());
+        buffy.append("Layer: layer=");
+        buffy.append(getLayer());
         return buffy.toString();
     }
-
 }
