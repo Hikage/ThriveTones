@@ -268,11 +268,10 @@ public class SongSegment {
 	/**
 	 * Plays the song
 	 */
-	public void play(){
-		int TEMPO = 120;
+	public void play(int tempo){
 		String INSTRUMENT = "Piano";
 
-		String playable_song = "T" + TEMPO + " I[" + INSTRUMENT + "] " + this.toString();
+		String playable_song = "T" + tempo + " I[" + INSTRUMENT + "] " + this.toString();
 
 		System.out.println(playable_song);
 		Pattern pattern = new Pattern();

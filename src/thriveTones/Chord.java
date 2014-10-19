@@ -348,21 +348,26 @@ public class Chord {
 	public String toString(char k, double beats){
 		String keys = "ABCDEFG";
 		int key = keys.indexOf(k);
-		if(root == 0) return "R";	//rest
 
 		String chord = "";
-		if(key < 0) chord += root;
-		else chord += (char)(int)('A' + ((key + root - 1) % 7));
-		//chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
-		if(eleven) chord += "dom11";
+		if(root == 0) chord = "R";	//rest
 		else{
-			//if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
-				chord += tonality;
-			if(seven) chord += "7";
-			//for(int i = 0; i<inversion; i++) chord += "^";
-			//chord += embellishment;
+			if(key < 0) chord += root;
+			else chord += (char)(int)('A' + ((key + root - 1) % 7));
+			//chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
+			if(eleven) chord += "dom11";
+			else{
+				//if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
+					chord += tonality;
+				if(seven) chord += "7";
+				//for(int i = 0; i<inversion; i++) chord += "^";
+				//chord += embellishment;
+			}
 		}
-		//chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
+
+		String dur = new DecimalFormat("##0.0#").format(duration/beats);
+		dur = "4";
+		chord += "/" + dur;
 
 		return chord;
 	}
