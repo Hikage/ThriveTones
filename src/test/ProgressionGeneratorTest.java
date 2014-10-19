@@ -1,14 +1,5 @@
 package test;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * ProgressionGeneratorTest.java
- * Tests the ProgressionGenerator class
- */
-
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -24,6 +15,15 @@ import thriveTones.ChordDictionary;
 import thriveTones.ProgressionGenerator;
 import thriveTones.SongSegment.SongPart;
 
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * ProgressionGeneratorTest.java
+ * Tests the ProgressionGenerator class
+ */
+
 public class ProgressionGeneratorTest {
 	private static ProgressionGenerator generator;
 	private static final int prog_length = 12;
@@ -31,6 +31,9 @@ public class ProgressionGeneratorTest {
 	private static XMLReader reader;
 	private static ChordDictionary chord_dictionary;
 
+	/**
+	 * Reads in data for tests
+	 */
 	@BeforeClass
 	public static void init(){
 		reader = new XMLReader();
@@ -46,6 +49,9 @@ public class ProgressionGeneratorTest {
 		generator = new ProgressionGenerator(chord_dictionary);
 	}
 
+	/**
+	 * Tests getting the next Chord for the progression
+	 */
 	@Test
 	public void testGetNextChord() {
 		int[] roots = new int[8];
@@ -60,6 +66,9 @@ public class ProgressionGeneratorTest {
 		assertTrue(roots[5] >= roots[2]);
 	}
 
+	/**
+	 * Tests buildProgression()
+	 */
 	@Test
 	public void testBuildProgression() {
 		Chord start = chord_dictionary.getANextChord(null);
@@ -81,6 +90,9 @@ public class ProgressionGeneratorTest {
 		assertFalse(same);
 	}
 
+	/**
+	 * Tests a controlled progression generation
+	 */
 	@Test
 	public void testControlledGeneration(){
 		XMLReader reader2 = new XMLReader();
@@ -133,6 +145,9 @@ public class ProgressionGeneratorTest {
 		assertFalse(same);
 	}
 
+	/**
+	 * Tests creating controlled song parts
+	 */
 	@Test
 	public void testControlledSongParts(){
 		XMLReader reader3 = new XMLReader();

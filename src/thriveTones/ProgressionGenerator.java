@@ -1,4 +1,5 @@
 package thriveTones;
+import java.util.LinkedList;
 
 /**
  * "ThriveTones" Song Generator
@@ -9,14 +10,13 @@ package thriveTones;
  * Generates a chord progression based on established probabilities
  */
 
-import java.util.LinkedList;
-
 public class ProgressionGenerator {
 	private static LinkedList<Chord> progression;
 	private ChordDictionary chord_dictionary;
 
 	/**
 	 * Constructor method
+	 * @param dict : ChordDictionary to be used
 	 */
 	public ProgressionGenerator(ChordDictionary dict) {
 		chord_dictionary = dict;
@@ -24,9 +24,9 @@ public class ProgressionGenerator {
 
 	/**
 	 * Builds a chord progression based on a supplied starting Chord
-	 * @param start: Chord with which to start the progression
-	 * @param prog_length: length of desired progression
-	 * @param hist_length: length of the history to use
+	 * @param start : Chord with which to start the progression
+	 * @param prog_length : length of desired progression
+	 * @param hist_length : length of the history to use
 	 */
 	public void buildProgression(Chord start, int prog_length, int hist_length){
 		progression = new LinkedList<Chord>();
@@ -50,7 +50,7 @@ public class ProgressionGenerator {
 
 	/**
 	 * progression accessor
-	 * @return: the progression
+	 * @return : the progression
 	 */
 	public LinkedList<Chord> getProgression(){
 		return progression;

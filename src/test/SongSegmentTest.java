@@ -1,14 +1,5 @@
 package test;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * SongTest.java
- * Tests the Song class
- */
-
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -21,10 +12,22 @@ import thriveTones.ChordDictionary;
 import thriveTones.SongSegment;
 import thriveTones.SongSegment.SongPart;
 
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * SongSegmentTest.java
+ * Tests the SongSegment class
+ */
+
 public class SongSegmentTest {
 	private HashMap<SongPart, ChordDictionary> parts_dictionary;
 	private static SongSegment song_segment;
 
+	/**
+	 * Retrieves the full dictionary and initializes a SongSegment for testing
+	 */
 	@Before
 	public void init(){
 		parts_dictionary = new XMLReader().getPartsDictionary();
@@ -37,6 +40,9 @@ public class SongSegmentTest {
 		}
 	}
 
+	/**
+	 * Tests initialization
+	 */
 	@Test
 	public void testInitialization() {
 		assertEquals("Title", song_segment.getName());
@@ -49,6 +55,9 @@ public class SongSegmentTest {
 		assertEquals(4, song_segment.getBeats(), 0);
 	}
 
+	/**
+	 * Tests partToEnum()
+	 */
     @Test
     public void testPartToEnum(){
         assertEquals(SongPart.bridge, song_segment.partToEnum("Bridge"));
@@ -71,11 +80,18 @@ public class SongSegmentTest {
         assertEquals(SongPart.verse, song_segment.partToEnum("Verse"));
     }
 
+    /**
+     * Tests an invalid SongPart
+     * @throws Exception : on an invalid SongPart
+     */
 	@Test (expected = Exception.class)
 	public void testInvalidPart() throws Exception{
 		new SongSegment("Title", "Artist", "random part", "C", 1, "1-4", 4, parts_dictionary);
 	}
 
+	/**
+	 * Tests changeKey()
+	 */
 	@Test
 	public void testChangeKey(){
 		try{
@@ -95,6 +111,12 @@ public class SongSegmentTest {
 		}
 	}
 
+	/**
+	 * Checks for valid relative major calculation
+	 * @param target : expected root
+	 * @param key : chord key
+	 * @param mode : chord mode
+	 */
 	public void ckRelativeMajor(String target, String key, int mode){
 		try{
 			song_segment.changeKey(key, mode);
@@ -108,6 +130,10 @@ public class SongSegmentTest {
 		}
 	}
 
+	/**
+	 * Tests the calculation of the relative major
+	 * (method called indirectly through changeKey())
+	 */
 	@Test
 	public void testCalculateRelativeMajor(){
 		ckRelativeMajor("C", "C", 1);
@@ -132,18 +158,28 @@ public class SongSegmentTest {
 		ckRelativeMajor("F##", "B#", 4);
 	}
 
+	/**
+	 * Tests invalid key change
+	 * @throws Exception : on invalid desired key
+	 */
 	@Test (expected = Exception.class)
 	public void testInvalidKeyChange() throws Exception{
 		song_segment.changeKey("", 1);
 	}
 
+	/**
+	 * Tests toString()
+	 */
 	@Test
 	public void testToString(){
 		assertEquals("KCmaj C5maj/1.0", song_segment.toString());
 	}
 
+	/**
+	 * Tests equivalent SongSegments
+	 */
 	@Test
-	public void testEquivelantSongs(){
+	public void testEquivelantSongSegments(){
 		try{
 			SongSegment song_segment2 = new SongSegment("Title", "Artist", "Chorus", "C", 1, "1-4", 4, parts_dictionary);
 			SongSegment song_segment3 = new SongSegment("Title", "Artist", "Chorus", "C", 1, "1-4", 4, parts_dictionary);

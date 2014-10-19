@@ -1,14 +1,5 @@
 package thriveTones;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * SongSegment.java
- * This class represents a song part, containing metadata, key, mode, and a chord progression
- */
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,7 +10,17 @@ import java.util.Scanner;
 import org.jfugue.Pattern;
 import org.jfugue.Player;
 
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * SongSegment.java
+ * This class represents a song part, containing metadata, key, mode, and a chord progression
+ */
+
 public class SongSegment {
+	@SuppressWarnings("javadoc")
 	public enum SongPart {chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus};
 	private String name;
 	private String artist;
@@ -33,15 +34,15 @@ public class SongSegment {
 
 	/**
 	 * Constructor method
-	 * @param nm: song name
-	 * @param at: song artist
-	 * @param pt: song part (chorus, verse, etc)
-	 * @param ky: song key
-	 * @param md: song mode (major, minor, dorian, etc)
-	 * @param sif: chords in SIF format
-	 * @param bim: beats in measure
-	 * @param dict: Chord dictionary
-	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
+	 * @param nm : song name
+	 * @param at : song artist
+	 * @param pt : song part (chorus, verse, etc)
+	 * @param ky : song key
+	 * @param md : song mode (major, minor, dorian, etc)
+	 * @param sif : chords in SIF format
+	 * @param bim : beats in measure
+	 * @param dict : Chord dictionary
+	 * @throws Exception : throws if an invalid parameter is supplied
 	 */
 	public SongSegment(String nm, String at, String pt, String ky, int md, String sif,
 			double bim, HashMap<SongPart, ChordDictionary> dict) throws Exception{
@@ -94,6 +95,15 @@ public class SongSegment {
 		calculateRelativeMajor();
 	}
 	
+	/**
+	 * Constructor method, meant for bot creation of a new song
+	 * (as opposed to the read-in constructor above)
+	 * @param pt : part to be created
+	 * @param ky : SongSegment key
+	 * @param md : SongSegment mode
+	 * @param bim : beats per measure
+	 * @param pg : SongSegment chord progression
+	 */
 	public SongSegment(SongPart pt, String ky, int md, double bim, LinkedList<Chord> pg){
 		name = "AI Creation";
 		artist = "Music Bot";
@@ -109,8 +119,8 @@ public class SongSegment {
 
 	/**
 	 * Converts a string representation of song part to the standard enum
-	 * @param pt: string representation of song part
-	 * @return: the corresponding enum value
+	 * @param pt : string representation of song part
+	 * @return : the corresponding enum value
 	 */
 	public SongPart partToEnum(String pt){
         pt = pt.toLowerCase();
@@ -145,8 +155,9 @@ public class SongSegment {
 
 	/**
 	 * Adjusts the song's key
-	 * @param ky: new key
-	 * @param md: new mode
+	 * @param ky : new key
+	 * @param md : new mode
+	 * @throws Exception : if the provided key is invalid
 	 */
 	public void changeKey(String ky, int md) throws Exception{
 		if(ky.isEmpty())
@@ -190,7 +201,7 @@ public class SongSegment {
 	
 	/**
 	 * name accessor
-	 * @return: song name
+	 * @return : song name
 	 */
 	public String getName(){
 		return name;
@@ -198,7 +209,7 @@ public class SongSegment {
 	
 	/**
 	 * artist accessor
-	 * @return: song artist
+	 * @return : song artist
 	 */
 	public String getArtist(){
 		return artist;
@@ -206,7 +217,7 @@ public class SongSegment {
 	
 	/**
 	 * part accessor
-	 * @return: song part
+	 * @return : song part
 	 */
 	public SongPart getPart(){
 		return part;
@@ -214,7 +225,7 @@ public class SongSegment {
 	
 	/**
 	 * key accessor
-	 * @return: song key
+	 * @return : song key
 	 */
 	public String getKey(){
 		return key;
@@ -222,7 +233,7 @@ public class SongSegment {
 	
 	/**
 	 * relative major accessor
-	 * @return: relative major
+	 * @return : relative major
 	 */
 	public String getRelMajor(){
 		return rel_major;
@@ -230,7 +241,7 @@ public class SongSegment {
 	
 	/**
 	 * mode accessor
-	 * @return: song mode
+	 * @return : song mode
 	 */
 	public int getMode(){
 		return mode;
@@ -238,7 +249,7 @@ public class SongSegment {
 	
 	/**
 	 * progression accessor
-	 * @return: chord progression
+	 * @return : chord progression
 	 */
 	public LinkedList<Chord> getChords(){
 		return progression;
@@ -246,7 +257,7 @@ public class SongSegment {
 	
 	/**
 	 * beats accessor
-	 * @return: beats in measure
+	 * @return : beats in measure
 	 */
 	public double getBeats(){
 		return beats;
@@ -254,7 +265,7 @@ public class SongSegment {
 	
 	/**
 	 * Converts the song into a string representation
-	 * @return: the string representation of the song
+	 * @return : the string representation of the song
 	 */
 	@Override
 	public String toString(){
@@ -269,6 +280,7 @@ public class SongSegment {
 
 	/**
 	 * Plays the song
+	 * @param tempo : desired tempo
 	 */
 	public void play(int tempo){
 		String INSTRUMENT = "Piano";
@@ -304,8 +316,8 @@ public class SongSegment {
 
 	/**
 	 * Saves generated song to a midi file for later playback
-	 * @param player: Player object
-	 * @param pattern: Pattern object
+	 * @param player : Player object
+	 * @param pattern : Pattern object
 	 */
 	public void export(Player player, Pattern pattern){
 		Scanner sc = new Scanner(System.in);

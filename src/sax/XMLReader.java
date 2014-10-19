@@ -1,17 +1,5 @@
 package sax;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * XMLReader.java
- * This class extracts the songs from a specified XML data feed,
- * expecting the Hooktheory format
- * 
- * For full format details, see XMLFORMAT-README.md
- */
-
 import javax.xml.parsers.*;
 
 import org.w3c.dom.Document;
@@ -27,6 +15,18 @@ import thriveTones.SongSegment.SongPart;
 import java.io.*;
 import java.util.HashMap;
 
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * XMLReader.java
+ * This class extracts the songs from a specified XML data feed,
+ * expecting the Hooktheory format
+ * 
+ * For full format details, see XMLFORMAT-README.md
+ */
+
 public class XMLReader extends DefaultHandler {
 	private static HashMap<SongPart, ChordDictionary> parts_dictionary;
 
@@ -39,12 +39,13 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Reads in the data based on the filename provided
-	 * @param filename: file to be read in
-	 * @throws Exception
+	 * @param filename : file to be read in
+	 * @throws Exception : on invalid file passed in
 	 */
 	public void readIn(String filename) throws Exception{
         File file = new File(filename);
-        if(!file.exists() || file.isDirectory()) throw new Exception("File not found! " + filename);
+        if(!file.exists() || file.isDirectory())
+        	throw new Exception("File not found! " + filename);
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
@@ -77,9 +78,9 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Extracts an attribute value from the XML
-	 * @param fields: field nodes amongst which to search for the specified field name
-	 * @param att_name: name of the field for which to search
-	 * @return: the value of the specified field
+	 * @param fields : field nodes amongst which to search for the specified field name
+	 * @param att_name : name of the field for which to search
+	 * @return : the value of the specified field
 	 */
 	public String nodeValueByAttName(NodeList fields, String att_name){
 		String node_value = "";
@@ -97,8 +98,8 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Converts varying keys from the raw XML into a standard key notation
-	 * @param xkey: raw key from XML
-	 * @return: standardized key
+	 * @param xkey : raw key from XML
+	 * @return : standardized key
 	 */
 	public String XMLKeytoKey(String xkey){
 		if(xkey.length() < 1 || xkey.length() > 2
@@ -123,8 +124,9 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Extracts the key from the XML file
-	 * @param fields: field nodes amongst which to search for the key
-	 * @return: the standardized key value
+	 * @param fields : field nodes amongst which to search for the key
+	 * @return : the standardized key value
+	 * @throws Exception : on an empty field list
 	 */
 	public String extractKey(NodeList fields) throws Exception{
 		if(fields == null)
@@ -138,7 +140,9 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Converts the SIF string into a Song object
-	 * @param fields: field nodes of the song to convert
+	 * @param fields : field nodes of the song to convert
+	 * @return : the newly created SongSegment
+	 * @throws Exception : on invalid SongSegment creation
 	 */
 	public SongSegment SIFtoChords(NodeList fields) throws Exception{
 		String title = nodeValueByAttName(fields, "song");
@@ -154,7 +158,7 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * parts_dictionary accessor
-	 * @return: the current full parts_dictionary hashmap
+	 * @return : the current full parts_dictionary hashmap
 	 */
 	public HashMap<SongPart, ChordDictionary> getPartsDictionary(){
 		return parts_dictionary;
@@ -162,8 +166,8 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Part chord_dictionary accessor
-	 * @param part: specific dictionary requested
-	 * @return: a chord_dictionary for the song part indicated
+	 * @param part : specific dictionary requested
+	 * @return : a chord_dictionary for the song part indicated
 	 */
 	public ChordDictionary getChordDictionary(SongPart part){
 		return parts_dictionary.get(part);

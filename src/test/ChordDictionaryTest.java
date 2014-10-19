@@ -1,14 +1,4 @@
 package test;
-
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * ChordDictionaryTest.java
- * Tests the ChordDictionary class
- */
-
 import static org.junit.Assert.*;
 
 import java.util.LinkedList;
@@ -21,24 +11,45 @@ import thriveTones.Chord;
 import thriveTones.Chord.Tonality;
 import thriveTones.ChordDictionary;
 
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * ChordDictionaryTest.java
+ * Tests the ChordDictionary class
+ */
+
 public class ChordDictionaryTest {
 	private static ChordDictionary chord_dictionary;
 
+	/**
+	 * Ensures a new ChordDictionary object is established
+	 */
 	@BeforeClass
 	public static void chordDictionaryInit(){
 		chord_dictionary = new ChordDictionary();
 	}
 
+	/**
+	 * Clears out any existing ChordDictionary object
+	 */
 	@Before
 	public void resetDictionary(){
 		chord_dictionary.clear();
 	}
 
+	/**
+	 * Tests initialization
+	 */
 	@Test
 	public void testInit() {
 		assertFalse(chord_dictionary == null);
 	}
 
+	/**
+	 * Tests single-chord creation
+	 */
 	@Test
 	public void testPutSingleChord(){
 		Chord chord = new Chord(1, Tonality.maj, 4);
@@ -46,6 +57,9 @@ public class ChordDictionaryTest {
 		assertEquals(chord, chord_dictionary.getANextChord(null));
 	}
 
+	/**
+	 * Tests expected progression probabilities
+	 */
 	@Test
 	public void testChordProbabilities(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
@@ -66,6 +80,9 @@ public class ChordDictionaryTest {
 		assertTrue(frequency > 55);
 	}
 
+	/**
+	 * Tests simple sequence
+	 */
 	@Test
 	public void testSingleChordSequence(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
@@ -93,6 +110,9 @@ public class ChordDictionaryTest {
 		assertTrue(frequency >= 40 && frequency <= 60);
 	}
 
+	/**
+	 * Tests more complicated chord progression probabilities
+	 */
 	@Test
 	public void testSequenceChordProbabilities(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
@@ -127,6 +147,9 @@ public class ChordDictionaryTest {
 		assertTrue(frequency > 55);
 	}
 
+	/**
+	 * Tests overloaded put()
+	 */
 	@Test
 	public void testPutNextChord(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
@@ -147,6 +170,9 @@ public class ChordDictionaryTest {
 		assertEquals(chord2, chord_dictionary.getANextChord(sequence));
 	}
 
+	/**
+	 * Tests overloaded put() with given sequence
+	 */
 	@Test
 	public void testPutNextChordSequence(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
@@ -176,6 +202,9 @@ public class ChordDictionaryTest {
 		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
 	}
 
+	/**
+	 * Tests getANextChord()
+	 */
 	@Test
 	public void testGetANextChord(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
@@ -202,6 +231,9 @@ public class ChordDictionaryTest {
 		assertNotNull(chord_dictionary.getANextChord(sequence));
 	}
 
+	/**
+	 * Tests behavior with non-present key
+	 */
 	@Test
 	public void testKeyNotPresent(){
 		Chord chord1 = new Chord(1, Tonality.maj, 4);

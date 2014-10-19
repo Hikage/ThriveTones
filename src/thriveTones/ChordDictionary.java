@@ -1,5 +1,11 @@
 package thriveTones;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -9,12 +15,6 @@ package thriveTones;
  * This class represents a chord dictionary object, storing unique Chords and chord histories up to 4 Chords
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
 @SuppressWarnings("serial")
 public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>>{
 	private Random random_generator = new Random();
@@ -22,8 +22,8 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 
 	/**
 	 * Overloaded with native HashMap put
-	 * @param sequence: history string, hash key
-	 * @param chord: next chord possibility, hash value
+	 * @param sequence : history string, hash key
+	 * @param chord : next chord possibility, hash value
 	 */
 	public void put(List<Chord> sequence, Chord chord){
 		if(sequence == null) sequence = new LinkedList<Chord>();
@@ -48,8 +48,8 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 	 * Given a Chord history set, returns a randomized next chord,
 	 * recursively looking at shorter histories if the current one
 	 * doesn't have a valid key value in the hash
-	 * @param sequence: Chord history to look up
-	 * @return: a valid next Chord
+	 * @param sequence : Chord history to look up
+	 * @return : a valid next Chord
 	 */
 	public Chord getANextChord(List<Chord> sequence){
 		if(sequence == null)
@@ -67,6 +67,10 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 		return available_chords.get(index);
 	}
 
+	/**
+	 * Retrieves the maximum history length
+	 * @return : the maximum history length
+	 */
 	public int getMaxHistoryLength(){
 		return MAX_HISTORY_LENGTH;
 	}

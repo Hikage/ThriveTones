@@ -1,14 +1,5 @@
 package test;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * XMLReaderTest.java
- * Tests the XMLReader class
- */
-
 import static org.junit.Assert.*;
 
 import java.io.FileReader;
@@ -30,13 +21,24 @@ import thriveTones.Chord;
 import thriveTones.ChordDictionary;
 import thriveTones.SongSegment.SongPart;
 
-public class XMLReaderTest {
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * XMLReaderTest.java
+ * Tests the XMLReader class
+ */
 
+public class XMLReaderTest {
 	private static NodeList rows;
 	private static XMLReader reader;
 	private static String file = "Hooktheory-Data.xml";
 	private static ChordDictionary chord_dictionary;
-	
+
+	/**
+	 * Reads in the data file in preparation for tests
+	 */
 	@BeforeClass
 	public static void XMLReaderInit() {
 		reader = new XMLReader();
@@ -57,6 +59,9 @@ public class XMLReaderTest {
 		}
 	}
 
+	/**
+	 * Tests the initial read-in
+	 */
 	@Test
 	public void testReadIn(){
 		try {
@@ -71,6 +76,9 @@ public class XMLReaderTest {
 		assertEquals("Jimmy Eat World", rows.item(1).getChildNodes().item(1).getTextContent().trim());
 	}
 
+	/**
+	 * Ensures the dictionary was built as expected
+	 */
 	@Test
 	public void testDictionaryBuild(){
 		HashMap<SongPart, ChordDictionary> parts_dictionary = reader.getPartsDictionary();
@@ -124,6 +132,9 @@ public class XMLReaderTest {
 		}
 	}
 
+	/**
+	 * Tests nodeValueByAttName()
+	 */
 	@Test
 	public void testNodeValueByAttName(){
 		NodeList fields = rows.item(1).getChildNodes();
@@ -138,6 +149,9 @@ public class XMLReaderTest {
 		assertEquals("", reader.nodeValueByAttName(fields, "badFieldName"));
 	}
 
+	/**
+	 * Tests XMLKeytoKey()
+	 */
 	@Test
 	public void testValidXMLKeytoKey(){
 		assertEquals("A", reader.XMLKeytoKey("A"));
@@ -153,6 +167,9 @@ public class XMLReaderTest {
 		assertEquals("B#", reader.XMLKeytoKey("bS"));
 	}
 
+	/**
+	 * Tests invalid XML keys
+	 */
 	@Test
 	public void testInvalidXMLKeytoKey(){
 		assertNull(reader.XMLKeytoKey("H"));
@@ -164,6 +181,9 @@ public class XMLReaderTest {
 		assertNull(reader.XMLKeytoKey("sus"));
 	}
 
+	/**
+	 * Tests extractKey()
+	 */
 	@Test
 	public void testExtractKey(){
 		NodeList fields = rows.item(1).getChildNodes();
@@ -176,11 +196,18 @@ public class XMLReaderTest {
 		}
 	}
 
+	/**
+	 * Tests invalid key to extract
+	 * @throws Exception : on invalid key provided
+	 */
 	@Test (expected = Exception.class)
 	public void testNullExtractKey() throws Exception{
 		reader.extractKey(null);
 	}
 
+	/**
+	 * Tests SIFtoChords()
+	 */
 	@Test
 	public void testSIFtoChords(){
 		NodeList fields = rows.item(1).getChildNodes();
@@ -194,6 +221,10 @@ public class XMLReaderTest {
 		}
 	}
 
+	/**
+	 * Tests null SIFtoChords()
+	 * @throws Exception : on a null SIF
+	 */
 	@Test (expected = Exception.class)
 	public void testNullSIFtoChords() throws Exception{
 		reader.SIFtoChords(null);

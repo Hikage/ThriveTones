@@ -1,5 +1,9 @@
 package thriveTones;
 
+import java.util.*;
+import sax.XMLReader;
+import thriveTones.SongSegment.SongPart;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -8,11 +12,6 @@ package thriveTones;
  * Driver.java
  * Main class driver
  */
-
-import java.util.*;
-
-import sax.XMLReader;
-import thriveTones.SongSegment.SongPart;
 
 public class Driver {
 	private static XMLReader reader;
@@ -55,7 +54,7 @@ public class Driver {
 
 	/**
 	 * Reads in the data from the provided filename
-	 * @param filename: file containing data to be read in
+	 * @param filename : file containing data to be read in
 	 */
 	public static void readInData(String filename){
 		reader = new XMLReader();
@@ -93,7 +92,8 @@ public class Driver {
 
 	/**
 	 * Builds the specified song part
-	 * @param part: song part to be built
+	 * @param part : song part to be built
+	 * @param play : whether or not to play the given SongSegment
 	 */
 	public static void buildSongPart(SongPart part, boolean play){
 		ChordDictionary chord_dictionary = reader.getChordDictionary(part);
