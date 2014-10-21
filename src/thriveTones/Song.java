@@ -216,7 +216,6 @@ public class Song {
 		Player player = new Player();
 		player.play(pattern);
 
-		/**
 		//Gives user option to save song as midi; loops in case cancels exit
 		boolean exit = false;
 		do{
@@ -234,7 +233,6 @@ public class Song {
 				if(save.equalsIgnoreCase("y")) exit = true;
 			}
 		}while(!exit);
-		**/
 	}
 
 	/**

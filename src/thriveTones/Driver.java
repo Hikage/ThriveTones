@@ -1,6 +1,7 @@
 package thriveTones;
 
 import java.util.*;
+
 import sax.XMLReader;
 import thriveTones.SongSegment.SongPart;
 
@@ -33,20 +34,21 @@ public class Driver {
 		readInData(args[0]);
 		//getUserInputs();
 
-		boolean play = false;
+		//TODO: generate sequence automatically
+		SongPart[] song_sequence = {SongPart.intro, SongPart.verse, SongPart.verse, SongPart.chorus,
+				SongPart.verse, SongPart.prechorus, SongPart.chorus, SongPart.bridge, SongPart.solo,
+				SongPart.chorus, SongPart.chorus, SongPart.outro};
 
-		buildSongPart(SongPart.intro, play);
-		buildSongPart(SongPart.verse, play);
-		buildSongPart(SongPart.verse, play);
-		buildSongPart(SongPart.chorus, play);
-		buildSongPart(SongPart.verse, play);
-		buildSongPart(SongPart.prechorus, play);
-		buildSongPart(SongPart.chorus, play);
-		buildSongPart(SongPart.bridge, play);
-		buildSongPart(SongPart.solo, play);
-		buildSongPart(SongPart.chorus, play);
-		buildSongPart(SongPart.chorus, play);
-		buildSongPart(SongPart.outro, play);
+		LinkedList<SongSegment> segments = new LinkedList<SongSegment>();
+
+		for(SongPart part : song_sequence)
+			segments.add(buildSongSegment(part));
+
+		Song song = new Song("C", 1, segments, "New Hit", "Rockstar Bot", 4);
+
+		System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
+		//System.out.println(song.toString());
+		song.play(tempo);
 
 		System.out.println("\nEnd of program.\nThank you for playing!");
 		System.exit(0);
@@ -94,8 +96,9 @@ public class Driver {
 	 * Builds the specified song part
 	 * @param part : song part to be built
 	 * @param play : whether or not to play the given SongSegment
+	 * @return : constructed SongSegment
 	 */
-	public static void buildSongPart(SongPart part, boolean play){
+	public static SongSegment buildSongSegment(SongPart part){
 		ChordDictionary chord_dictionary = reader.getChordDictionary(part);
 		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
 
@@ -105,10 +108,6 @@ public class Driver {
 
 		//Generate progression and create new song
 		generator.buildProgression(start, song_length, history);
-		SongSegment new_hit = new SongSegment(part, generator.getProgression());
-
-		System.out.print(part.toString() + ": ");
-		//if(play) new_hit.play(tempo);
-		System.out.println(new_hit.toString());
+		return new SongSegment(part, generator.getProgression());
 	}
 }
