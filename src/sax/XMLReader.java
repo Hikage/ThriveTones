@@ -153,7 +153,7 @@ public class XMLReader extends DefaultHandler {
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new SongSegment(title, artist, part, key, mode, sif, beats, parts_dictionary);
+		return new SongSegment(title, artist, part, mode, sif, beats, parts_dictionary);
 	}
 
 	/**

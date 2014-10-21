@@ -342,18 +342,18 @@ public class Chord {
 	 */
 	@Override
 	public String toString(){
-		return toString('Z', duration);
+		return toString("Z", duration);
 	}
 
 	/**
 	 * Converts Chord into a string representation, taking key into account
-	 * @param k : char representation of the key
+	 * @param ky : char representation of the key
 	 * @param beats : number of beats per measure
 	 * @return : the JFugue string representation of the Chord
 	 */
-	public String toString(char k, double beats){
-		String keys = "ABCDEFG";
-		int key = keys.indexOf(k);
+	public String toString(String ky, double beats){
+		String keys = "ABCDEFG";				//no need to worry about sharps or flats at the chord-level
+		int key = keys.indexOf(ky.charAt(0));
 
 		String chord = "";
 		if(root == 0) chord = "R";	//rest
@@ -372,7 +372,7 @@ public class Chord {
 		}
 
 		String dur = new DecimalFormat("##0.0#").format(duration/beats);
-		dur = "4";
+		dur = "1.0";
 		chord += "/" + dur;
 
 		return chord;

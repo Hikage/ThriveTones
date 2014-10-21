@@ -212,7 +212,7 @@ public class XMLReaderTest {
 	public void testSIFtoChords(){
 		NodeList fields = rows.item(1).getChildNodes();
 		try{
-			assertEquals("KEbmaj E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0 E5maj/2.0 B5maj/2.0 A5maj/2.0 E5maj/2.0",
+			assertEquals("15maj/2.0 55maj/2.0 45maj/2.0 15maj/2.0 15maj/2.0 55maj/2.0 45maj/2.0 15maj/2.0",
 					reader.SIFtoChords(fields).toString());
 		}
 		catch(Exception e){

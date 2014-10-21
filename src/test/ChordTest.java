@@ -608,26 +608,26 @@ public class ChordTest {
 			//TODO: Adjust for applied targets and chord modes
 			chord = new Chord(1, "542-3");
 			assertEquals("55maj7^^^/1.0", chord.toString());
-			assertEquals("E5maj7^^^/0.75", chord.toString('A', 4));
-			assertEquals("F5maj7^^^/0.5", chord.toString('B', 6));
-			assertEquals("G5maj7^^^/0.6", chord.toString('C', 5));
-			assertEquals("A5maj7^^^/1.0", chord.toString('D', 3));
-			assertEquals("B5maj7^^^/0.75", chord.toString('E', 4));
-			assertEquals("C5maj7^^^/3.0", chord.toString('F', 1));
-			assertEquals("D5maj7^^^/1.5", chord.toString('G', 2));
-			assertEquals("E5maj7^^^/1.0", chord.toString('A', 3));
+			assertEquals("E5maj7^^^/0.75", chord.toString("A", 4));
+			assertEquals("F5maj7^^^/0.5", chord.toString("B", 6));
+			assertEquals("G5maj7^^^/0.6", chord.toString("C#", 5));
+			assertEquals("A5maj7^^^/1.0", chord.toString("D", 3));
+			assertEquals("B5maj7^^^/0.75", chord.toString("Eb", 4));
+			assertEquals("C5maj7^^^/3.0", chord.toString("F", 1));
+			assertEquals("D5maj7^^^/1.5", chord.toString("G", 2));
+			assertEquals("E5maj7^^^/1.0", chord.toString("Ab", 3));
 			
 			chord = new Chord(6, "6sus4-4");
 			assertEquals("15sus4/1.0", chord.toString());
-			assertEquals("E5sus4/1.0", chord.toString('E', 4));
+			assertEquals("E5sus4/1.0", chord.toString("E", 4));
 			
 			chord = new Chord(5, "76add9-4");
 			assertEquals("35dim^add9/1.0", chord.toString());
-			assertEquals("E5dim^add9/1.33", chord.toString('C', 3));
+			assertEquals("E5dim^add9/1.33", chord.toString("C", 3));
 
 			chord = new Chord(1, "511-4");
 			assertEquals("55dom11/1.0", chord.toString());
-			assertEquals("G5dom11/1.33", chord.toString('C', 3));
+			assertEquals("G5dom11/1.33", chord.toString("C#", 3));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

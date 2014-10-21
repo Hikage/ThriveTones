@@ -1,7 +1,13 @@
 package thriveTones;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Scanner;
+
+import org.jfugue.Pattern;
+import org.jfugue.Player;
 
 /**
  * "ThriveTones" Song Generator
@@ -14,17 +20,26 @@ import java.util.ListIterator;
 
 public class Song {
 	private LinkedList<SongSegment> segments = new LinkedList<SongSegment>();
+	private int mode;
 	private String key;
+	private String rel_major;
 
 	/**
 	 * Constructor method
 	 * @param ky : key of the new Song
+	 * @param md : Song mode
 	 * @param seg : segment progression
 	 */
-	public Song(String ky, LinkedList<SongSegment> seg){
-		if(ky.isEmpty()) key = "C";
-		else key = ky;
+	public Song(String ky, int md, LinkedList<SongSegment> seg){
+		if(ky == null)
+			throw new IllegalArgumentException("Key cannot be null");
+		key = standardizeKey(ky);
+		if(md < 0 || md > 7)
+			throw new IllegalArgumentException("Invalid mode value: " + md);
+		mode = md;
 		segments = seg;
+
+		calculateRelativeMajor();
 	}
 
 	/**
@@ -35,7 +50,7 @@ public class Song {
 	public String standardizeKey(String ky){
 		String keys = "ABCDEFG";
 		String standard_key = "";
-		if(!keys.contains(Character.toString(ky.toUpperCase().charAt(0))))
+		if(ky.isEmpty() || !keys.contains(Character.toString(ky.toUpperCase().charAt(0))))
 			standard_key = "C";
 		else{
 			standard_key += ky.toUpperCase().charAt(0);
@@ -60,11 +75,74 @@ public class Song {
 	}
 
 	/**
+	 * Adjusts the song's key
+	 * @param ky : new key
+	 * @param md : new mode
+	 * @throws Exception : if the provided key is invalid
+	 */
+	public void changeKey(String ky, int md) throws Exception{
+		if(ky.isEmpty())
+			throw new IllegalArgumentException("ky is empty!");
+		key = ky;
+		mode = md;
+
+		calculateRelativeMajor();
+	}
+
+	/**
+	 * Calculates the relative major, based on song key and mode
+	 */
+	private void calculateRelativeMajor(){
+		String circle = "FCGDAEB";
+		int offset;
+		switch(mode){
+		case 2: offset = -2; break;
+		case 3: offset = -4; break;
+		case 4: offset = 1; break;
+		case 5: offset = -1; break;
+		case 6: offset = -3; break;
+		case 7: offset = -5; break;
+		default: offset = 0;
+		}
+
+		rel_major = "";
+		String accidental = "";
+		if(key.length() > 1) accidental += key.charAt(1);
+		int pos = circle.indexOf(key.toUpperCase().charAt(0));
+		int new_pos = pos + offset;
+		if(new_pos < 0){
+			rel_major += circle.charAt(new_pos + 7);
+			if(!accidental.equals("#")) rel_major += (accidental + "b");
+		}
+		else if(new_pos >= circle.length()){
+			rel_major += circle.charAt(new_pos - 7);
+			if(!accidental.equals("b")) rel_major += (accidental + "#");
+		}
+		else rel_major += (circle.charAt(new_pos) + accidental);
+	}
+
+	/**
 	 * key accessor
 	 * @return : Song key
 	 */
 	public String getKey(){
 		return key;
+	}
+
+	/**
+	 * relative major accessor
+	 * @return : relative major
+	 */
+	public String getRelMajor(){
+		return rel_major;
+	}
+
+	/**
+	 * mode accessor
+	 * @return : Song mode
+	 */
+	public int getMode(){
+		return mode;
 	}
 
 	/**
@@ -77,10 +155,66 @@ public class Song {
 
 	@Override
 	public String toString(){
-		String playable_segments = "";
+		String playable_segments = "K" + rel_major + "maj ";
 		ListIterator<SongSegment> it = segments.listIterator();
 		while(it.hasNext())
-			playable_segments += it.next().toString() + "\n";
+			playable_segments += it.next().toString(key) + "\n";
 		return playable_segments.trim();		
+	}
+
+	/**
+	 * Plays the Song
+	 * @param tempo : desired tempo
+	 */
+	public void play(int tempo){
+		String INSTRUMENT = "Piano";
+
+		String playable_song = "T" + tempo + " I[" + INSTRUMENT + "] " + this.toString();
+
+		System.out.println(playable_song);
+		Pattern pattern = new Pattern();
+		pattern.setMusicString(playable_song);
+		Player player = new Player();
+		player.play(pattern);
+
+		/**
+		//Gives user option to save song as midi; loops in case cancels exit
+		boolean exit = false;
+		do{
+			System.out.println("\nWould you like to save this song? (y or n)");
+			Scanner in = new Scanner(System.in);
+			String save = in.nextLine();
+			if (save.equalsIgnoreCase("y")){
+				exit = true;
+				export(player, pattern);
+			}
+			else{
+				System.out.println("Data will be lost. Are you sure?");
+				in = new Scanner(System.in);
+				save = in.nextLine();
+				if(save.equalsIgnoreCase("y")) exit = true;
+			}
+		}while(!exit);
+		**/
+	}
+
+	/**
+	 * Saves generated song to a midi file for later playback
+	 * @param player : Player object
+	 * @param pattern : Pattern object
+	 */
+	public void export(Player player, Pattern pattern){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Type a name for the song");
+		String songName = sc.next() + ".mid";
+		pattern.setMusicString(this.toString());
+		File outFile = new File(songName);
+		try {
+			player.saveMidi(pattern, outFile);
+		}
+		catch (IOException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 }

@@ -16,7 +16,7 @@ import thriveTones.SongSegment.SongPart;
 public class Driver {
 	private static XMLReader reader;
 	private static int song_length = 8;
-	private static int tempo = 240;
+	private static int tempo = 120;
 	private static int beats = 4;
 	private static int history = 3;
 
@@ -105,10 +105,10 @@ public class Driver {
 
 		//Generate progression and create new song
 		generator.buildProgression(start, song_length, history);
-		SongSegment new_hit = new SongSegment(part, "C", 1, beats, generator.getProgression());
+		SongSegment new_hit = new SongSegment(part, 1, beats, generator.getProgression());
 
 		System.out.print(part.toString() + ": ");
-		if(play) new_hit.play(tempo);
-		else System.out.println(new_hit.toString());
+		//if(play) new_hit.play(tempo);
+		System.out.println(new_hit.toString());
 	}
 }
