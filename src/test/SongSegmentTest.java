@@ -32,7 +32,7 @@ public class SongSegmentTest {
 	public void init(){
 		parts_dictionary = new XMLReader().getPartsDictionary();
 		try{
-			song_segment = new SongSegment("Title", "Artist", "Chorus", 1, "1-4", 4, parts_dictionary);
+			song_segment = new SongSegment("Chorus", 1, "1-4", 4, parts_dictionary);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -45,8 +45,6 @@ public class SongSegmentTest {
 	 */
 	@Test
 	public void testInitialization() {
-		assertEquals("Title", song_segment.getName());
-		assertEquals("Artist", song_segment.getArtist());
 		assertEquals(SongPart.chorus, song_segment.getPart());
 		assertEquals(1, song_segment.getChords().size());
 		assertEquals(4, song_segment.getBeats(), 0);
@@ -83,7 +81,7 @@ public class SongSegmentTest {
      */
 	@Test (expected = Exception.class)
 	public void testInvalidPart() throws Exception{
-		new SongSegment("Title", "Artist", "random part", 1, "1-4", 4, parts_dictionary);
+		new SongSegment("random part", 1, "1-4", 4, parts_dictionary);
 	}
 
 	/**
@@ -101,14 +99,14 @@ public class SongSegmentTest {
 	@Test
 	public void testEquivelantSongSegments(){
 		try{
-			SongSegment song_segment2 = new SongSegment("Title", "Artist", "Chorus", 1, "1-4", 4, parts_dictionary);
-			SongSegment song_segment3 = new SongSegment("Title", "Artist", "Chorus", 1, "1-4", 4, parts_dictionary);
+			SongSegment song_segment2 = new SongSegment("Chorus", 1, "1-4", 4, parts_dictionary);
+			SongSegment song_segment3 = new SongSegment("Chorus", 1, "1-4", 4, parts_dictionary);
 			assertEquals(song_segment2, song_segment3);
 
-			SongSegment song_segment4 = new SongSegment("Title", "Artist", "Chorus", 2, "1-4", 4, parts_dictionary);
+			SongSegment song_segment4 = new SongSegment("Chorus", 2, "1-4", 4, parts_dictionary);
 			assertNotEquals(song_segment2, song_segment4);
 
-			SongSegment song_segment5 = new SongSegment("Title", "Artist", "Bridge", 1, "1-4", 4, parts_dictionary);
+			SongSegment song_segment5 = new SongSegment("Bridge", 1, "1-4", 4, parts_dictionary);
 			assertNotEquals(song_segment2, song_segment5);
 		}
 		catch(Exception e){

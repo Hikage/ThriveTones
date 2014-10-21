@@ -20,6 +20,8 @@ import org.jfugue.Player;
 
 public class Song {
 	private LinkedList<SongSegment> segments = new LinkedList<SongSegment>();
+	private String name;
+	private String artist;
 	private int mode;
 	private String key;
 	private String rel_major;
@@ -29,15 +31,24 @@ public class Song {
 	 * @param ky : key of the new Song
 	 * @param md : Song mode
 	 * @param seg : segment progression
+	 * @param nm : Song name
+	 * @param at : Song artist
 	 */
-	public Song(String ky, int md, LinkedList<SongSegment> seg){
+	public Song(String ky, int md, LinkedList<SongSegment> seg, String nm, String at){
 		if(ky == null)
 			throw new IllegalArgumentException("Key cannot be null");
 		key = standardizeKey(ky);
 		if(md < 0 || md > 7)
 			throw new IllegalArgumentException("Invalid mode value: " + md);
 		mode = md;
+		if(nm.isEmpty() || nm.equals(""))
+			throw new IllegalArgumentException("Invalid name value: " + nm);
+		if(at.isEmpty() || at.equals(""))
+			throw new IllegalArgumentException("Invalid artist value: " + at);
 		segments = seg;
+
+		name = nm;
+		artist = at;
 
 		calculateRelativeMajor();
 	}
@@ -151,6 +162,22 @@ public class Song {
 	 */
 	public LinkedList<SongSegment> getSegments(){
 		return segments;
+	}
+
+	/**
+	 * name accessor
+	 * @return : song name
+	 */
+	public String getName(){
+		return name;
+	}
+
+	/**
+	 * artist accessor
+	 * @return : song artist
+	 */
+	public String getArtist(){
+		return artist;
 	}
 
 	@Override

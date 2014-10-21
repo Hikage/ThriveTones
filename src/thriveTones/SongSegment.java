@@ -16,8 +16,6 @@ import java.util.ListIterator;
 public class SongSegment {
 	@SuppressWarnings("javadoc")
 	public enum SongPart {chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus};
-	private String name;
-	private String artist;
 	private SongPart part;
 	private LinkedList<Chord> progression;
 	private double beats;
@@ -25,8 +23,6 @@ public class SongSegment {
 
 	/**
 	 * Constructor method
-	 * @param nm : song name
-	 * @param at : song artist
 	 * @param pt : song part (chorus, verse, etc)
 	 * @param mode : song mode (major, minor, dorian, etc)
 	 * @param sif : chords in SIF format
@@ -34,13 +30,9 @@ public class SongSegment {
 	 * @param dict : Chord dictionary
 	 * @throws Exception : throws if an invalid parameter is supplied
 	 */
-	public SongSegment(String nm, String at, String pt, int mode, String sif,
-			double bim, HashMap<SongPart, ChordDictionary> dict) throws Exception{
+	public SongSegment(String pt, int mode, String sif, double bim,
+			HashMap<SongPart, ChordDictionary> dict) throws Exception{
 
-		if(nm.isEmpty() || nm.equals(""))
-			throw new IllegalArgumentException("Invalid name value: " + nm);
-		if(at.isEmpty() || at.equals(""))
-			throw new IllegalArgumentException("Invalid artist value: " + at);
 		if(pt.isEmpty() || pt.equals(""))
 			throw new IllegalArgumentException("Invalid part value: " + pt);
 		if(mode < 0 || mode > 7)
@@ -49,9 +41,6 @@ public class SongSegment {
 			throw new IllegalArgumentException("Invalid SIF value: " + sif);
 		if(bim < 0.25 || bim > 20)
 			throw new IllegalArgumentException("Invalid BiM value: " + bim);
-		
-		name = nm;
-		artist = at;
 
         part = partToEnum(pt);
         if(part == null)
@@ -88,8 +77,6 @@ public class SongSegment {
 	 * @param pg : SongSegment chord progression
 	 */
 	public SongSegment(SongPart pt, double bim, LinkedList<Chord> pg){
-		name = "AI Creation";
-		artist = "Music Bot";
 		part = pt;
 		beats = bim;
 		progression = pg;
@@ -130,22 +117,6 @@ public class SongSegment {
         if(pt.contains("chorus"))
             return SongPart.chorus;
         return null;
-	}
-	
-	/**
-	 * name accessor
-	 * @return : song name
-	 */
-	public String getName(){
-		return name;
-	}
-	
-	/**
-	 * artist accessor
-	 * @return : song artist
-	 */
-	public String getArtist(){
-		return artist;
 	}
 	
 	/**
@@ -210,11 +181,9 @@ public class SongSegment {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((artist == null) ? 0 : artist.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(beats);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((part == null) ? 0 : part.hashCode());
 		result = prime * result
 				+ ((progression == null) ? 0 : progression.hashCode());
@@ -234,20 +203,8 @@ public class SongSegment {
 		if (getClass() != obj.getClass())
 			return false;
 		SongSegment other = (SongSegment) obj;
-		if (artist == null){
-			if (other.artist != null)
-				return false;
-		}
-		else if (!artist.equals(other.artist))
-			return false;
 		if (Double.doubleToLongBits(beats) != Double
 				.doubleToLongBits(other.beats))
-			return false;
-		if (name == null){
-			if (other.name != null)
-				return false;
-		}
-		else if (!name.equals(other.name))
 			return false;
 		if (part == null){
 			if (other.part != null)
