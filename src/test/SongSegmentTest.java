@@ -48,7 +48,6 @@ public class SongSegmentTest {
 		assertEquals("Title", song_segment.getName());
 		assertEquals("Artist", song_segment.getArtist());
 		assertEquals(SongPart.chorus, song_segment.getPart());
-		assertEquals(1, song_segment.getMode());
 		assertEquals(1, song_segment.getChords().size());
 		assertEquals(4, song_segment.getBeats(), 0);
 	}

@@ -10,7 +10,7 @@ import java.util.ListIterator;
  * bshade@pdx.edu
  *
  * SongSegment.java
- * This class represents a song part, containing metadata, mode, and a chord progression
+ * This class represents a song part, containing metadata and a chord progression
  */
 
 public class SongSegment {
@@ -19,7 +19,6 @@ public class SongSegment {
 	private String name;
 	private String artist;
 	private SongPart part;
-	private int mode;
 	private LinkedList<Chord> progression;
 	private double beats;
 	private HashMap<SongPart, ChordDictionary> parts_dictionary;
@@ -29,13 +28,13 @@ public class SongSegment {
 	 * @param nm : song name
 	 * @param at : song artist
 	 * @param pt : song part (chorus, verse, etc)
-	 * @param md : song mode (major, minor, dorian, etc)
+	 * @param mode : song mode (major, minor, dorian, etc)
 	 * @param sif : chords in SIF format
 	 * @param bim : beats in measure
 	 * @param dict : Chord dictionary
 	 * @throws Exception : throws if an invalid parameter is supplied
 	 */
-	public SongSegment(String nm, String at, String pt, int md, String sif,
+	public SongSegment(String nm, String at, String pt, int mode, String sif,
 			double bim, HashMap<SongPart, ChordDictionary> dict) throws Exception{
 
 		if(nm.isEmpty() || nm.equals(""))
@@ -44,8 +43,8 @@ public class SongSegment {
 			throw new IllegalArgumentException("Invalid artist value: " + at);
 		if(pt.isEmpty() || pt.equals(""))
 			throw new IllegalArgumentException("Invalid part value: " + pt);
-		if(md < 0 || md > 7)
-			throw new IllegalArgumentException("Invalid mode value: " + md);
+		if(mode < 0 || mode > 7)
+			throw new IllegalArgumentException("Invalid mode value: " + mode);
 		if(sif.isEmpty() || sif.equals(""))
 			throw new IllegalArgumentException("Invalid SIF value: " + sif);
 		if(bim < 0.25 || bim > 20)
@@ -58,7 +57,6 @@ public class SongSegment {
         if(part == null)
             throw new IllegalArgumentException("Invalid song part: " + pt);
 
-		mode = md;
 		beats = bim;
 		parts_dictionary = dict;
 		
@@ -86,15 +84,13 @@ public class SongSegment {
 	 * Constructor method, meant for bot creation of a new song
 	 * (as opposed to the read-in constructor above)
 	 * @param pt : part to be created
-	 * @param md : SongSegment mode
 	 * @param bim : beats per measure
 	 * @param pg : SongSegment chord progression
 	 */
-	public SongSegment(SongPart pt, int md, double bim, LinkedList<Chord> pg){
+	public SongSegment(SongPart pt, double bim, LinkedList<Chord> pg){
 		name = "AI Creation";
 		artist = "Music Bot";
 		part = pt;
-		mode = md;
 		beats = bim;
 		progression = pg;
 		parts_dictionary = null;
@@ -161,14 +157,6 @@ public class SongSegment {
 	}
 	
 	/**
-	 * mode accessor
-	 * @return : song mode
-	 */
-	public int getMode(){
-		return mode;
-	}
-	
-	/**
 	 * progression accessor
 	 * @return : chord progression
 	 */
@@ -226,7 +214,6 @@ public class SongSegment {
 		long temp;
 		temp = Double.doubleToLongBits(beats);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + mode;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((part == null) ? 0 : part.hashCode());
 		result = prime * result
@@ -255,8 +242,6 @@ public class SongSegment {
 			return false;
 		if (Double.doubleToLongBits(beats) != Double
 				.doubleToLongBits(other.beats))
-			return false;
-		if (mode != other.mode)
 			return false;
 		if (name == null){
 			if (other.name != null)

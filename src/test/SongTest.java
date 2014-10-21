@@ -34,6 +34,7 @@ public class SongTest {
 	public void testInitialization(){
 		assertEquals("C", song.getKey());
 		assertEquals("C", song.getRelMajor());
+		assertEquals(1, song.getMode());
 	}
 
 	/**
