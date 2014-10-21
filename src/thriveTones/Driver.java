@@ -105,7 +105,7 @@ public class Driver {
 
 		//Generate progression and create new song
 		generator.buildProgression(start, song_length, history);
-		SongSegment new_hit = new SongSegment(part, beats, generator.getProgression());
+		SongSegment new_hit = new SongSegment(part, generator.getProgression());
 
 		System.out.print(part.toString() + ": ");
 		//if(play) new_hit.play(tempo);

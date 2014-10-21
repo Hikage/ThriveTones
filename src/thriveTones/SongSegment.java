@@ -18,7 +18,6 @@ public class SongSegment {
 	public enum SongPart {chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus};
 	private SongPart part;
 	private LinkedList<Chord> progression;
-	private double beats;
 	private HashMap<SongPart, ChordDictionary> parts_dictionary;
 
 	/**
@@ -26,11 +25,10 @@ public class SongSegment {
 	 * @param pt : song part (chorus, verse, etc)
 	 * @param mode : song mode (major, minor, dorian, etc)
 	 * @param sif : chords in SIF format
-	 * @param bim : beats in measure
 	 * @param dict : Chord dictionary
 	 * @throws Exception : throws if an invalid parameter is supplied
 	 */
-	public SongSegment(String pt, int mode, String sif, double bim,
+	public SongSegment(String pt, int mode, String sif,
 			HashMap<SongPart, ChordDictionary> dict) throws Exception{
 
 		if(pt.isEmpty() || pt.equals(""))
@@ -39,14 +37,11 @@ public class SongSegment {
 			throw new IllegalArgumentException("Invalid mode value: " + mode);
 		if(sif.isEmpty() || sif.equals(""))
 			throw new IllegalArgumentException("Invalid SIF value: " + sif);
-		if(bim < 0.25 || bim > 20)
-			throw new IllegalArgumentException("Invalid BiM value: " + bim);
 
         part = partToEnum(pt);
         if(part == null)
             throw new IllegalArgumentException("Invalid song part: " + pt);
 
-		beats = bim;
 		parts_dictionary = dict;
 		
 		progression = new LinkedList<Chord>();
@@ -73,12 +68,10 @@ public class SongSegment {
 	 * Constructor method, meant for bot creation of a new song
 	 * (as opposed to the read-in constructor above)
 	 * @param pt : part to be created
-	 * @param bim : beats per measure
 	 * @param pg : SongSegment chord progression
 	 */
-	public SongSegment(SongPart pt, double bim, LinkedList<Chord> pg){
+	public SongSegment(SongPart pt, LinkedList<Chord> pg){
 		part = pt;
-		beats = bim;
 		progression = pg;
 		parts_dictionary = null;
 	}
@@ -134,14 +127,6 @@ public class SongSegment {
 	public LinkedList<Chord> getChords(){
 		return progression;
 	}
-	
-	/**
-	 * beats accessor
-	 * @return : beats in measure
-	 */
-	public double getBeats(){
-		return beats;
-	}
 
 	/**
 	 * Converts the SongSegment into a string representation
@@ -161,9 +146,10 @@ public class SongSegment {
 	/**
 	 * Converts the SongSegment into a string representation
 	 * @param key : song key
+	 * @param beats : beats per measure
 	 * @return : the string representation of the song
 	 */
-	public String toString(String key){
+	public String toString(String key, double beats){
 		String playable_chords = "";
 		ListIterator<Chord> it = progression.listIterator();
 		while(it.hasNext())
@@ -181,9 +167,6 @@ public class SongSegment {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(beats);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((part == null) ? 0 : part.hashCode());
 		result = prime * result
 				+ ((progression == null) ? 0 : progression.hashCode());
@@ -203,9 +186,6 @@ public class SongSegment {
 		if (getClass() != obj.getClass())
 			return false;
 		SongSegment other = (SongSegment) obj;
-		if (Double.doubleToLongBits(beats) != Double
-				.doubleToLongBits(other.beats))
-			return false;
 		if (part == null){
 			if (other.part != null)
 				return false;

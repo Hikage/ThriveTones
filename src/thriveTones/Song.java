@@ -25,6 +25,7 @@ public class Song {
 	private int mode;
 	private String key;
 	private String rel_major;
+	private double beats;
 
 	/**
 	 * Constructor method
@@ -33,8 +34,9 @@ public class Song {
 	 * @param seg : segment progression
 	 * @param nm : Song name
 	 * @param at : Song artist
+	 * @param bim : beats in measure
 	 */
-	public Song(String ky, int md, LinkedList<SongSegment> seg, String nm, String at){
+	public Song(String ky, int md, LinkedList<SongSegment> seg, String nm, String at, double bim){
 		if(ky == null)
 			throw new IllegalArgumentException("Key cannot be null");
 		key = standardizeKey(ky);
@@ -46,9 +48,11 @@ public class Song {
 		if(at.isEmpty() || at.equals(""))
 			throw new IllegalArgumentException("Invalid artist value: " + at);
 		segments = seg;
-
 		name = nm;
 		artist = at;
+		if(bim < 0.25 || bim > 20)
+			throw new IllegalArgumentException("Invalid BiM value: " + bim);
+		beats = bim;
 
 		calculateRelativeMajor();
 	}
@@ -180,12 +184,20 @@ public class Song {
 		return artist;
 	}
 
+	/**
+	 * beats accessor
+	 * @return : beats in measure
+	 */
+	public double getBeats(){
+		return beats;
+	}
+
 	@Override
 	public String toString(){
 		String playable_segments = "K" + rel_major + "maj ";
 		ListIterator<SongSegment> it = segments.listIterator();
 		while(it.hasNext())
-			playable_segments += it.next().toString(key) + "\n";
+			playable_segments += it.next().toString(key, beats) + "\n";
 		return playable_segments.trim();		
 	}
 

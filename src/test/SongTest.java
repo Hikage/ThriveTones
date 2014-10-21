@@ -24,7 +24,7 @@ public class SongTest {
 	 */
 	@Before
 	public void init() {
-		song = new Song("C", 1, null, "AI Creation", "Music Bot");
+		song = new Song("C", 1, null, "AI Creation", "Music Bot", 4);
 	}
 
 	/**
@@ -37,6 +37,7 @@ public class SongTest {
 		assertEquals(1, song.getMode());
 		assertEquals("AI Creation", song.getName());
 		assertEquals("Music Bot", song.getArtist());
+		assertEquals(4, song.getBeats(), 0);
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class SongTest {
 	 */
 	@Test (expected = Exception.class)
 	public void testInvalidInitialization(){
-		new Song(null, 1, null, "Title", "Artist");
+		new Song(null, 1, null, "Title", "Artist", 4);
 	}
 
 	/**
