@@ -1,5 +1,6 @@
 package thriveTones;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * "ThriveTones" Song Generator
@@ -23,14 +24,14 @@ public class ProgressionGenerator {
 	}
 
 	/**
-	 * Builds a chord progression based on a supplied starting Chord
-	 * @param start : Chord with which to start the progression
+	 * Builds a chord progression based on a supplied starting set of Chords
+	 * @param start : Chord sequence with which to start the progression
 	 * @param prog_length : length of desired progression
 	 * @param hist_length : length of the history to use
 	 */
-	public void buildProgression(Chord start, int prog_length, int hist_length){
+	public void buildProgression(List<Chord> start, int prog_length, int hist_length){
 		progression = new LinkedList<Chord>();
-		progression.add(start);
+		progression.addAll(start);
 
 		int max_hist_length = chord_dictionary.getMaxHistoryLength();
 		if(hist_length > max_hist_length)
@@ -38,7 +39,7 @@ public class ProgressionGenerator {
 
 		LinkedList<Chord> history = new LinkedList<Chord>();
 		if(hist_length >= 1)
-			history.add(start);
+			history.addAll(start.subList(Math.max(0, start.size()-hist_length), start.size()));
 
 		for(int i = 1; i < prog_length; i++){
 			Chord next = chord_dictionary.getANextChord(history);

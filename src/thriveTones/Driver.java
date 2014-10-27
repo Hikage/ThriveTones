@@ -107,7 +107,9 @@ public class Driver {
 		start = chord_dictionary.getANextChord(null);
 
 		//Generate progression and create new song
-		generator.buildProgression(start, song_length, history);
+		LinkedList<Chord> start_sequence = new LinkedList<Chord>();
+		start_sequence.add(start);
+		generator.buildProgression(start_sequence, song_length, history);
 		return new SongSegment(part, generator.getProgression());
 	}
 }

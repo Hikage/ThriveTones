@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import sax.XMLReader;
 import thriveTones.Chord;
+import thriveTones.Chord.Tonality;
 import thriveTones.ChordDictionary;
 import thriveTones.ProgressionGenerator;
 import thriveTones.SongSegment.SongPart;
@@ -72,7 +73,9 @@ public class ProgressionGeneratorTest {
 	@Test
 	public void testBuildProgression() {
 		Chord start = chord_dictionary.getANextChord(null);
-		generator.buildProgression(start, prog_length, hist_length);
+		LinkedList<Chord> start_sequence = new LinkedList<Chord>();
+		start_sequence.add(start);
+		generator.buildProgression(start_sequence, prog_length, hist_length);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(prog_length, progression.size());
 		assertEquals(start, progression.get(0));
@@ -122,7 +125,7 @@ public class ProgressionGeneratorTest {
 			same = (available_chords.get(i) == available_chords.get(i-1));
 		assertFalse(same);
 
-		generator.buildProgression(start, 16, 3);
+		generator.buildProgression(sequence, 16, 3);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(1, progression.get(0).getRoot());
 		System.out.println();
@@ -175,12 +178,58 @@ public class ProgressionGeneratorTest {
 			Chord start = chord_dictionary.get(new LinkedList<Chord>()).get(0);
 			assertEquals(first_roots[i], start.getRoot());
 
-			generator.buildProgression(start, 16, 3);
+			LinkedList<Chord> start_sequence = new LinkedList<Chord>();
+			start_sequence.add(start);
+			generator.buildProgression(start_sequence, 16, 3);
 			LinkedList<Chord> progression = generator.getProgression();
 			System.out.print(part.toString() + ": ");
 			for(Chord chord : progression)
 				System.out.print(chord.toString() + " ");
 			System.out.println();
 		}
+	}
+
+	/**
+	 * Tests a progression generation beginning with a sequence
+	 */
+	@Test
+	public void testSequenceStartBuild(){
+		XMLReader reader4 = new XMLReader();
+		try {
+			reader4.readIn("test.xml");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		chord_dictionary = reader4.getChordDictionary(SongPart.introverse);
+		assertNotNull(chord_dictionary);
+		assertFalse(chord_dictionary.isEmpty());
+		System.out.println("Dictionary:\n" + chord_dictionary.toString() + "\n");
+
+		generator = new ProgressionGenerator(chord_dictionary);
+
+		Chord chord1 = new Chord(6, Tonality.min, 1);
+		Chord chord2 = new Chord(2, Tonality.min, 1);
+		Chord chord3 = new Chord(1, Tonality.maj, 1);
+		LinkedList<Chord> start_sequence = new LinkedList<Chord>();
+		start_sequence.add(chord1);
+		start_sequence.add(chord2);
+		start_sequence.add(chord3);
+
+		ArrayList<Chord> available_chords = chord_dictionary.get(start_sequence);
+		assertTrue(available_chords == null);
+		available_chords = chord_dictionary.get(start_sequence.subList(2, 3));
+		assertFalse(available_chords.isEmpty());
+
+		generator.buildProgression(start_sequence, 16, 3);
+		LinkedList<Chord> progression = generator.getProgression();
+		assertEquals(6, progression.get(0).getRoot());
+		assertEquals(2, progression.get(1).getRoot());
+		assertEquals(1, progression.get(2).getRoot());
+
+		System.out.println();
+		System.out.println(progression.toString());
 	}
 }
