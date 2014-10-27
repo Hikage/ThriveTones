@@ -42,7 +42,7 @@ public class Driver {
 		LinkedList<SongSegment> segments = new LinkedList<SongSegment>();
 
 		for(SongPart part : song_sequence)
-			segments.add(buildSongSegment(part));
+			segments.add(new SongSegment(part, reader.getChordDictionary(part), null, song_length, history));
 
 		Song song = new Song("C", 1, segments, "New Hit", "Rockstar Bot", 4);
 
@@ -90,26 +90,5 @@ public class Driver {
 				if(beats > 0) break;
 			}
 		}while(true);
-	}
-
-	/**
-	 * Builds the specified song part
-	 * @param part : song part to be built
-	 * @param play : whether or not to play the given SongSegment
-	 * @return : constructed SongSegment
-	 */
-	public static SongSegment buildSongSegment(SongPart part){
-		ChordDictionary chord_dictionary = reader.getChordDictionary(part);
-		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
-
-		//Get starting chord
-		Chord start = null;
-		start = chord_dictionary.getANextChord(null);
-
-		//Generate progression and create new song
-		LinkedList<Chord> start_sequence = new LinkedList<Chord>();
-		start_sequence.add(start);
-		generator.buildProgression(start_sequence, song_length, history);
-		return new SongSegment(part, generator.getProgression());
 	}
 }

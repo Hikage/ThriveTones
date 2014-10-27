@@ -1,7 +1,7 @@
 package thriveTones;
 
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 /**
@@ -66,14 +66,26 @@ public class SongSegment {
 	 * Constructor method, meant for bot creation of a new song segment
 	 * (as opposed to the read-in constructor above)
 	 * @param pt : part to be created
-	 * @param pg : SongSegment chord progression
+	 * @param dict : chord_dictionary for applicable SongPart
+	 * @param seed : starting chord(s) for progression
+	 * @param prog_length : length of desired progression
+	 * @param hist_length : history length for progression
 	 */
-	public SongSegment(SongPart pt, LinkedList<Chord> pg){
+	public SongSegment(SongPart pt, ChordDictionary dict, List<Chord> seed, int prog_length, int hist_length){
 		part = pt;
-		progression = pg;
-		chord_dictionary = null;
-	}
+		chord_dictionary = dict;
 
+		//allow for random start if no other seed is provided
+		if(seed == null){
+			Chord start = chord_dictionary.getANextChord(null);
+			seed = new LinkedList<Chord>();
+			seed.add(start);
+		}
+
+		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
+		generator.buildProgression(seed, prog_length, hist_length);
+		progression = generator.getProgression();
+	}
 
 	/**
 	 * part accessor

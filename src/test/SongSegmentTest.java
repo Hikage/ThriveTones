@@ -3,13 +3,16 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import sax.XMLReader;
+import thriveTones.Chord;
 import thriveTones.ChordDictionary;
 import thriveTones.SongSegment;
+import thriveTones.Chord.Tonality;
 import thriveTones.SongSegment.SongPart;
 
 /**
@@ -97,5 +100,31 @@ public class SongSegmentTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+
+	/**
+	 * Tests bot creation of a song segment
+	 */
+	@Test
+	public void testBotSongSegmentCreation(){
+		XMLReader reader = new XMLReader();
+		try {
+			reader.readIn("test.xml");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ChordDictionary chord_dictionary = reader.getChordDictionary(SongPart.introverse);
+		assertNotNull(chord_dictionary);
+		assertFalse(chord_dictionary.isEmpty());
+
+		LinkedList<Chord> seed = new LinkedList<Chord>();
+		seed.add(new Chord(1, Tonality.maj, 4));
+		SongSegment generated_chorus =
+				new SongSegment(SongPart.introverse, chord_dictionary, seed, 16, 3);
+		LinkedList<Chord> progression = generated_chorus.getChords();
+		assertEquals(1, progression.get(0).getRoot());
+		System.out.println(progression.toString());
 	}
 }
