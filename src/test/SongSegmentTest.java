@@ -32,7 +32,10 @@ public class SongSegmentTest {
 	public void init(){
 		parts_dictionary = new XMLReader().getPartsDictionary();
 		try{
-			song_segment = new SongSegment("Chorus", 1, "1-4", parts_dictionary);
+			SongPart part = SongPart.chorus;
+			if(!parts_dictionary.containsKey(part))
+				parts_dictionary.put(part, new ChordDictionary());
+			song_segment = new SongSegment(part, 1, "1-4", parts_dictionary.get(part));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -49,38 +52,13 @@ public class SongSegmentTest {
 		assertEquals(1, song_segment.getChords().size());
 	}
 
-	/**
-	 * Tests partToEnum()
-	 */
-    @Test
-    public void testPartToEnum(){
-        assertEquals(SongPart.bridge, song_segment.partToEnum("Bridge"));
-        assertEquals(SongPart.chorus, song_segment.partToEnum("Chorus Lead-Out"));
-        assertEquals(SongPart.chorus, song_segment.partToEnum("Chorus"));
-        assertEquals(SongPart.solo, song_segment.partToEnum("Instrumental"));
-        assertEquals(SongPart.introverse, song_segment.partToEnum("Intro and Verse"));
-        assertEquals(SongPart.intro, song_segment.partToEnum("Intro"));
-        assertEquals(SongPart.outro, song_segment.partToEnum("Outro 1"));
-        assertEquals(SongPart.outro, song_segment.partToEnum("Outro 2"));
-        assertEquals(SongPart.outro, song_segment.partToEnum("Outro"));
-        assertEquals(SongPart.prechoruschorus, song_segment.partToEnum("Pre-Chorus and Chorus"));
-        assertEquals(SongPart.prechorus, song_segment.partToEnum("Pre-Chorus"));
-        assertEquals(SongPart.outro, song_segment.partToEnum("Pre-Outro"));
-        assertEquals(SongPart.solo, song_segment.partToEnum("Solo 1"));
-        assertEquals(SongPart.solo, song_segment.partToEnum("Solo 2"));
-        assertEquals(SongPart.solo, song_segment.partToEnum("Solo 3"));
-        assertEquals(SongPart.solo, song_segment.partToEnum("Solo"));
-        assertEquals(SongPart.verseprechorus, song_segment.partToEnum("Verse and Pre-Chorus"));
-        assertEquals(SongPart.verse, song_segment.partToEnum("Verse"));
-    }
-
     /**
      * Tests an invalid SongPart
      * @throws Exception : on an invalid SongPart
      */
 	@Test (expected = Exception.class)
 	public void testInvalidPart() throws Exception{
-		new SongSegment("random part", 1, "1-4", parts_dictionary);
+		new SongSegment(null, 1, "1-4", parts_dictionary.get(SongPart.chorus));
 	}
 
 	/**
@@ -98,14 +76,21 @@ public class SongSegmentTest {
 	@Test
 	public void testEquivelantSongSegments(){
 		try{
-			SongSegment song_segment2 = new SongSegment("Chorus", 1, "1-4", parts_dictionary);
-			SongSegment song_segment3 = new SongSegment("Chorus", 1, "1-4", parts_dictionary);
+			SongPart part = SongPart.chorus;
+			if(!parts_dictionary.containsKey(part))
+				parts_dictionary.put(part, new ChordDictionary());
+			ChordDictionary dictionary = parts_dictionary.get(part);
+			SongSegment song_segment2 = new SongSegment(part, 1, "1-4", dictionary);
+			SongSegment song_segment3 = new SongSegment(part, 1, "1-4", dictionary);
 			assertEquals(song_segment2, song_segment3);
 
-			SongSegment song_segment4 = new SongSegment("Chorus", 2, "1-4", parts_dictionary);
+			SongSegment song_segment4 = new SongSegment(part, 2, "1-4", dictionary);
 			assertNotEquals(song_segment2, song_segment4);
 
-			SongSegment song_segment5 = new SongSegment("Bridge", 1, "1-4", parts_dictionary);
+			part = SongPart.bridge;
+			if(!parts_dictionary.containsKey(part))
+				parts_dictionary.put(part, new ChordDictionary());
+			SongSegment song_segment5 = new SongSegment(part, 1, "1-4", parts_dictionary.get(part));
 			assertNotEquals(song_segment2, song_segment5);
 		}
 		catch(Exception e){

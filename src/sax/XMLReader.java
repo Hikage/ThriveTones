@@ -69,7 +69,8 @@ public class XMLReader extends DefaultHandler {
 			catch(Exception e){
 				//System.out.println("\n" + e.getMessage());
 				//System.out.println(row_number++ + ".");
-				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
+				//System.out.println(nodeValueByAttName(fields, "SIF") +
+				//" " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 				invalid_songs++;
 			}
 		}
@@ -139,6 +140,42 @@ public class XMLReader extends DefaultHandler {
 	}
 
 	/**
+	 * Converts a string representation of song part to the standard enum
+	 * @param pt : string representation of song part
+	 * @return : the corresponding enum value
+	 */
+	public SongPart partToEnum(String pt){
+        pt = pt.toLowerCase();
+		if(pt.contains("instrumental") || pt.contains("solo"))
+            return SongPart.solo;
+        if(pt.contains("bridge"))
+            return SongPart.bridge;
+        if(pt.contains("outro"))
+            return SongPart.outro;
+        if(pt.contains("intro")){
+            if(pt.contains("verse"))
+                return SongPart.introverse;
+            else
+                return SongPart.intro;
+        }
+        if(pt.contains("verse")){
+            if(pt.contains("pre-chorus"))
+                return SongPart.verseprechorus;
+            else
+                return SongPart.verse;
+        }
+        if(pt.contains("pre-chorus")){
+            if(pt.contains(" chorus"))
+                return SongPart.prechoruschorus;
+            else
+                return SongPart.prechorus;
+        }
+        if(pt.contains("chorus"))
+            return SongPart.chorus;
+        return null;
+	}
+
+	/**
 	 * Converts the SIF string into a Song object
 	 * @param fields : field nodes of the song to convert
 	 * @return : the newly created SongSegment
@@ -147,13 +184,16 @@ public class XMLReader extends DefaultHandler {
 	public SongSegment SIFtoChords(NodeList fields) throws Exception{
 		String title = nodeValueByAttName(fields, "song");
 		String artist = nodeValueByAttName(fields, "artist");
-		String part = nodeValueByAttName(fields, "section");
+		SongPart part = partToEnum(nodeValueByAttName(fields, "section"));
 		String key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
 		String sif = nodeValueByAttName(fields, "SIF");
 		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
-		return new SongSegment(part, mode, sif, parts_dictionary);
+		if(!parts_dictionary.containsKey(part))
+			parts_dictionary.put(part, new ChordDictionary());
+
+		return new SongSegment(part, mode, sif, parts_dictionary.get(part));
 	}
 
 	/**

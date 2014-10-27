@@ -18,7 +18,7 @@ public class SongSegment {
 	public enum SongPart {chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus};
 	private SongPart part;
 	private LinkedList<Chord> progression;
-	private HashMap<SongPart, ChordDictionary> parts_dictionary;
+	private ChordDictionary chord_dictionary;
 
 	/**
 	 * Constructor method
@@ -28,21 +28,21 @@ public class SongSegment {
 	 * @param dict : Chord dictionary
 	 * @throws Exception : throws if an invalid parameter is supplied
 	 */
-	public SongSegment(String pt, int mode, String sif,
-			HashMap<SongPart, ChordDictionary> dict) throws Exception{
-
-		if(pt.isEmpty() || pt.equals(""))
+	public SongSegment(SongPart pt, int mode, String sif, ChordDictionary dict) throws Exception{
+		if(pt == null)
 			throw new IllegalArgumentException("Invalid part value: " + pt);
 		if(mode < 0 || mode > 7)
 			throw new IllegalArgumentException("Invalid mode value: " + mode);
 		if(sif.isEmpty() || sif.equals(""))
 			throw new IllegalArgumentException("Invalid SIF value: " + sif);
+		if(dict == null)
+			throw new IllegalArgumentException("Must supply valid chord dictionary");
 
-        part = partToEnum(pt);
+        part = pt;
         if(part == null)
             throw new IllegalArgumentException("Invalid song part: " + pt);
 
-		parts_dictionary = dict;
+		chord_dictionary = dict;
 		
 		progression = new LinkedList<Chord>();
 		
@@ -54,18 +54,16 @@ public class SongSegment {
 			Chord current = new Chord(mode, sif_chord);
 			progression.add(current);
 
-			//add to dictionary
-			if(!parts_dictionary.containsKey(part))
-				parts_dictionary.put(part, new ChordDictionary());
-			if(sequence.size() > parts_dictionary.get(part).getMaxHistoryLength())
+			//add to dictionary (only up to the maximum history length)
+			if(sequence.size() > chord_dictionary.getMaxHistoryLength())
 				sequence.remove();
-			parts_dictionary.get(part).put(sequence, current);
+			chord_dictionary.put(sequence, current);
 			sequence.add(current);
 		}
 	}
 	
 	/**
-	 * Constructor method, meant for bot creation of a new song
+	 * Constructor method, meant for bot creation of a new song segment
 	 * (as opposed to the read-in constructor above)
 	 * @param pt : part to be created
 	 * @param pg : SongSegment chord progression
@@ -73,45 +71,10 @@ public class SongSegment {
 	public SongSegment(SongPart pt, LinkedList<Chord> pg){
 		part = pt;
 		progression = pg;
-		parts_dictionary = null;
+		chord_dictionary = null;
 	}
 
-	/**
-	 * Converts a string representation of song part to the standard enum
-	 * @param pt : string representation of song part
-	 * @return : the corresponding enum value
-	 */
-	public SongPart partToEnum(String pt){
-        pt = pt.toLowerCase();
-		if(pt.contains("instrumental") || pt.contains("solo"))
-            return SongPart.solo;
-        if(pt.contains("bridge"))
-            return SongPart.bridge;
-        if(pt.contains("outro"))
-            return SongPart.outro;
-        if(pt.contains("intro")){
-            if(pt.contains("verse"))
-                return SongPart.introverse;
-            else
-                return SongPart.intro;
-        }
-        if(pt.contains("verse")){
-            if(pt.contains("pre-chorus"))
-                return SongPart.verseprechorus;
-            else
-                return SongPart.verse;
-        }
-        if(pt.contains("pre-chorus")){
-            if(pt.contains(" chorus"))
-                return SongPart.prechoruschorus;
-            else
-                return SongPart.prechorus;
-        }
-        if(pt.contains("chorus"))
-            return SongPart.chorus;
-        return null;
-	}
-	
+
 	/**
 	 * part accessor
 	 * @return : song part

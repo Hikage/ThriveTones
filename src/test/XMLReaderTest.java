@@ -206,6 +206,31 @@ public class XMLReaderTest {
 	}
 
 	/**
+	 * Tests partToEnum()
+	 */
+    @Test
+    public void testPartToEnum(){
+        assertEquals(SongPart.bridge, reader.partToEnum("Bridge"));
+        assertEquals(SongPart.chorus, reader.partToEnum("Chorus Lead-Out"));
+        assertEquals(SongPart.chorus, reader.partToEnum("Chorus"));
+        assertEquals(SongPart.solo, reader.partToEnum("Instrumental"));
+        assertEquals(SongPart.introverse, reader.partToEnum("Intro and Verse"));
+        assertEquals(SongPart.intro, reader.partToEnum("Intro"));
+        assertEquals(SongPart.outro, reader.partToEnum("Outro 1"));
+        assertEquals(SongPart.outro, reader.partToEnum("Outro 2"));
+        assertEquals(SongPart.outro, reader.partToEnum("Outro"));
+        assertEquals(SongPart.prechoruschorus, reader.partToEnum("Pre-Chorus and Chorus"));
+        assertEquals(SongPart.prechorus, reader.partToEnum("Pre-Chorus"));
+        assertEquals(SongPart.outro, reader.partToEnum("Pre-Outro"));
+        assertEquals(SongPart.solo, reader.partToEnum("Solo 1"));
+        assertEquals(SongPart.solo, reader.partToEnum("Solo 2"));
+        assertEquals(SongPart.solo, reader.partToEnum("Solo 3"));
+        assertEquals(SongPart.solo, reader.partToEnum("Solo"));
+        assertEquals(SongPart.verseprechorus, reader.partToEnum("Verse and Pre-Chorus"));
+        assertEquals(SongPart.verse, reader.partToEnum("Verse"));
+    }
+
+	/**
 	 * Tests SIFtoChords()
 	 */
 	@Test
