@@ -16,7 +16,7 @@ import thriveTones.SongSegment.SongPart;
 
 public class Driver {
 	private static XMLReader reader;
-	private static int song_length = 8;
+	private static int seg_length = 8;
 	private static int tempo = 120;
 	private static int beats = 4;
 	private static int history = 3;
@@ -39,12 +39,8 @@ public class Driver {
 				SongPart.verse, SongPart.prechorus, SongPart.chorus, SongPart.bridge, SongPart.solo,
 				SongPart.chorus, SongPart.chorus, SongPart.outro};
 
-		LinkedList<SongSegment> segments = new LinkedList<SongSegment>();
-
-		for(SongPart part : song_sequence)
-			segments.add(new SongSegment(part, reader.getChordDictionary(part), null, song_length, history));
-
-		Song song = new Song("C", 1, segments, "New Hit", "Rockstar Bot", 4);
+		Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
+		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history);
 
 		System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
 		//System.out.println(song.toString());
@@ -74,11 +70,11 @@ public class Driver {
 	 */
 	public static void getUserInputs(){
 		do{
-			System.out.println("How many chords would you like?");
+			System.out.println("How many chords would you like per segment?");
 			Scanner in = new Scanner(System.in);
 			if(in.hasNextInt()){
-				song_length = in.nextInt();
-				if(song_length > 0) break;
+				seg_length = in.nextInt();
+				if(seg_length > 0) break;
 			}
 		}while(true);
 

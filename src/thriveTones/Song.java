@@ -2,12 +2,16 @@ package thriveTones;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Scanner;
 
 import org.jfugue.Pattern;
 import org.jfugue.Player;
+
+import thriveTones.SongSegment.SongPart;
 
 /**
  * "ThriveTones" Song Generator
@@ -31,12 +35,11 @@ public class Song {
 	 * Constructor method
 	 * @param ky : key of the new Song
 	 * @param md : Song mode
-	 * @param seg : segment progression
 	 * @param nm : Song name
 	 * @param at : Song artist
 	 * @param bim : beats in measure
 	 */
-	public Song(String ky, int md, LinkedList<SongSegment> seg, String nm, String at, double bim){
+	public Song(String ky, int md, String nm, String at, double bim){
 		if(ky == null)
 			throw new IllegalArgumentException("Key cannot be null");
 		key = standardizeKey(ky);
@@ -47,7 +50,6 @@ public class Song {
 			throw new IllegalArgumentException("Invalid name value: " + nm);
 		if(at.isEmpty() || at.equals(""))
 			throw new IllegalArgumentException("Invalid artist value: " + at);
-		segments = seg;
 		name = nm;
 		artist = at;
 		if(bim < 0.25 || bim > 20)
@@ -134,6 +136,28 @@ public class Song {
 			if(!accidental.equals("b")) rel_major += (accidental + "#");
 		}
 		else rel_major += (circle.charAt(new_pos) + accidental);
+	}
+
+	/**
+	 * @param song_sequence : sequence of parts to be built
+	 * @param parts_dictionary : dictionary for song building
+	 * @param seg_length : length of each segment
+	 * @param history : length of desired history
+	 */
+	public void build(SongPart[] song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
+			int seg_length, int history){
+		segments = new LinkedList<SongSegment>();
+
+		for(int i = 0; i < song_sequence.length; i++){
+			SongPart part = song_sequence[i];
+			List<Chord> history_seed = new LinkedList<Chord>();
+			if(i != 0){
+				List<Chord> previous_segment = segments.get(i-1).getChords();
+				history_seed = previous_segment.subList(Math.max(0, previous_segment.size() - history),	previous_segment.size());
+			}
+
+			segments.add(new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history));
+		}
 	}
 
 	/**

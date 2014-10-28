@@ -57,20 +57,14 @@ public class XMLReader extends DefaultHandler {
 	    NodeList rows = results.item(0).getChildNodes();
 	    int valid_songs = 0;
 	    int invalid_songs = 0;
-	    int row_number = 35;
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
-				SongSegment song_segment = SIFtoChords(fields);
+				SIFtoChords(fields);
 				valid_songs++;
-				row_number += 11;
 			}
 			catch(Exception e){
-				//System.out.println("\n" + e.getMessage());
-				//System.out.println(row_number++ + ".");
-				//System.out.println(nodeValueByAttName(fields, "SIF") +
-				//" " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 				invalid_songs++;
 			}
 		}
@@ -182,13 +176,9 @@ public class XMLReader extends DefaultHandler {
 	 * @throws Exception : on invalid SongSegment creation
 	 */
 	public SongSegment SIFtoChords(NodeList fields) throws Exception{
-		String title = nodeValueByAttName(fields, "song");
-		String artist = nodeValueByAttName(fields, "artist");
 		SongPart part = partToEnum(nodeValueByAttName(fields, "section"));
-		String key = extractKey(fields);
 		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
 		String sif = nodeValueByAttName(fields, "SIF");
-		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
 
 		if(!parts_dictionary.containsKey(part))
 			parts_dictionary.put(part, new ChordDictionary());

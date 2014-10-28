@@ -2,10 +2,17 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import thriveTones.Chord;
+import thriveTones.ChordDictionary;
 import thriveTones.Song;
+import thriveTones.Chord.Tonality;
+import thriveTones.SongSegment.SongPart;
 
 /**
  * "ThriveTones" Song Generator
@@ -24,7 +31,7 @@ public class SongTest {
 	 */
 	@Before
 	public void init() {
-		song = new Song("C", 1, null, "AI Creation", "Music Bot", 4);
+		song = new Song("C", 1, "AI Creation", "Music Bot", 4);
 	}
 
 	/**
@@ -45,7 +52,7 @@ public class SongTest {
 	 */
 	@Test (expected = Exception.class)
 	public void testInvalidInitialization(){
-		new Song(null, 1, null, "Title", "Artist", 4);
+		new Song(null, 1, "Title", "Artist", 4);
 	}
 
 	/**
@@ -145,5 +152,76 @@ public class SongTest {
 		ckRelativeMajor("Eb", "F", 2);
 		ckRelativeMajor("F#", "B", 4);
 		ckRelativeMajor("F##", "B#", 4);
+	}
+
+	/**
+	 * Tests build()
+	 */
+	@Test
+	public void testBuild(){
+		//dummy sequence for testing
+		SongPart[] sequence = { SongPart.verse, SongPart.chorus };
+
+		Chord chord1 = new Chord(1, Tonality.maj, 4);
+		Chord chord4 = new Chord(4, Tonality.maj, 4);
+		Chord chord5 = new Chord(5, Tonality.maj, 4);
+		Chord chord6 = new Chord(6, Tonality.min, 4);
+
+		//build verse dictionary
+		ChordDictionary verse_dict = new ChordDictionary();
+		LinkedList<Chord> verse = new LinkedList<Chord>();
+		verse_dict.put(null, chord1);
+		verse.add(chord1);
+		verse_dict.put(verse, chord5);
+		verse.add(chord5);
+		verse_dict.put(verse, chord6);
+		verse.add(chord6);
+		verse_dict.put(verse, chord4);
+		verse.add(chord4);
+		verse_dict.put(verse, chord5);
+
+		//build chorus dictionary
+		ChordDictionary chorus_dict = new ChordDictionary();
+		LinkedList<Chord> chorus = new LinkedList<Chord>();
+		chorus_dict.put(null, chord1);
+		chorus.add(chord1);
+		chorus_dict.put(chorus, chord4);
+		chorus.add(chord4);
+		chorus_dict.put(chorus, chord5);
+		chorus.add(chord5);
+		chorus_dict.put(chorus, chord1);
+
+		HashMap<SongPart, ChordDictionary> parts_dictionary = new HashMap<SongPart, ChordDictionary>();
+		parts_dictionary.put(SongPart.verse, verse_dict);
+		parts_dictionary.put(SongPart.chorus, chorus_dict);
+
+		song.build(sequence, parts_dictionary, 8, 3);
+		System.out.println(song.toString());
+
+		LinkedList<Chord> new_verse = song.getSegments().get(0).getChords();
+		for(int i = 1; i < new_verse.size(); i++){
+			switch(new_verse.get(i-1).getRoot()){
+			case 1: case 4: assertEquals(5, new_verse.get(i).getRoot()); break;
+			case 6: assertEquals(4, new_verse.get(i).getRoot()); break;
+			}
+		}
+		LinkedList<Chord> new_chorus = song.getSegments().get(1).getChords();
+		switch(new_verse.get(new_verse.size() - 1).getRoot()){
+		case 1:
+			assertEquals(4, new_chorus.get(0).getRoot());
+			assertEquals(5, new_chorus.get(1).getRoot());
+			assertEquals(1, new_chorus.get(2).getRoot());
+			break;
+		case 4:
+			assertEquals(5, new_chorus.get(0).getRoot());
+			assertEquals(1, new_chorus.get(1).getRoot());
+			break;
+		case 5:
+			assertEquals(1, new_chorus.get(0).getRoot());
+			assertEquals(4, new_chorus.get(1).getRoot());
+			assertEquals(5, new_chorus.get(2).getRoot());
+			assertEquals(1, new_chorus.get(3).getRoot());
+			break;
+		}
 	}
 }
