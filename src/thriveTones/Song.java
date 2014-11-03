@@ -216,12 +216,25 @@ public class Song {
 		return beats;
 	}
 
+	/**
+	 * Returns the string representation of the Song
+	 * @return : the string representation of the Song
+	 */
 	@Override
 	public String toString(){
-		String playable_segments = "K" + rel_major + "maj ";
+		return this.toString(false);
+	}
+
+	/**
+	 * Returns the string representation of the Song
+	 * @param label : whether SongSegment labels should be printed
+	 * @return : the string representation of the Song
+	 */
+	public String toString(boolean label){
+		String playable_segments = "K" + rel_major + "maj\n";
 		ListIterator<SongSegment> it = segments.listIterator();
 		while(it.hasNext())
-			playable_segments += it.next().toString(key, beats) + "\n";
+			playable_segments += it.next().toString(key, beats, label) + "\n";
 		return playable_segments.trim();		
 	}
 

@@ -70,7 +70,7 @@ public class SongSegmentTest {
 	@Test
 	public void testToString(){
 		assertEquals("15maj/1.0", song_segment.toString());
-		assertEquals("C5maj/1.0", song_segment.toString("C", 4));
+		assertEquals("C5maj/1.0", song_segment.toString("C", 4, false));
 	}
 
 	/**

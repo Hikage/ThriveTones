@@ -109,28 +109,37 @@ public class SongSegment {
 	 */
 	@Override
 	public String toString(){
-		String playable_chords = "";
-		ListIterator<Chord> it = progression.listIterator();
-		while(it.hasNext())
-			//TODO: cmode
-			//TODO: applied targets
-			playable_chords += it.next().toString() + " ";
-		return playable_chords.trim();
+		return this.toString(null, 0, false);
+	}
+
+	/**
+	 * Converts the SongSegment into a string representation
+	 * @param label : whether the song part should be included or not
+	 * @return : the string representation of the SongSegment
+	 */
+	public String toString(boolean label){
+		return this.toString(null, 0, label);
 	}
 
 	/**
 	 * Converts the SongSegment into a string representation
 	 * @param key : song key
 	 * @param beats : beats per measure
+	 * @param label : whether the song part should be included or not
 	 * @return : the string representation of the song
 	 */
-	public String toString(String key, double beats){
+	public String toString(String key, double beats, boolean label){
 		String playable_chords = "";
+		if(label) playable_chords += part + "\t";
 		ListIterator<Chord> it = progression.listIterator();
-		while(it.hasNext())
+		while(it.hasNext()){
 			//TODO: cmode
 			//TODO: applied targets
-			playable_chords += it.next().toString(key, beats) + " ";
+			if(key != null && beats > 0)
+				playable_chords += it.next().toString(key, beats) + " ";
+			else
+				playable_chords += it.next().toString() + " ";
+		}
 		return playable_chords.trim();
 	}
 

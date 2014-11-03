@@ -196,7 +196,7 @@ public class SongTest {
 		parts_dictionary.put(SongPart.chorus, chorus_dict);
 
 		song.build(sequence, parts_dictionary, 8, 3);
-		System.out.println(song.toString());
+		System.out.println(song.toString(true));
 
 		LinkedList<Chord> new_verse = song.getSegments().get(0).getChords();
 		for(int i = 1; i < new_verse.size(); i++){

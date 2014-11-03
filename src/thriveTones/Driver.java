@@ -43,8 +43,8 @@ public class Driver {
 		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history);
 
 		System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
-		//System.out.println(song.toString());
-		song.play(tempo);
+		System.out.println(song.toString(true));
+		//song.play(tempo);
 
 		System.out.println("\nEnd of program.\nThank you for playing!");
 		System.exit(0);
