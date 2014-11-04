@@ -143,9 +143,10 @@ public class Song {
 	 * @param parts_dictionary : dictionary for song building
 	 * @param seg_length : length of each segment
 	 * @param history : length of desired history
+	 * @param debug : optional debug mode
 	 */
 	public void build(SongPart[] song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
-			int seg_length, int history){
+			int seg_length, int history, boolean debug){
 		segments = new LinkedList<SongSegment>();
 
 		for(int i = 0; i < song_sequence.length; i++){
@@ -156,7 +157,7 @@ public class Song {
 				history_seed = previous_segment.subList(Math.max(0, previous_segment.size() - history),	previous_segment.size());
 			}
 
-			segments.add(new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history));
+			segments.add(new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug));
 		}
 	}
 

@@ -1,6 +1,8 @@
 package thriveTones;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,9 +51,10 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 	 * recursively looking at shorter histories if the current one
 	 * doesn't have a valid key value in the hash
 	 * @param sequence : Chord history to look up
+	 * @param debug : optional debug mode
 	 * @return : a valid next Chord
 	 */
-	public Chord getANextChord(List<Chord> sequence){
+	public Chord getANextChord(List<Chord> sequence, boolean debug){
 		if(sequence == null)
 			sequence = new LinkedList<Chord>();
 
@@ -60,10 +63,16 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 			// history had nothing
 			assert(sequence.size() > 0);
 			// shorten the history by one and try again
-			return getANextChord(sequence.subList(1, sequence.size()));
+			return getANextChord(sequence.subList(1, sequence.size()), debug);
 		}
 		//pull new random chord from the history choices
 		int index = random_generator.nextInt(available_chords.size());
+		if(debug){
+			System.out.println("Available chords: " + available_chords.toString());
+			int occurrences = Collections.frequency(available_chords, available_chords.get(index));
+			System.out.println("Selected: " + available_chords.get(index)
+					+ "; Selection probability: " + MessageFormat.format("{0,number,#.##%}", (occurrences*1.0/available_chords.size())));
+		}
 		return available_chords.get(index);
 	}
 

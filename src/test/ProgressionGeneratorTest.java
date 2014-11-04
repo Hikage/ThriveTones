@@ -57,7 +57,7 @@ public class ProgressionGeneratorTest {
 	public void testGetNextChord() {
 		int[] roots = new int[8];
 		for(int i = 0; i < 100; i++){
-			Chord next = chord_dictionary.getANextChord(null);
+			Chord next = chord_dictionary.getANextChord(null, true);
 			roots[next.getRoot()]++;
 		}
 		for(int count : roots)
@@ -72,10 +72,10 @@ public class ProgressionGeneratorTest {
 	 */
 	@Test
 	public void testBuildProgression() {
-		Chord start = chord_dictionary.getANextChord(null);
+		Chord start = chord_dictionary.getANextChord(null, true);
 		LinkedList<Chord> start_sequence = new LinkedList<Chord>();
 		start_sequence.add(start);
-		generator.buildProgression(start_sequence, prog_length, hist_length);
+		generator.buildProgression(start_sequence, prog_length, hist_length, true);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(prog_length, progression.size());
 		assertEquals(start, progression.get(0));
@@ -125,7 +125,7 @@ public class ProgressionGeneratorTest {
 			same = (available_chords.get(i) == available_chords.get(i-1));
 		assertFalse(same);
 
-		generator.buildProgression(sequence, 16, 3);
+		generator.buildProgression(sequence, 16, 3, true);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(1, progression.get(0).getRoot());
 		System.out.println();
@@ -180,7 +180,7 @@ public class ProgressionGeneratorTest {
 
 			LinkedList<Chord> start_sequence = new LinkedList<Chord>();
 			start_sequence.add(start);
-			generator.buildProgression(start_sequence, 16, 3);
+			generator.buildProgression(start_sequence, 16, 3, true);
 			LinkedList<Chord> progression = generator.getProgression();
 			System.out.print(part.toString() + ": ");
 			for(Chord chord : progression)
@@ -223,7 +223,7 @@ public class ProgressionGeneratorTest {
 		available_chords = chord_dictionary.get(start_sequence.subList(2, 3));
 		assertFalse(available_chords.isEmpty());
 
-		generator.buildProgression(start_sequence, 16, 3);
+		generator.buildProgression(start_sequence, 16, 3, true);
 		LinkedList<Chord> progression = generator.getProgression();
 		assertEquals(6, progression.get(0).getRoot());
 		assertEquals(2, progression.get(1).getRoot());

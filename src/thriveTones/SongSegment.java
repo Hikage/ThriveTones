@@ -70,20 +70,21 @@ public class SongSegment {
 	 * @param seed : starting chord(s) for progression
 	 * @param prog_length : length of desired progression
 	 * @param hist_length : history length for progression
+	 * @param debug : optional debug mode
 	 */
-	public SongSegment(SongPart pt, ChordDictionary dict, List<Chord> seed, int prog_length, int hist_length){
+	public SongSegment(SongPart pt, ChordDictionary dict, List<Chord> seed, int prog_length, int hist_length, boolean debug){
 		part = pt;
 		chord_dictionary = dict;
 
 		//allow for random start if no other seed is provided
 		if(seed == null){
-			Chord start = chord_dictionary.getANextChord(null);
+			Chord start = chord_dictionary.getANextChord(null, debug);
 			seed = new LinkedList<Chord>();
 			seed.add(start);
 		}
 
 		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);
-		generator.buildProgression(seed, prog_length, hist_length);
+		generator.buildProgression(seed, prog_length, hist_length, debug);
 		progression = generator.getProgression();
 	}
 

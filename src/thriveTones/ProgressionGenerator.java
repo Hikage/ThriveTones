@@ -28,8 +28,9 @@ public class ProgressionGenerator {
 	 * @param seed : Chord sequence with which to start the progression
 	 * @param prog_length : length of desired progression
 	 * @param hist_length : length of the history to use
+	 * @param debug : optional debug mode
 	 */
-	public void buildProgression(List<Chord> seed, int prog_length, int hist_length){
+	public void buildProgression(List<Chord> seed, int prog_length, int hist_length, boolean debug){
 		progression = new LinkedList<Chord>();
 
 		int max_hist_length = chord_dictionary.getMaxHistoryLength();
@@ -41,7 +42,7 @@ public class ProgressionGenerator {
 			history.addAll(seed.subList(Math.max(0, seed.size()-hist_length), seed.size()));
 
 		for(int i = 0; i < prog_length; i++){
-			Chord next = chord_dictionary.getANextChord(history);
+			Chord next = chord_dictionary.getANextChord(history, debug);
 			progression.add(next);
 			history.add(next);
 			if(history.size() > hist_length) history.remove();

@@ -22,6 +22,7 @@ import thriveTones.ChordDictionary;
 
 public class ChordDictionaryTest {
 	private static ChordDictionary chord_dictionary;
+	private static final boolean debug = false;
 
 	/**
 	 * Ensures a new ChordDictionary object is established
@@ -54,7 +55,7 @@ public class ChordDictionaryTest {
 	public void testPutSingleChord(){
 		Chord chord = new Chord(1, Tonality.maj, 4);
 		chord_dictionary.put(null, chord);
-		assertEquals(chord, chord_dictionary.getANextChord(null));
+		assertEquals(chord, chord_dictionary.getANextChord(null, debug));
 	}
 
 	/**
@@ -66,14 +67,14 @@ public class ChordDictionaryTest {
 		Chord chord2 = new Chord(5, Tonality.maj, 4);
 		chord_dictionary.put(null, chord1);
 		chord_dictionary.put(null, chord1);
-		assertEquals(chord1, chord_dictionary.getANextChord(null));
+		assertEquals(chord1, chord_dictionary.getANextChord(null, debug));
 		assertEquals(2, chord_dictionary.get(new LinkedList<Chord>()).size());
 
 		chord_dictionary.put(null, chord2);
 
 		int frequency = 0;
 		for(int i = 0; i < 100; i++){
-			Chord next = chord_dictionary.getANextChord(null);
+			Chord next = chord_dictionary.getANextChord(null, debug);
 			if(next.getRoot() == 1) frequency++;
 		}
 		System.out.println("Chord frequency: " + frequency);
@@ -103,7 +104,7 @@ public class ChordDictionaryTest {
 
 		int frequency = 0;
 		for(int i = 0; i < 100; i++){
-			Chord next = chord_dictionary.getANextChord(sequence);
+			Chord next = chord_dictionary.getANextChord(sequence, debug);
 			if(next.getRoot() == 4) frequency++;
 		}
 		System.out.println("50/50 sequence frequency: " + frequency);
@@ -140,7 +141,7 @@ public class ChordDictionaryTest {
 
 		int frequency = 0;
 		for(int i = 0; i < 100; i++){
-			Chord next = chord_dictionary.getANextChord(sequence1);
+			Chord next = chord_dictionary.getANextChord(sequence1, debug);
 			if(next.getRoot() == 1) frequency++;
 		}
 		System.out.println("Sequence frequency: " + frequency);
@@ -167,7 +168,7 @@ public class ChordDictionaryTest {
 		assertEquals(chord2, chord_dictionary.get(new LinkedList<Chord>()).get(1));
 
 		assertEquals(chord2, chord_dictionary.get(sequence).get(0));
-		assertEquals(chord2, chord_dictionary.getANextChord(sequence));
+		assertEquals(chord2, chord_dictionary.getANextChord(sequence, debug));
 	}
 
 	/**
@@ -195,11 +196,11 @@ public class ChordDictionaryTest {
 		assertEquals(chord1, chord_dictionary.get(new LinkedList<Chord>()).get(0));
 		assertEquals(chord2, chord_dictionary.get(new LinkedList<Chord>()).get(1));
 		assertEquals(chord3, chord_dictionary.get(new LinkedList<Chord>()).get(2));
-		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
+		assertEquals(chord3, chord_dictionary.getANextChord(sequence, debug));
 
 		sequence.remove();
 		assertTrue(chord_dictionary.containsKey(sequence));
-		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
+		assertEquals(chord3, chord_dictionary.getANextChord(sequence, debug));
 	}
 
 	/**
@@ -222,13 +223,13 @@ public class ChordDictionaryTest {
 
 		sequence.add(chord3);
 
-		assertNotNull(chord_dictionary.getANextChord(sequence));
+		assertNotNull(chord_dictionary.getANextChord(sequence, debug));
 		sequence.remove(sequence.size()-1);
-		assertEquals(chord3, chord_dictionary.getANextChord(sequence));
+		assertEquals(chord3, chord_dictionary.getANextChord(sequence, debug));
 		sequence.remove(sequence.size()-1);
-		assertEquals(chord2, chord_dictionary.getANextChord(sequence));
+		assertEquals(chord2, chord_dictionary.getANextChord(sequence, debug));
 		sequence.remove(sequence.size()-1);
-		assertNotNull(chord_dictionary.getANextChord(sequence));
+		assertNotNull(chord_dictionary.getANextChord(sequence, debug));
 	}
 
 	/**
@@ -256,12 +257,12 @@ public class ChordDictionaryTest {
 		LinkedList<Chord> sequence3 = new LinkedList<Chord>();
 		sequence3.add(chord3);
 
-		assertEquals(chord2, chord_dictionary.getANextChord(sequence2));
+		assertEquals(chord2, chord_dictionary.getANextChord(sequence2, debug));
 
 		int[] roots = new int[8];
 		for(int i = 0; i < 100; i++){
 			Chord next;
-			next = chord_dictionary.getANextChord(null);
+			next = chord_dictionary.getANextChord(null, debug);
 			roots[next.getRoot()]++;
 		}
 		assertTrue(roots[1] > 20);

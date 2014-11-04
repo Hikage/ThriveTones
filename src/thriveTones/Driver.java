@@ -40,7 +40,7 @@ public class Driver {
 				SongPart.chorus, SongPart.chorus, SongPart.outro};
 
 		Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
-		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history);
+		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history, false);
 
 		System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
 		System.out.println(song.toString(true));

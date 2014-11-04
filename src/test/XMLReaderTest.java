@@ -106,7 +106,7 @@ public class XMLReaderTest {
 		// Test empty chord pull
 		int[] roots = new int[8];
 		for(int i = 0; i < 100; i++){
-			Chord next = chord_dictionary.getANextChord(null);
+			Chord next = chord_dictionary.getANextChord(null, true);
 			roots[next.getRoot()]++;
 		}
 		for(int count : roots)
@@ -120,7 +120,7 @@ public class XMLReaderTest {
 		for(int i = 0; i < 10; i++){
 			Chord next;
 			LinkedList<Chord> sequence = new LinkedList<Chord>();
-			next = chord_dictionary.getANextChord(null);
+			next = chord_dictionary.getANextChord(null, true);
 			sequence.add(next);
 			ArrayList<Chord> available_chords = chord_dictionary.get(sequence);
 

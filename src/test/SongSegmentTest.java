@@ -122,7 +122,7 @@ public class SongSegmentTest {
 		LinkedList<Chord> seed = new LinkedList<Chord>();
 		seed.add(new Chord(1, Tonality.maj, 4));
 		SongSegment generated_chorus =
-				new SongSegment(SongPart.introverse, chord_dictionary, seed, 16, 3);
+				new SongSegment(SongPart.introverse, chord_dictionary, seed, 16, 3, true);
 		LinkedList<Chord> progression = generated_chorus.getChords();
 		assertEquals(1, progression.get(0).getRoot());
 		System.out.println(progression.toString());
