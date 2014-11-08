@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Scanner;
 
-import org.jfugue.Pattern;
-import org.jfugue.Player;
-
 import thriveTones.SongSegment.SongPart;
 
 /**
@@ -247,37 +244,58 @@ public class Song {
 	}
 
 	/**
+	 * Tests if dependency is present
+	 * @param className : dependency under test
+	 * @return : if the dependency is installed
+	 */
+	public static boolean isPresent(String className) {
+	    try {
+	        Class.forName(className);
+	        return true;
+	    } catch (Throwable ex) {
+	        // Class or one of its dependencies is not present...
+	        return false;
+	    }
+	}
+
+	/**
 	 * Plays the Song
 	 * @param tempo : desired tempo
 	 */
 	public void play(int tempo){
-		String INSTRUMENT = "Piano";
+		if (isPresent("org.jfugue.Player") && isPresent("org.jfugue.Pattern")) {
+			String INSTRUMENT = "Piano";
 
-		String playable_song = "T" + tempo + " I[" + INSTRUMENT + "] " + this.toString();
+			String playable_song = "T" + tempo + " I[" + INSTRUMENT + "] " + this.toString();
 
-		System.out.println(playable_song);
-		Pattern pattern = new Pattern();
-		pattern.setMusicString(playable_song);
-		Player player = new Player();
-		player.play(pattern);
+			System.out.println(playable_song);
+			org.jfugue.Pattern pattern = new org.jfugue.Pattern();
+			pattern.setMusicString(playable_song);
+			org.jfugue.Player player = new org.jfugue.Player();
+			player.play(pattern);
 
-		//Gives user option to save song as midi; loops in case cancels exit
-		boolean exit = false;
-		do{
-			System.out.println("\nWould you like to save this song? (y or n)");
-			Scanner in = new Scanner(System.in);
-			String save = in.nextLine();
-			if (save.equalsIgnoreCase("y")){
-				exit = true;
-				export(player, pattern);
-			}
-			else{
-				System.out.println("Data will be lost. Are you sure?");
-				in = new Scanner(System.in);
-				save = in.nextLine();
-				if(save.equalsIgnoreCase("y")) exit = true;
-			}
-		}while(!exit);
+			//Gives user option to save song as midi; loops in case cancels exit
+			boolean exit = false;
+			do{
+				System.out.println("\nWould you like to save this song? (y or n)");
+				Scanner in = new Scanner(System.in);
+				String save = in.nextLine();
+				if (save.equalsIgnoreCase("y")){
+					exit = true;
+					export(player, pattern);
+				}
+				else{
+					System.out.println("Data will be lost. Are you sure?");
+					in = new Scanner(System.in);
+					save = in.nextLine();
+					if(save.equalsIgnoreCase("y")) exit = true;
+				}
+			}while(!exit);
+		}
+		else{
+			System.err.println("\nCannot play song; JFugue is not installed (see build instructions in the README)");
+			System.out.println(this.toString(true));
+		}
 	}
 
 	/**
@@ -285,7 +303,7 @@ public class Song {
 	 * @param player : Player object
 	 * @param pattern : Pattern object
 	 */
-	public void export(Player player, Pattern pattern){
+	public void export(org.jfugue.Player player, org.jfugue.Pattern pattern){
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Type a name for the song");
 		String songName = sc.next() + ".mid";
