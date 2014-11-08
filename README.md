@@ -1,7 +1,7 @@
 ThriveTones
 =======
 
-_Computers are the new musicians!  Using theory heuristics, compose through a crowd-source-driven genetic algorithm._
+_Computers are the new musicians!  Learning from a pop song database of chord progressions, compose the next big hit through Markov chain analysis._
 
 Copyright © 2014 Brianna Shade  
 bshade@pdx.edu  
@@ -11,18 +11,21 @@ This program is licensed under the "MIT License"
 Please see the file COPYING in the source distribution of this software for license terms.
 
 ### About
-This is a revived school project from 2006 whereby simple melodies were created from a genetic algorithm (using human input as each iteration's selection method).  As part of the initial project, I contributed an alternative approach, instead randomly creating melodies within the confines of music theory guidelines.
+This is a reenvisioned school project from 2006 whereby simple melodies were created from a genetic algorithm (using human input as each iteration's selection method).  As part of the initial project, I contributed an alternative approach, instead randomly creating melodies within the confines of music theory guidelines.
 
-This revival first looks at a sampling from a database of chord progressions found in over 1300 modern pop songs, collected as part of the Hooktheory project (www.hooktheory.com), and makes use of the project's statistics on how likely particular chords are to succeed others.  With this data, new songs are built through a Markov model by analyzing progressions for choruses, verses, and bridges, taking into account theory guidelines as a heuristic.
+This revival first looks at a sampling from a database of chord progressions found in over 1300 modern pop songs, collected as part of the Hooktheory project (www.hooktheory.com), and makes use of the project's statistics on how likely particular chords are to succeed others.  With this data, new songs are built through an adjustable Markov model by analyzing progressions in choruses, verses, bridges, etc, and constructing atomic segments that are pieced together using a custom song structure grammar.
 
-_Note: Original code was a collaborative team effort during a 2006 senior capstone independent project course at Colorado State University.  I have since lost the contact information for the other 2-3 individuals and in fact no longer remember their names.  However, I wish to give due credit to their work, to the best of my ability.  Fortunately, the new approach is no longer making use of a GA, and the Markov model implementation is almost entirely an individual effort._
+_Note: Original code was a collaborative team effort during a 2006 senior capstone independent project course at Colorado State University.  I have since lost the contact information for the other 2-3 individuals and in fact no longer remember their names.  However, I wish to give due credit to their work, to the best of my ability.  Fortunately, the new approach is no longer making use of any of the previous GA implementation, and the Markov model implementation has been an entirely individual effort with instructor guidance.  Credit and thanks go also to Dr. Bart Massey of Portland State University for assisting with the latest generation of this project._
 
 ### Build Instructions
-* Compile all .java code files in src/ThriveTones and src/sax.  Additionally, you may wish to compile the files found in src/test if you wish to perform any unit tests.
+* Compile all .java code files in src/ThriveTones and src/sax.  Additionally, you may wish to compile the files found in src/test if you'd like to perform any unit tests.
+* Download and install the latest version of JFugue (http://www.jfugue.org/) if you would like to listen to any generated songs
 * Make sure the input data file is located within the classpath directory.  Currently, the program looks for this file in src/..
 * Execute the Driver.java file, providing the data file name as the only argument
 
 Example usage: java src/thriveTones.Driver Hooktheory-Data.xml
+
+_Due to ownership and copyright considerations, the full Hooktheory data provided for use in my project is not included in this repository.  Functionality can be exemplified by using the included test.xml or test2.xml sample files.  This also provides examples of expected source data file formats._
 
 ### Code Plan
 [x] Initialize project, flesh out README, and organize coding steps (6/22)  
@@ -31,10 +34,16 @@ Example usage: java src/thriveTones.Driver Hooktheory-Data.xml
 [x] Build XML reader to process Hooktheory data (7/13)    
 [x] Complete data read-in to generate stats (8/24)  
 [x] Refactor GA to build chord progressions using Markov chains based on statistics (8/31)  
-[] Segregate chorus, verse, and bridge data for modular composition (10/13)  
+[x] Segregate chorus, verse, and bridge data for modular composition (10/13)  
+[] Automate song structure generation (11/10)  
+[] Clean up chord dictionaries to mitigate dead-ends (11/17)  
+[] Better bridging between song segments (11/24)  
+[] Reintroduce duration for varying chord lengths (12/1)  
 
 ### Optional Enhancements / Future Work  
 [] Add melody over chord structure  
+[] Add rhythm element to song generation  
+[] Automatically generate lyrics  
 [] Allow users to choose initial key, tempo, rhythm  
 [] Refactor composition as a four-part a cappella arrangement  
 [] Refactor code to make use of the Hooktheory API instead of a static data dump  
@@ -42,7 +51,8 @@ Example usage: java src/thriveTones.Driver Hooktheory-Data.xml
 [] Allow for new songs to be saved/downloaded for the user  
 
 ### Currently Working On / Next Steps
-* Modularize song pieces for more coherent construction
+* Automate song structure construction
+* Remove JFugue from repository
 * Support for chord modes and targets
 
 ### Development Challenges
@@ -54,7 +64,7 @@ It was later discovered that JFugue can accept an arbitrary chord in the format 
 Chords could also possibly be represented with a bitmap.  At this time, I have not yet explored this option, but it would provide a lighter-weight (if less legible) implementation.
 
 #### Hooktheory data:
-Reading in the Hooktheory data proved more difficult than initially thought.  For one, all representations aren't consistent (for example, b and f both denote "flat").  Not all songs have an associated key, and some contain unsupported chords (like 11 chords).  The representation also wasn't immediately intuitive, delaying progress.  However, this forced a greater understanding of the data, prompting a write-up on the structure for future developers.  This may be greatly due to the fact that the data itself is crowd-sourced, making it challenging to maintain consistency.
+Reading in the Hooktheory data proved more difficult than initially thought.  For one, all representations aren't consistent (for example, b and f both denote "flat").  Not all songs have an associated key, and some contain unsupported chords (like 11 chords).  The representation also wasn't immediately intuitive, delaying progress.  However, this forced a greater understanding of the data, prompting a write-up on the structure for future developers (see XMLFORMAT-README.md for more details).  This may be greatly due to the fact that the data itself is crowd-sourced, making it challenging to maintain consistency.
 
 #### Chord progression statistics:
 In order to build progression statistics, a dynamic list of encountered chords must be maintained and visible across all classes of this project.  I experimented with various implementations, including having a dedicated class, having the set of chords live in XMLReader, and having them exist as an extention of the Chord instances.  Ultimately, I opted for storing the unique list of chords in XMLReader, as they're read in (being careful to not create a new chord if one already exists).
@@ -69,7 +79,14 @@ Therefore, this was refactored to a ChordDictionary, represented as its own clas
 {[4], 1}  
 {[], 1}  
 
-This allows for any length history to be used, or none at all.  If a given history is not a key in the dictionary, it is truncated and searched for again.  Ultimately, if no history is found, a random next chord is selected, based on overall probabilities.
+This allows for any length history to be used, or none at all.  If a given history is not a key in the dictionary, it is truncated (removing the first element) and searched for again.  Ultimately, if no history is found, a random next chord is selected, based on overall probabilities.
+
+This structure does not yet account for obscure branches the generator could take.  As a result, songs could get into ruts of the same chord over and over.  This will be mitigated in future developments to break out of these stuck points either by using a heuristic or by removing these dead-ends from the dictionary.
+
+To allow for modular song creation, the chord dictionary was partitioned into song-part-specific dictionaries: progressions for choruses populate a dictionary separate from verses, separate from bridges, etc.
+
+#### Song generation:
+This began as a simple hard-coded structure, a typical intro-verse-chorus-verse-chorus-bridge-chorus-chorus pattern, or similar.  Data on common structures are more difficult to find than chord progressions.  Therefore, the approach to automate this portion would be better served by a grammar of common struture rules.  Examples include: verses are commonly followed by choruses, bridges do not occur at the beginning of songs, there shouldn't be any more than two repetitions of the chorus unless at the end of the song, etc.
 
 #### JFugue:
 Some complicated chords are far more difficult to represent in JFugue.  Therefore, some of the more intricate chords will need to be represented with literal intervals instead of the condensed representation of Cmaj, etc.  This creates a need for some more obsure representation and consideration for unusual edge cases.  For now, this has been disregarded for the sake of simplicity, but it will need to be addressed eventually.
