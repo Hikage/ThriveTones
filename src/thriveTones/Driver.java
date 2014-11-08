@@ -36,8 +36,7 @@ public class Driver {
 
 		//TODO: generate sequence automatically
 		SongPart[] song_sequence = {SongPart.intro, SongPart.verse, SongPart.verse, SongPart.chorus,
-				SongPart.verse, SongPart.prechorus, SongPart.chorus, SongPart.bridge, SongPart.solo,
-				SongPart.chorus, SongPart.chorus, SongPart.outro};
+				SongPart.verse, SongPart.chorus, SongPart.bridge, SongPart.chorus};
 
 		Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
 		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history, false);

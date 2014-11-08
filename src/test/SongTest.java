@@ -12,6 +12,7 @@ import thriveTones.Chord;
 import thriveTones.ChordDictionary;
 import thriveTones.Song;
 import thriveTones.Chord.Tonality;
+import thriveTones.SongSegment;
 import thriveTones.SongSegment.SongPart;
 
 /**
@@ -223,5 +224,57 @@ public class SongTest {
 			assertEquals(1, new_chorus.get(3).getRoot());
 			break;
 		}
+	}
+
+	/**
+	 * Tests building with duplicated song segments
+	 */
+	@Test
+	public void testDuplicatedParts(){
+		//dummy sequence for testing
+		SongPart[] sequence = { SongPart.verse, SongPart.chorus, SongPart.verse, SongPart.chorus };
+
+		Chord chord1 = new Chord(1, Tonality.maj, 4);
+		Chord chord4 = new Chord(4, Tonality.maj, 4);
+		Chord chord5 = new Chord(5, Tonality.maj, 4);
+		Chord chord6 = new Chord(6, Tonality.min, 4);
+
+		//build verse dictionary
+		ChordDictionary verse_dict = new ChordDictionary();
+		LinkedList<Chord> verse = new LinkedList<Chord>();
+		verse_dict.put(null, chord1);
+		verse.add(chord1);
+		verse_dict.put(verse, chord5);
+		verse.add(chord5);
+		verse_dict.put(verse, chord6);
+		verse.add(chord6);
+		verse_dict.put(verse, chord4);
+		verse.add(chord4);
+		verse_dict.put(verse, chord5);
+
+		//build chorus dictionary
+		ChordDictionary chorus_dict = new ChordDictionary();
+		LinkedList<Chord> chorus = new LinkedList<Chord>();
+		chorus_dict.put(null, chord1);
+		chorus.add(chord1);
+		chorus_dict.put(chorus, chord4);
+		chorus.add(chord4);
+		chorus_dict.put(chorus, chord5);
+		chorus.add(chord5);
+		chorus_dict.put(chorus, chord1);
+
+		HashMap<SongPart, ChordDictionary> parts_dictionary = new HashMap<SongPart, ChordDictionary>();
+		parts_dictionary.put(SongPart.verse, verse_dict);
+		parts_dictionary.put(SongPart.chorus, chorus_dict);
+
+		song.build(sequence, parts_dictionary, 8, 3, false);
+
+		LinkedList<SongSegment> segments = song.getSong();
+		assertEquals(segments.get(0), segments.get(2));
+		assertEquals(segments.get(1), segments.get(3));
+		assertFalse(segments.get(0).equals(segments.get(1)));
+		assertFalse(segments.get(2).equals(segments.get(3)));
+
+		System.out.println(song.toString(true));
 	}
 }

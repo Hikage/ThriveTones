@@ -23,6 +23,7 @@ import thriveTones.SongSegment.SongPart;
  */
 
 public class Song {
+	private HashMap<SongPart, SongSegment> segments = new HashMap<SongPart, SongSegment>();
 	private LinkedList<SongSegment> song = new LinkedList<SongSegment>();
 	private String name;
 	private String artist;
@@ -150,6 +151,7 @@ public class Song {
 		song = new LinkedList<SongSegment>();
 
 		for(int i = 0; i < song_sequence.length; i++){
+			//TODO: allow for multiple verses, etc
 			SongPart part = song_sequence[i];
 			List<Chord> history_seed = new LinkedList<Chord>();
 			if(i != 0){
@@ -157,7 +159,12 @@ public class Song {
 				history_seed = previous_segment.subList(Math.max(0, previous_segment.size() - history),	previous_segment.size());
 			}
 
-			song.add(new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug));
+			SongSegment song_segment = segments.get(part);
+			if(song_segment == null){
+				song_segment = new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug);
+				segments.put(part, song_segment);
+			}
+			song.add(song_segment);
 		}
 	}
 
