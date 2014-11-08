@@ -15,5 +15,5 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ChordTest.class, ChordDictionaryTest.class, ProgressionGeneratorTest.class,
-	SongSegmentTest.class, XMLReaderTest.class })
+	SongSegmentTest.class, XMLReaderTest.class, OutlineGeneratorTest.class })
 public class TestSuite {}
