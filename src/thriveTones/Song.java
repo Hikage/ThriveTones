@@ -1,112 +1,109 @@
 package thriveTones;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * Song.java
- * This class represents a song part, containing metadata, key, mode, and a chord progression
- */
-
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Scanner;
 
 import org.jfugue.Pattern;
 import org.jfugue.Player;
 
+import thriveTones.SongSegment.SongPart;
+
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * Song.java
+ * This class represents a song, comprising of a series of SongSegments
+ */
+
 public class Song {
+	private HashMap<SongPart, SongSegment> segments = new HashMap<SongPart, SongSegment>();
+	private LinkedList<SongSegment> song = new LinkedList<SongSegment>();
 	private String name;
 	private String artist;
-	private String part;
+	private int mode;
 	private String key;
 	private String rel_major;
-	private int mode;
-	private LinkedList<Chord> progression;
 	private double beats;
-	private ChordDictionary dictionary;
 
 	/**
 	 * Constructor method
-	 * @param nm: song name
-	 * @param at: song artist
-	 * @param pt: song part (chorus, verse, etc)
-	 * @param ky: song key
-	 * @param md: song mode (major, minor, dorian, etc)
-	 * @param sif: chords in SIF format
-	 * @param bim: beats in measure
-	 * @param dict: Chord dictionary
-	 * @throws IllegalArgumentException: throws if an invalid parameter is supplied
+	 * @param ky : key of the new Song
+	 * @param md : Song mode
+	 * @param nm : Song name
+	 * @param at : Song artist
+	 * @param bim : beats in measure
 	 */
-	public Song(String nm, String at, String pt, String ky, int md, String sif,
-			double bim, ChordDictionary dict) throws Exception{
-
+	public Song(String ky, int md, String nm, String at, double bim){
+		if(ky == null)
+			throw new IllegalArgumentException("Key cannot be null");
+		key = standardizeKey(ky);
+		if(md < 0 || md > 7)
+			throw new IllegalArgumentException("Invalid mode value: " + md);
+		mode = md;
 		if(nm.isEmpty() || nm.equals(""))
 			throw new IllegalArgumentException("Invalid name value: " + nm);
 		if(at.isEmpty() || at.equals(""))
 			throw new IllegalArgumentException("Invalid artist value: " + at);
-		if(pt.isEmpty() || pt.equals(""))
-			throw new IllegalArgumentException("Invalid part value: " + pt);
-		if(md < 0 || md > 7)
-			throw new IllegalArgumentException("Invalid mode value: " + md);
-		if(sif.isEmpty() || sif.equals(""))
-			throw new IllegalArgumentException("Invalid SIF value: " + sif);
-		if(bim < 0.25 || bim > 20)
-			throw new IllegalArgumentException("Invalid BiM value: " + bim);
-		
 		name = nm;
 		artist = at;
-		part = pt;
-		if(ky.isEmpty()) key = "C";
-		else key = ky;
-		mode = md;
+		if(bim < 0.25 || bim > 20)
+			throw new IllegalArgumentException("Invalid BiM value: " + bim);
 		beats = bim;
-		dictionary = dict;
-		
-		progression = new LinkedList<Chord>();
-		
-		String[] sif_chords = sif.split(",");
-		LinkedList<Chord> sequence = new LinkedList<Chord>();
-		for(String sif_chord : sif_chords){
-			if(sif_chord.isEmpty()) continue;
-
-			Chord current = new Chord(mode, sif_chord);
-			progression.add(current);
-
-			//add to dictionary
-			if(sequence.size() > dictionary.getMaxHistoryLength())
-				sequence.remove();
-			dictionary.put(sequence, current);
-			sequence.add(current);
-		}
-
-		calculateRelativeMajor();
-	}
-	
-	public Song(String pt, String ky, int md, double bim, LinkedList<Chord> pg){
-		name = "AI Creation";
-		artist = "Music Bot";
-		part = pt;
-		key = ky;
-		mode = md;
-		beats = bim;
-		progression = pg;
-		dictionary = null;
 
 		calculateRelativeMajor();
 	}
 
 	/**
+	 * Standardizes a given key
+	 * @param ky : key to be standardized
+	 * @return : the standardized key string
+	 */
+	public String standardizeKey(String ky){
+		String keys = "ABCDEFG";
+		String standard_key = "";
+		if(ky.isEmpty() || !keys.contains(Character.toString(ky.toUpperCase().charAt(0))))
+			standard_key = "C";
+		else{
+			standard_key += ky.toUpperCase().charAt(0);
+
+			String accidental = ky.substring(1).toLowerCase();
+			for(int i = 0; i < accidental.length(); i++){
+				char symbol = accidental.charAt(i);
+				char acc;
+				if(symbol == 'f' || symbol == 'b') acc = 'b';
+				else if(symbol == 's' || symbol == '#') acc = '#';
+				else break;
+
+				if(i == 0)
+					standard_key += acc;
+				else if(acc == standard_key.charAt(standard_key.length()-1))
+					standard_key += acc;
+				else break;
+			}
+		}
+
+		return standard_key;
+	}
+
+	/**
 	 * Adjusts the song's key
-	 * @param ky: new key
-	 * @param md: new mode
+	 * @param ky : new key
+	 * @param md : new mode
+	 * @throws Exception : if the provided key is invalid
 	 */
 	public void changeKey(String ky, int md) throws Exception{
 		if(ky.isEmpty())
 			throw new IllegalArgumentException("ky is empty!");
 		key = ky;
 		mode = md;
+
 		calculateRelativeMajor();
 	}
 
@@ -141,94 +138,122 @@ public class Song {
 		}
 		else rel_major += (circle.charAt(new_pos) + accidental);
 	}
-	
+
 	/**
-	 * name accessor
-	 * @return: song name
+	 * @param song_sequence : sequence of parts to be built
+	 * @param parts_dictionary : dictionary for song building
+	 * @param seg_length : length of each segment
+	 * @param history : length of desired history
+	 * @param debug : optional debug mode
 	 */
-	public String getName(){
-		return name;
+	public void build(SongPart[] song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
+			int seg_length, int history, boolean debug){
+		song = new LinkedList<SongSegment>();
+
+		for(int i = 0; i < song_sequence.length; i++){
+			//TODO: allow for multiple verses, etc
+			SongPart part = song_sequence[i];
+			List<Chord> history_seed = new LinkedList<Chord>();
+			if(i != 0){
+				List<Chord> previous_segment = song.get(i-1).getChords();
+				history_seed = previous_segment.subList(Math.max(0, previous_segment.size() - history),	previous_segment.size());
+			}
+
+			SongSegment song_segment = segments.get(part);
+			if(song_segment == null){
+				song_segment = new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug);
+				segments.put(part, song_segment);
+			}
+			song.add(song_segment);
+		}
 	}
-	
-	/**
-	 * artist accessor
-	 * @return: song artist
-	 */
-	public String getArtist(){
-		return artist;
-	}
-	
-	/**
-	 * part accessor
-	 * @return: song part
-	 */
-	public String getPart(){
-		return part;
-	}
-	
+
 	/**
 	 * key accessor
-	 * @return: song key
+	 * @return : Song key
 	 */
 	public String getKey(){
 		return key;
 	}
-	
+
 	/**
 	 * relative major accessor
-	 * @return: relative major
+	 * @return : relative major
 	 */
 	public String getRelMajor(){
 		return rel_major;
 	}
-	
+
 	/**
 	 * mode accessor
-	 * @return: song mode
+	 * @return : Song mode
 	 */
 	public int getMode(){
 		return mode;
 	}
-	
+
 	/**
-	 * progression accessor
-	 * @return: chord progression
+	 * segments accessor
+	 * @return : list of SongSegments associated with song
 	 */
-	public LinkedList<Chord> getChords(){
-		return progression;
+	public LinkedList<SongSegment> getSong(){
+		return song;
 	}
-	
+
+	/**
+	 * name accessor
+	 * @return : song name
+	 */
+	public String getName(){
+		return name;
+	}
+
+	/**
+	 * artist accessor
+	 * @return : song artist
+	 */
+	public String getArtist(){
+		return artist;
+	}
+
 	/**
 	 * beats accessor
-	 * @return: beats in measure
+	 * @return : beats in measure
 	 */
 	public double getBeats(){
 		return beats;
 	}
-	
+
 	/**
-	 * Converts the song into a string representation
-	 * @return: the string representation of the song
+	 * Returns the string representation of the Song
+	 * @return : the string representation of the Song
 	 */
 	@Override
 	public String toString(){
-		String playable_chords = "K" + rel_major + "maj ";
-		ListIterator<Chord> it = progression.listIterator();
-		while(it.hasNext())
-			//TODO: cmode
-			//TODO: applied targets
-			playable_chords += it.next().toString(key.charAt(0), beats) + " ";
-		return playable_chords.trim();
+		return this.toString(false);
 	}
 
 	/**
-	 * Plays the song
+	 * Returns the string representation of the Song
+	 * @param label : whether SongSegment labels should be printed
+	 * @return : the string representation of the Song
 	 */
-	public void play(){
-		int TEMPO = 120;
+	public String toString(boolean label){
+		String playable_segments = "K" + rel_major + "maj\n";
+		ListIterator<SongSegment> it = song.listIterator();
+		while(it.hasNext())
+			playable_segments += it.next().toString(key, beats, label) + "\n";
+		return playable_segments.trim();		
+	}
+
+	/**
+	 * Plays the Song
+	 * @param tempo : desired tempo
+	 */
+	public void play(int tempo){
 		String INSTRUMENT = "Piano";
 
-		String playable_song = "T" + TEMPO + " I[" + INSTRUMENT + "] " + this.toString();
+		String playable_song = "T" + tempo + " I[" + INSTRUMENT + "] " + this.toString();
 
 		System.out.println(playable_song);
 		Pattern pattern = new Pattern();
@@ -236,7 +261,6 @@ public class Song {
 		Player player = new Player();
 		player.play(pattern);
 
-		/**
 		//Gives user option to save song as midi; loops in case cancels exit
 		boolean exit = false;
 		do{
@@ -254,100 +278,25 @@ public class Song {
 				if(save.equalsIgnoreCase("y")) exit = true;
 			}
 		}while(!exit);
-		**/
 	}
 
 	/**
 	 * Saves generated song to a midi file for later playback
-	 * @param player: Player object
-	 * @param pattern: Pattern object
+	 * @param player : Player object
+	 * @param pattern : Pattern object
 	 */
 	public void export(Player player, Pattern pattern){
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Type a name for the song");
-		String songName = sc.next();
+		String songName = sc.next() + ".mid";
 		pattern.setMusicString(this.toString());
-		player.save(pattern, songName + ".mid");
+		File outFile = new File(songName);
+		try {
+			player.saveMidi(pattern, outFile);
+		}
+		catch (IOException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
-
-	/**
-	 * Automatically generated hashCode function for comparisons
-	 * @return: a hash value representing the Chord object
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((artist == null) ? 0 : artist.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(beats);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + mode;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((part == null) ? 0 : part.hashCode());
-		result = prime * result
-				+ ((progression == null) ? 0 : progression.hashCode());
-		result = prime * result
-				+ ((rel_major == null) ? 0 : rel_major.hashCode());
-		return result;
-	}
-
-	/**
-	 * Automatically generated equals function for comparisons
-	 * @return: returns true iff obj = this
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Song other = (Song) obj;
-		if (artist == null){
-			if (other.artist != null)
-				return false;
-		}
-		else if (!artist.equals(other.artist))
-			return false;
-		if (Double.doubleToLongBits(beats) != Double
-				.doubleToLongBits(other.beats))
-			return false;
-		if (key == null){
-			if (other.key != null)
-				return false;
-		}
-		else if (!key.equals(other.key))
-			return false;
-		if (mode != other.mode)
-			return false;
-		if (name == null){
-			if (other.name != null)
-				return false;
-		}
-		else if (!name.equals(other.name))
-			return false;
-		if (part == null){
-			if (other.part != null)
-				return false;
-		}
-		else if (!part.equals(other.part))
-			return false;
-		if (progression == null){
-			if (other.progression != null)
-				return false;
-		}
-		else if (!progression.equals(other.progression))
-			return false;
-		if (rel_major == null){
-			if (other.rel_major != null)
-				return false;
-		}
-		else if (!rel_major.equals(other.rel_major))
-			return false;
-		return true;
-	}
-	
 }

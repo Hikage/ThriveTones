@@ -1,5 +1,10 @@
 package thriveTones;
 
+import java.util.*;
+
+import sax.XMLReader;
+import thriveTones.SongSegment.SongPart;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -9,12 +14,10 @@ package thriveTones;
  * Main class driver
  */
 
-import java.util.*;
-
-import sax.XMLReader;
-
 public class Driver {
-	private static int song_length = 8;
+	private static XMLReader reader;
+	private static int seg_length = 8;
+	private static int tempo = 120;
 	private static int beats = 4;
 	private static int history = 3;
 
@@ -28,10 +31,30 @@ public class Driver {
 			System.exit(0);
 		}
 
-		String filename = args[0];
+		readInData(args[0]);
+		//getUserInputs();
 
-		//Read in the data
-		XMLReader reader = new XMLReader();
+		//TODO: generate sequence automatically
+		SongPart[] song_sequence = {SongPart.intro, SongPart.verse, SongPart.verse, SongPart.chorus,
+				SongPart.verse, SongPart.chorus, SongPart.bridge, SongPart.chorus};
+
+		Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
+		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history, false);
+
+		System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
+		System.out.println(song.toString(true));
+		//song.play(tempo);
+
+		System.out.println("\nEnd of program.\nThank you for playing!");
+		System.exit(0);
+	}
+
+	/**
+	 * Reads in the data from the provided filename
+	 * @param filename : file containing data to be read in
+	 */
+	public static void readInData(String filename){
+		reader = new XMLReader();
 		try {
 			reader.readIn(filename);
 		}
@@ -39,18 +62,18 @@ public class Driver {
 			System.err.println("Error reading in file: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
 
-		ChordDictionary dictionary = reader.getChordDictionary();
-		ProgressionGenerator generator = new ProgressionGenerator(dictionary);
-
-		//User input to determine song specifics
-		/**
+	/**
+	 * Prompts user for inputs pertaining to song length, etc
+	 */
+	public static void getUserInputs(){
 		do{
-			System.out.println("How many chords would you like?");
+			System.out.println("How many chords would you like per segment?");
 			Scanner in = new Scanner(System.in);
 			if(in.hasNextInt()){
-				song_length = in.nextInt();
-				if(song_length > 0) break;
+				seg_length = in.nextInt();
+				if(seg_length > 0) break;
 			}
 		}while(true);
 
@@ -62,22 +85,5 @@ public class Driver {
 				if(beats > 0) break;
 			}
 		}while(true);
-		**/
-
-		//Get starting chord
-		Chord start = null;
-		start = dictionary.getANextChord(null);
-
-		//Generate progression
-		generator.buildProgression(start, song_length, history);
-		LinkedList<Chord> progression = generator.getProgression();
-
-		Song new_hit = new Song("random part", "C", 1, beats, progression);
-
-		//System.out.println(new_hit.toString());
-		new_hit.play();
-
-		System.out.println("\nEnd of program.\nThank you for playing!");
-		System.exit(0);
 	}
 }

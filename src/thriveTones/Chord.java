@@ -1,5 +1,7 @@
 package thriveTones;
 
+import java.text.DecimalFormat;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -9,10 +11,9 @@ package thriveTones;
  * This class represents a chord object, having specified attributes like root, duration, and tonality
  */
 
-import java.text.DecimalFormat;
-
 public class Chord {
 
+	@SuppressWarnings("javadoc")
 	public enum Tonality {maj, min, dim, aug};
 
 	//TODO: bitmap chord representation?
@@ -29,12 +30,13 @@ public class Chord {
 
 	/**
 	 * Constructor method
-	 * @param root: integer representation of Chord's root
-	 * @param tone: tonality of the Chord
-	 * @param oct: Chord's octave
-	 * @param inv: Chord's inversion
-	 * @param emb: Chord's embellishment
-	 * @param dur: Chord's duration
+	 * @param rt : integer representation of Chord's root
+	 * @param tone : tonality of the Chord
+	 * @param oct : Chord's octave
+	 * @param inv : Chord's inversion
+	 * @param emb : Chord's embellishment
+	 * @param dur : Chord's duration
+	 * @throws Exception : if given an invalid root or embellishment
 	 */
 	public Chord(int rt, Tonality tone, int oct, int inv, String emb, double dur) throws Exception{
 		if(rt-1 < 0 || rt-1 > 7)
@@ -47,7 +49,7 @@ public class Chord {
 		changeInversion(inv);
 
 		if(!emb.contains("add") && !emb.contains("sus") && !emb.isEmpty() && emb != null)
-			throw new Exception("Invalid embelishment: " + emb);
+			throw new Exception("Invalid embellishment: " + emb);
 		embellishment = emb;
 
 		duration = dur;
@@ -55,9 +57,9 @@ public class Chord {
 
 	/**
 	 * Simplified Chord constructor, leaving other qualities default
-	 * @param rt: integer representation of relative note upon which to build the chord (1 = tonic)
-	 * @param tone: tonality of the Chord
-	 * @param dur: Chord's duration
+	 * @param rt : integer representation of relative note upon which to build the chord (1 = tonic)
+	 * @param tone : tonality of the Chord
+	 * @param dur : Chord's duration
 	 */
 	public Chord(int rt, Tonality tone, double dur){
 		root = rt;
@@ -67,9 +69,9 @@ public class Chord {
 
 	/**
 	 * Constructor to take in Hooktheory-format chord
-	 * @param mode: key's mode (minor, dorian, major, etc)
-	 * @param schord: string representation of the chord
-	 * @throws Exception
+	 * @param mode : key's mode (minor, dorian, major, etc)
+	 * @param schord : string representation of the chord
+	 * @throws Exception : upon invalid input
 	 */
 	public Chord(int mode, String schord) throws Exception{
 		if(schord.length() < 1)
@@ -199,8 +201,10 @@ public class Chord {
 
 	/**
 	 * Shifts the root down as per the provided offset
-	 * @param offset: offset with which to adjust the root
+	 * @param base : origin from which to shift
+	 * @param offset : offset with which to adjust the root
 	 * Note: offsets are off by one.  Offsetting a root of 6 by 6 will result in 1 instead of 0
+	 * @return : the new root
 	 */
 	public int shiftRoot(int base, int offset){
 		base -= offset;
@@ -240,7 +244,8 @@ public class Chord {
 
 	/**
 	 * Adjust Chord's octave
-	 * @param oct: desired octave
+	 * @param oct : desired octave
+	 * @throws Exception : if provided an invalid octave value
 	 */
 	public void changeOctave(int oct) throws Exception{
 		if(oct < 0 || oct > 10)
@@ -250,7 +255,8 @@ public class Chord {
 
 	/**
 	 * Adjust Chord's inversion
-	 * @param inv: desired inversion
+	 * @param inv : desired inversion
+	 * @throws Exception : if provided an invalid inversion
 	 */
 	public void changeInversion(int inv) throws Exception{
 		if (inv < 0 || inv > 3)
@@ -260,7 +266,7 @@ public class Chord {
 
 	/**
 	 * Sets Chord's duration
-	 * @param dur
+	 * @param dur : new duration
 	 */
 	public void setDuration(double dur){
 		duration = dur;
@@ -268,7 +274,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's root
-	 * @return: the root of the Chord
+	 * @return : the root of the Chord
 	 */
 	public int getRoot(){
 		return root;
@@ -276,7 +282,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's tonality
-	 * @return: the tonality of the Chord
+	 * @return : the tonality of the Chord
 	 */
 	public Tonality getTonality(){
 		return tonality;
@@ -284,7 +290,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's octave
-	 * @return: the Chord's octave
+	 * @return : the Chord's octave
 	 */
 	public int getOctave(){
 		return octave;
@@ -292,7 +298,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's inversion
-	 * @return: the Chord's inversion
+	 * @return : the Chord's inversion
 	 */
 	public int getInversion(){
 		return inversion;
@@ -300,7 +306,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's embellishment
-	 * @return: the Chord's embellishment
+	 * @return : the Chord's embellishment
 	 */
 	public String getEmbellishment(){
 		return embellishment;
@@ -308,7 +314,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's duration
-	 * @return: the Chord's duration
+	 * @return : the Chord's duration
 	 */
 	public double getDuration(){
 		return duration;
@@ -316,7 +322,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's mode
-	 * @return: the Chord's mode
+	 * @return : the Chord's mode
 	 */
 	public String getMode(){
 		return cmode;
@@ -324,7 +330,7 @@ public class Chord {
 
 	/**
 	 * Retrieves Chord's applied target
-	 * @return: the Chord's applied target
+	 * @return : the Chord's applied target
 	 */
 	public int getAppliedTarget(){
 		return applied_target;
@@ -332,37 +338,42 @@ public class Chord {
 
 	/**
 	 * Converts Chord into a key-independent string representation
-	 * @return: the JFugue string representation of the Chord
+	 * @return : the JFugue string representation of the Chord
 	 */
 	@Override
 	public String toString(){
-		return toString('Z', duration);
+		return toString("Z", duration);
 	}
 
 	/**
 	 * Converts Chord into a string representation, taking key into account
-	 * @param k: char representation of the key
-	 * @param beats: number of beats per measure
-	 * @return: the JFugue string representation of the Chord
+	 * @param ky : char representation of the key
+	 * @param beats : number of beats per measure
+	 * @return : the JFugue string representation of the Chord
 	 */
-	public String toString(char k, double beats){
-		String keys = "ABCDEFG";
-		int key = keys.indexOf(k);
-		if(root == 0) return "R";	//rest
+	public String toString(String ky, double beats){
+		String keys = "ABCDEFG";				//no need to worry about sharps or flats at the chord-level
+		int key = keys.indexOf(ky.charAt(0));
 
 		String chord = "";
-		if(key < 0) chord += root;
-		else chord += (char)(int)('A' + ((key + root - 1) % 7));
-		//chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
-		if(eleven) chord += "dom11";
+		if(root == 0) chord = "R";	//rest
 		else{
-			//if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
-				chord += tonality;
-			if(seven) chord += "7";
-			//for(int i = 0; i<inversion; i++) chord += "^";
-			//chord += embellishment;
+			if(key < 0) chord += root;				//prints relative chord values if a valid key isn't found
+			else chord += (char)(int)('A' + ((key + root - 1) % 7));
+			//chord += octave;						//no need to specify JFugue's default 3, but doesn't hurt
+			if(eleven) chord += "dom11";
+			else{
+				//if(!embellishment.contains("sus"))		//tonality no longer means anything if the 3rd is dropped for sus
+					chord += tonality;
+				if(seven) chord += "7";
+				//for(int i = 0; i<inversion; i++) chord += "^";
+				//chord += embellishment;
+			}
 		}
-		//chord += "/" + new DecimalFormat("##0.0#").format(duration/beats);
+
+		String dur = new DecimalFormat("##0.0#").format(duration/beats);
+		dur = "1.0";
+		chord += "/" + dur;
 
 		return chord;
 	}

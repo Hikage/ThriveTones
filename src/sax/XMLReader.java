@@ -1,5 +1,20 @@
 package sax;
 
+import javax.xml.parsers.*;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.*;
+import org.xml.sax.helpers.*;
+
+import thriveTones.ChordDictionary;
+import thriveTones.SongSegment;
+import thriveTones.SongSegment.SongPart;
+
+import java.io.*;
+import java.util.HashMap;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -12,37 +27,25 @@ package sax;
  * For full format details, see XMLFORMAT-README.md
  */
 
-import javax.xml.parsers.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-
-import thriveTones.ChordDictionary;
-import thriveTones.Song;
-
-import java.io.*;
-
 public class XMLReader extends DefaultHandler {
-	private static ChordDictionary chord_dictionary;
+	private static HashMap<SongPart, ChordDictionary> parts_dictionary;
 
 	/**
 	 * Initializer
 	 */
 	public XMLReader(){
-		chord_dictionary = new ChordDictionary();
+		parts_dictionary = new HashMap<SongPart, ChordDictionary>();
 	}
 
 	/**
 	 * Reads in the data based on the filename provided
-	 * @param filename: file to be read in
-	 * @throws Exception
+	 * @param filename : file to be read in
+	 * @throws Exception : on invalid file passed in
 	 */
 	public void readIn(String filename) throws Exception{
         File file = new File(filename);
-        if(!file.exists() || file.isDirectory()) throw new Exception("File not found! " + filename);
+        if(!file.exists() || file.isDirectory())
+        	throw new Exception("File not found! " + filename);
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
@@ -54,19 +57,14 @@ public class XMLReader extends DefaultHandler {
 	    NodeList rows = results.item(0).getChildNodes();
 	    int valid_songs = 0;
 	    int invalid_songs = 0;
-	    int row_number = 35;
 	    for(int i = 1; i < rows.getLength(); i++) {
 	    	NodeList fields = rows.item(i).getChildNodes();
 	    	if(fields.item(1) == null) continue;				//sanity check to avoid empty nodes
 			try{
-				Song song = SIFtoChords(fields);
+				SIFtoChords(fields);
 				valid_songs++;
-				row_number += 11;
 			}
 			catch(Exception e){
-				//System.out.println("\n" + e.getMessage());
-				//System.out.println(row_number++ + ".");
-				//System.out.println(nodeValueByAttName(fields, "SIF") + " " + nodeValueByAttName(fields, "songKey") + " " + nodeValueByAttName(fields, "mode"));
 				invalid_songs++;
 			}
 		}
@@ -75,9 +73,9 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Extracts an attribute value from the XML
-	 * @param fields: field nodes amongst which to search for the specified field name
-	 * @param att_name: name of the field for which to search
-	 * @return: the value of the specified field
+	 * @param fields : field nodes amongst which to search for the specified field name
+	 * @param att_name : name of the field for which to search
+	 * @return : the value of the specified field
 	 */
 	public String nodeValueByAttName(NodeList fields, String att_name){
 		String node_value = "";
@@ -95,8 +93,8 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Converts varying keys from the raw XML into a standard key notation
-	 * @param xkey: raw key from XML
-	 * @return: standardized key
+	 * @param xkey : raw key from XML
+	 * @return : standardized key
 	 */
 	public String XMLKeytoKey(String xkey){
 		if(xkey.length() < 1 || xkey.length() > 2
@@ -121,8 +119,9 @@ public class XMLReader extends DefaultHandler {
 
 	/**
 	 * Extracts the key from the XML file
-	 * @param fields: field nodes amongst which to search for the key
-	 * @return: the standardized key value
+	 * @param fields : field nodes amongst which to search for the key
+	 * @return : the standardized key value
+	 * @throws Exception : on an empty field list
 	 */
 	public String extractKey(NodeList fields) throws Exception{
 		if(fields == null)
@@ -135,26 +134,72 @@ public class XMLReader extends DefaultHandler {
 	}
 
 	/**
-	 * Converts the SIF string into a Song object
-	 * @param fields: field nodes of the song to convert
+	 * Converts a string representation of song part to the standard enum
+	 * @param pt : string representation of song part
+	 * @return : the corresponding enum value
 	 */
-	public Song SIFtoChords(NodeList fields) throws Exception{
-		String title = nodeValueByAttName(fields, "song");
-		String artist = nodeValueByAttName(fields, "artist");
-		String part = nodeValueByAttName(fields, "section");
-		String key = extractKey(fields);
-		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
-		String sif = nodeValueByAttName(fields, "SIF");
-		double beats = Double.parseDouble(nodeValueByAttName(fields, "beatsInMeasure"));
-
-		return new Song(title, artist, part, key, mode, sif, beats, chord_dictionary);
+	public SongPart partToEnum(String pt){
+        pt = pt.toLowerCase();
+		if(pt.contains("instrumental") || pt.contains("solo"))
+            return SongPart.solo;
+        if(pt.contains("bridge"))
+            return SongPart.bridge;
+        if(pt.contains("outro"))
+            return SongPart.outro;
+        if(pt.contains("intro")){
+            if(pt.contains("verse"))
+                return SongPart.introverse;
+            else
+                return SongPart.intro;
+        }
+        if(pt.contains("verse")){
+            if(pt.contains("pre-chorus"))
+                return SongPart.verseprechorus;
+            else
+                return SongPart.verse;
+        }
+        if(pt.contains("pre-chorus")){
+            if(pt.contains(" chorus"))
+                return SongPart.prechoruschorus;
+            else
+                return SongPart.prechorus;
+        }
+        if(pt.contains("chorus"))
+            return SongPart.chorus;
+        return null;
 	}
 
 	/**
-	 * chord_dictionary accessor
-	 * @return: the current Chord chord_dictionary
+	 * Converts the SIF string into a Song object
+	 * @param fields : field nodes of the song to convert
+	 * @return : the newly created SongSegment
+	 * @throws Exception : on invalid SongSegment creation
 	 */
-	public ChordDictionary getChordDictionary(){
-		return chord_dictionary;
+	public SongSegment SIFtoChords(NodeList fields) throws Exception{
+		SongPart part = partToEnum(nodeValueByAttName(fields, "section"));
+		int mode = Integer.parseInt(nodeValueByAttName(fields, "mode"));
+		String sif = nodeValueByAttName(fields, "SIF");
+
+		if(!parts_dictionary.containsKey(part))
+			parts_dictionary.put(part, new ChordDictionary());
+
+		return new SongSegment(part, mode, sif, parts_dictionary.get(part));
+	}
+
+	/**
+	 * parts_dictionary accessor
+	 * @return : the current full parts_dictionary hashmap
+	 */
+	public HashMap<SongPart, ChordDictionary> getPartsDictionary(){
+		return parts_dictionary;
+	}
+
+	/**
+	 * Part chord_dictionary accessor
+	 * @param part : specific dictionary requested
+	 * @return : a chord_dictionary for the song part indicated
+	 */
+	public ChordDictionary getChordDictionary(SongPart part){
+		return parts_dictionary.get(part);
 	}
 }

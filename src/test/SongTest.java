@@ -1,5 +1,20 @@
 package test;
 
+import static org.junit.Assert.*;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import thriveTones.Chord;
+import thriveTones.ChordDictionary;
+import thriveTones.Song;
+import thriveTones.Chord.Tonality;
+import thriveTones.SongSegment;
+import thriveTones.SongSegment.SongPart;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -9,43 +24,62 @@ package test;
  * Tests the Song class
  */
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import sax.XMLReader;
-import thriveTones.ChordDictionary;
-import thriveTones.Song;
-
 public class SongTest {
-	private ChordDictionary dictionary;
 	private static Song song;
 
+	/**
+	 * Initializes a Song object prior to tests
+	 */
 	@Before
-	public void init(){
-		dictionary = new XMLReader().getChordDictionary();
-		try{
-			song = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+	public void init() {
+		song = new Song("C", 1, "AI Creation", "Music Bot", 4);
 	}
 
+	/**
+	 * Tests initialization
+	 */
 	@Test
-	public void testInitialization() {
-		assertEquals("Title", song.getName());
-		assertEquals("Artist", song.getArtist());
-		assertEquals("Part", song.getPart());
+	public void testInitialization(){
 		assertEquals("C", song.getKey());
 		assertEquals("C", song.getRelMajor());
 		assertEquals(1, song.getMode());
-		assertEquals(1, song.getChords().size());
+		assertEquals("AI Creation", song.getName());
+		assertEquals("Music Bot", song.getArtist());
 		assertEquals(4, song.getBeats(), 0);
 	}
 
+	/**
+	 * Tests invalid initialization
+	 */
+	@Test (expected = Exception.class)
+	public void testInvalidInitialization(){
+		new Song(null, 1, "Title", "Artist", 4);
+	}
+
+	/**
+	 * Tests standardizeKey()
+	 */
+	@Test
+	public void testStandardizeKey(){
+		assertEquals("C", song.standardizeKey(""));
+		assertEquals("C", song.standardizeKey("C"));
+		assertEquals("G", song.standardizeKey("G"));
+		assertEquals("F", song.standardizeKey("f"));
+		assertEquals("Ab", song.standardizeKey("Ab"));
+		assertEquals("Bb", song.standardizeKey("bB"));
+		assertEquals("Db", song.standardizeKey("df"));
+		assertEquals("C#", song.standardizeKey("Cs"));
+		assertEquals("Abb", song.standardizeKey("Aff"));
+		assertEquals("Cbbb", song.standardizeKey("cbfb"));
+		assertEquals("C", song.standardizeKey("x"));
+		assertEquals("C", song.standardizeKey("ci"));
+		assertEquals("G#####", song.standardizeKey("g#####"));
+		assertEquals("C", song.standardizeKey("v#"));
+	}
+
+	/**
+	 * Tests changeKey()
+	 */
 	@Test
 	public void testChangeKey(){
 		try{
@@ -65,6 +99,21 @@ public class SongTest {
 		}
 	}
 
+	/**
+	 * Tests invalid key change
+	 * @throws Exception : on invalid desired key
+	 */
+	@Test (expected = Exception.class)
+	public void testInvalidKeyChange() throws Exception{
+		song.changeKey("", 1);
+	}
+
+	/**
+	 * Checks for valid relative major calculation
+	 * @param target : expected root
+	 * @param key : chord key
+	 * @param mode : chord mode
+	 */
 	public void ckRelativeMajor(String target, String key, int mode){
 		try{
 			song.changeKey(key, mode);
@@ -78,6 +127,10 @@ public class SongTest {
 		}
 	}
 
+	/**
+	 * Tests the calculation of the relative major
+	 * (method called indirectly through changeKey())
+	 */
 	@Test
 	public void testCalculateRelativeMajor(){
 		ckRelativeMajor("C", "C", 1);
@@ -102,29 +155,126 @@ public class SongTest {
 		ckRelativeMajor("F##", "B#", 4);
 	}
 
-	@Test (expected = Exception.class)
-	public void testInvalidKeyChange() throws Exception{
-		song.changeKey("", 1);
+	/**
+	 * Tests build()
+	 */
+	@Test
+	public void testBuild(){
+		//dummy sequence for testing
+		SongPart[] sequence = { SongPart.verse, SongPart.chorus };
+
+		Chord chord1 = new Chord(1, Tonality.maj, 4);
+		Chord chord4 = new Chord(4, Tonality.maj, 4);
+		Chord chord5 = new Chord(5, Tonality.maj, 4);
+		Chord chord6 = new Chord(6, Tonality.min, 4);
+
+		//build verse dictionary
+		ChordDictionary verse_dict = new ChordDictionary();
+		LinkedList<Chord> verse = new LinkedList<Chord>();
+		verse_dict.put(null, chord1);
+		verse.add(chord1);
+		verse_dict.put(verse, chord5);
+		verse.add(chord5);
+		verse_dict.put(verse, chord6);
+		verse.add(chord6);
+		verse_dict.put(verse, chord4);
+		verse.add(chord4);
+		verse_dict.put(verse, chord5);
+
+		//build chorus dictionary
+		ChordDictionary chorus_dict = new ChordDictionary();
+		LinkedList<Chord> chorus = new LinkedList<Chord>();
+		chorus_dict.put(null, chord1);
+		chorus.add(chord1);
+		chorus_dict.put(chorus, chord4);
+		chorus.add(chord4);
+		chorus_dict.put(chorus, chord5);
+		chorus.add(chord5);
+		chorus_dict.put(chorus, chord1);
+
+		HashMap<SongPart, ChordDictionary> parts_dictionary = new HashMap<SongPart, ChordDictionary>();
+		parts_dictionary.put(SongPart.verse, verse_dict);
+		parts_dictionary.put(SongPart.chorus, chorus_dict);
+
+		song.build(sequence, parts_dictionary, 8, 3, true);
+		System.out.println(song.toString(true));
+
+		LinkedList<Chord> new_verse = song.getSong().get(0).getChords();
+		for(int i = 1; i < new_verse.size(); i++){
+			switch(new_verse.get(i-1).getRoot()){
+			case 1: case 4: assertEquals(5, new_verse.get(i).getRoot()); break;
+			case 6: assertEquals(4, new_verse.get(i).getRoot()); break;
+			}
+		}
+		LinkedList<Chord> new_chorus = song.getSong().get(1).getChords();
+		switch(new_verse.get(new_verse.size() - 1).getRoot()){
+		case 1:
+			assertEquals(4, new_chorus.get(0).getRoot());
+			assertEquals(5, new_chorus.get(1).getRoot());
+			assertEquals(1, new_chorus.get(2).getRoot());
+			break;
+		case 4:
+			assertEquals(5, new_chorus.get(0).getRoot());
+			assertEquals(1, new_chorus.get(1).getRoot());
+			break;
+		case 5:
+			assertEquals(1, new_chorus.get(0).getRoot());
+			assertEquals(4, new_chorus.get(1).getRoot());
+			assertEquals(5, new_chorus.get(2).getRoot());
+			assertEquals(1, new_chorus.get(3).getRoot());
+			break;
+		}
 	}
 
+	/**
+	 * Tests building with duplicated song segments
+	 */
 	@Test
-	public void testToString(){
-		assertEquals("KCmaj C5maj/1.0", song.toString());
-	}
+	public void testDuplicatedParts(){
+		//dummy sequence for testing
+		SongPart[] sequence = { SongPart.verse, SongPart.chorus, SongPart.verse, SongPart.chorus };
 
-	@Test
-	public void testEquivelantSongs(){
-		try{
-			Song song2 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
-			Song song3 = new Song("Title", "Artist", "Part", "C", 1, "1-4", 4, dictionary);
-			assertEquals(song2, song3);
+		Chord chord1 = new Chord(1, Tonality.maj, 4);
+		Chord chord4 = new Chord(4, Tonality.maj, 4);
+		Chord chord5 = new Chord(5, Tonality.maj, 4);
+		Chord chord6 = new Chord(6, Tonality.min, 4);
 
-			Song song4 = new Song("Title", "Artist", "Part", "G", 1, "1-4", 4, dictionary);
-			assertNotEquals(song2, song4);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		//build verse dictionary
+		ChordDictionary verse_dict = new ChordDictionary();
+		LinkedList<Chord> verse = new LinkedList<Chord>();
+		verse_dict.put(null, chord1);
+		verse.add(chord1);
+		verse_dict.put(verse, chord5);
+		verse.add(chord5);
+		verse_dict.put(verse, chord6);
+		verse.add(chord6);
+		verse_dict.put(verse, chord4);
+		verse.add(chord4);
+		verse_dict.put(verse, chord5);
+
+		//build chorus dictionary
+		ChordDictionary chorus_dict = new ChordDictionary();
+		LinkedList<Chord> chorus = new LinkedList<Chord>();
+		chorus_dict.put(null, chord1);
+		chorus.add(chord1);
+		chorus_dict.put(chorus, chord4);
+		chorus.add(chord4);
+		chorus_dict.put(chorus, chord5);
+		chorus.add(chord5);
+		chorus_dict.put(chorus, chord1);
+
+		HashMap<SongPart, ChordDictionary> parts_dictionary = new HashMap<SongPart, ChordDictionary>();
+		parts_dictionary.put(SongPart.verse, verse_dict);
+		parts_dictionary.put(SongPart.chorus, chorus_dict);
+
+		song.build(sequence, parts_dictionary, 8, 3, false);
+
+		LinkedList<SongSegment> segments = song.getSong();
+		assertEquals(segments.get(0), segments.get(2));
+		assertEquals(segments.get(1), segments.get(3));
+		assertFalse(segments.get(0).equals(segments.get(1)));
+		assertFalse(segments.get(2).equals(segments.get(3)));
+
+		System.out.println(song.toString(true));
 	}
 }

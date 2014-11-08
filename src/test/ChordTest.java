@@ -1,14 +1,5 @@
 package test;
 
-/**
- * "ThriveTones" Song Generator
- * Copyright © 2014 Brianna Shade
- * bshade@pdx.edu
- *
- * ChordTest.java
- * Tests the Chord class
- */
-
 import static org.junit.Assert.*;
 
 import java.util.LinkedList;
@@ -20,6 +11,14 @@ import org.junit.Test;
 import thriveTones.Chord;
 import thriveTones.Chord.Tonality;
 
+/**
+ * "ThriveTones" Song Generator
+ * Copyright © 2014 Brianna Shade
+ * bshade@pdx.edu
+ *
+ * ChordTest.java
+ * Tests the Chord class
+ */
 
 public class ChordTest {
 
@@ -27,6 +26,9 @@ public class ChordTest {
 	protected static int rand_root, rand_octave;
 	protected static Chord.Tonality rand_tone;
 
+	/**
+	 * Initializes a test Chord
+	 */
 	@BeforeClass
 	public static void chordInit() {
 		rand_root = new Random().nextInt(7) + 1;
@@ -52,6 +54,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests full Chord initialization
+	 */
 	@Test
 	public void testFullInitialization(){
 		try{
@@ -70,6 +75,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests simple initialization
+	 */
 	@Test
 	public void testSimpleInitializtion(){
 		try{
@@ -88,6 +96,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests edge-case Chord with higher root
+	 */
 	@Test
 	public void testUpperBoundChord(){
 		try {
@@ -104,6 +115,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests lower edge-case Chord
+	 */
 	@Test
 	public void testLowerBoundChord(){
 		try {
@@ -120,41 +134,72 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests Chord intialized with an empty SIF
+	 * @throws Exception : on an empty SIF
+	 */
 	@Test (expected = Exception.class)
 	public void testEmptySIFChord() throws Exception{
 		new Chord(1, "");
 	}
 
+	/**
+	 * Tests Chord initialized with an empty target
+	 * @throws Exception : on an empty target
+	 */
 	@Test (expected = Exception.class)
 	public void testEmptyTargetSIFChord() throws Exception{
 		new Chord(1, "1/");
 	}
 
+	/**
+	 * Tests Chord initialized with an invalid target
+	 * @throws Exception : on an invalid target
+	 */
 	@Test (expected = Exception.class)
 	public void testInvalidTargetSIFChord() throws Exception{
 		new Chord(1, "1/V");
 	}
 
+	/**
+	 * Tests Chord initialized with a too-long target
+	 * @throws Exception : on an invalidly long target
+	 */
 	@Test (expected = Exception.class)
 	public void testLongTargetSIFChord() throws Exception{
 		new Chord(1, "1/12");
 	}
 
+	/**
+	 * Tests a Chord with an empty duration
+	 * @throws Exception : on an empty duration
+	 */
 	@Test (expected = Exception.class)
 	public void testEmptyDurationSIFChord() throws Exception{
 		new Chord(1, "1-");
 	}
 
+	/**
+	 * Tests a Chord initialized with an invalid duration
+	 * @throws Exception : on an invalid duration
+	 */
 	@Test (expected = Exception.class)
 	public void testInvalidDurationSIFChord() throws Exception{
 		new Chord(1, "1-V");
 	}
 
+	/**
+	 * Tests a Chord initialized with an invalidly long duration
+	 * @throws Exception : on an invalidly long duration
+	 */
 	@Test (expected = Exception.class)
 	public void testLongDurationSIFChord() throws Exception{
 		new Chord(1, "1-120");
 	}
 
+	/**
+	 * Tests a simple major SIF
+	 */
 	@Test
 	public void testSimpleMajorSIFChord(){
 		try{
@@ -185,6 +230,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests a simple minor SIF
+	 */
 	@Test
 	public void testSimpleMinorSIFChord(){
 		try{
@@ -215,6 +263,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests a SIF with an inversion
+	 */
 	@Test
 	public void testSIFInvertedChord(){
 		try{
@@ -245,6 +296,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests a SIF with an embellishment
+	 */
 	@Test
 	public void testSIFEmbellishedChord(){
 		try{
@@ -279,6 +333,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests a rest SIF
+	 */
 	@Test
 	public void testRestSIFChord(){
 		try{
@@ -296,21 +353,36 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests a rest SIF with a target
+	 * @throws Exception : on a rest with a target
+	 */
 	@Test (expected = Exception.class)
 	public void testTargetRestSIFChord() throws Exception{
 		new Chord(1, "rest/5");
 	}
 
+	/**
+	 * Tests a rest with a target and duration
+	 * @throws Exception : on a rest with a target
+	 */
 	@Test (expected = Exception.class)
 	public void testDurationTargetRestSIFChord() throws Exception{
 		new Chord(1, "rest-4/5");
 	}
 
+	/**
+	 * Tests a rest with extra info
+	 * @throws Exception : on a rest with extraneous info
+	 */
 	@Test (expected = Exception.class)
 	public void testExtraInfoRestSIFChord() throws Exception{
 		new Chord(1, "rest42-4");
 	}
 
+	/**
+	 * Tests Chords with inversions
+	 */
 	@Test
 	public void testInversions(){
 		try{
@@ -345,31 +417,51 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests a Chord with a negative root
+	 * @throws Exception : on a negative root
+	 */
 	@Test (expected = Exception.class)
 	public void testNegativeChord() throws Exception{
 		new Chord(-1, Chord.Tonality.aug, 0, 0, "", 4);
 	}
 
+	/**
+	 * Tests a Chord with an invalid root
+	 * @throws Exception : on an invalid root
+	 */
 	@Test (expected = Exception.class)
 	public void testInvalidChord() throws Exception{
 		new Chord(12, Chord.Tonality.dim, 0, 0, "", 4);
 	}
 
-	public int checkShift(int root, int offset){
+	/**
+	 * Performs a given root shift
+	 * @param root
+	 * @param offset
+	 * @return
+	 */
+	public int performShift(int root, int offset){
 		chord = new Chord(root, rand_tone, 4);
 		return chord.shiftRoot(root, offset);
 	}
 
+	/**
+	 * Tests root shifts
+	 */
 	@Test
 	public void testShiftRoot(){
-		assertEquals(1, checkShift(1, 1));
-		assertEquals(7, checkShift(7, 1));
-		assertEquals(1, checkShift(7, 7));
-		assertEquals(7, checkShift(7, 8));
-		assertEquals(3, checkShift(5, 3));
-		assertEquals(4, checkShift(3, 7));
+		assertEquals(1, performShift(1, 1));
+		assertEquals(7, performShift(7, 1));
+		assertEquals(1, performShift(7, 7));
+		assertEquals(7, performShift(7, 8));
+		assertEquals(3, performShift(5, 3));
+		assertEquals(4, performShift(3, 7));
 	}
 
+	/**
+	 * Tests makeMajor()
+	 */
 	@Test
 	public void testMakeMajor(){
 		int original_octave = chord.getOctave();
@@ -378,6 +470,9 @@ public class ChordTest {
 		assertEquals(Chord.Tonality.maj, chord.getTonality());
 	}
 
+	/**
+	 * Tests makeMinor()
+	 */
 	@Test
 	public void testMakeMinor(){
 		int original_octave = chord.getOctave();
@@ -386,6 +481,9 @@ public class ChordTest {
 		assertEquals(Chord.Tonality.min, chord.getTonality());
 	}
 
+	/**
+	 * Tests makeDiminished()
+	 */
 	@Test
 	public void testMakeDiminished(){
 		int original_octave = chord.getOctave();
@@ -394,6 +492,9 @@ public class ChordTest {
 		assertEquals(Chord.Tonality.dim, chord.getTonality());
 	}
 
+	/**
+	 * Tests makeAugmented()
+	 */
 	@Test
 	public void testMakeAugmented(){
 		int original_octave = chord.getOctave();
@@ -402,6 +503,9 @@ public class ChordTest {
 		assertEquals(Chord.Tonality.aug, chord.getTonality());
 	}
 
+	/**
+	 * Tests changeOctave()
+	 */
 	@Test
 	public void testChangeOctave(){
 		int original_octave = chord.getOctave();
@@ -419,6 +523,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests modes are correctly set and roots correctly shifted
+	 */
 	@Test
 	public void testChordModes(){
 		try{
@@ -439,11 +546,18 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests an invalid mode
+	 * @throws Exception : on an invalid mode
+	 */
 	@Test (expected = Exception.class)
 	public void testInvalidChordMode() throws Exception{
 		chord = new Chord(1, "x1");
 	}
 
+	/**
+	 * Tests multiple applied targets
+	 */
 	@Test
 	public void testAppliedTargets(){
 		try{
@@ -476,37 +590,44 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests invalid target
+	 * @throws Exception : on an invalid target
+	 */
 	@Test (expected = Exception.class)
 	public void testInvalidTarget() throws Exception{
 		chord = new Chord(1, "1/1");
 	}
 
+	/**
+	 * Tests toString()
+	 */
 	@Test
 	public void testToString(){
 		try{
 			//TODO: Adjust for applied targets and chord modes
 			chord = new Chord(1, "542-3");
 			assertEquals("55maj7^^^/1.0", chord.toString());
-			assertEquals("E5maj7^^^/0.75", chord.toString('A', 4));
-			assertEquals("F5maj7^^^/0.5", chord.toString('B', 6));
-			assertEquals("G5maj7^^^/0.6", chord.toString('C', 5));
-			assertEquals("A5maj7^^^/1.0", chord.toString('D', 3));
-			assertEquals("B5maj7^^^/0.75", chord.toString('E', 4));
-			assertEquals("C5maj7^^^/3.0", chord.toString('F', 1));
-			assertEquals("D5maj7^^^/1.5", chord.toString('G', 2));
-			assertEquals("E5maj7^^^/1.0", chord.toString('A', 3));
+			assertEquals("E5maj7^^^/0.75", chord.toString("A", 4));
+			assertEquals("F5maj7^^^/0.5", chord.toString("B", 6));
+			assertEquals("G5maj7^^^/0.6", chord.toString("C#", 5));
+			assertEquals("A5maj7^^^/1.0", chord.toString("D", 3));
+			assertEquals("B5maj7^^^/0.75", chord.toString("Eb", 4));
+			assertEquals("C5maj7^^^/3.0", chord.toString("F", 1));
+			assertEquals("D5maj7^^^/1.5", chord.toString("G", 2));
+			assertEquals("E5maj7^^^/1.0", chord.toString("Ab", 3));
 			
 			chord = new Chord(6, "6sus4-4");
 			assertEquals("15sus4/1.0", chord.toString());
-			assertEquals("E5sus4/1.0", chord.toString('E', 4));
+			assertEquals("E5sus4/1.0", chord.toString("E", 4));
 			
 			chord = new Chord(5, "76add9-4");
 			assertEquals("35dim^add9/1.0", chord.toString());
-			assertEquals("E5dim^add9/1.33", chord.toString('C', 3));
+			assertEquals("E5dim^add9/1.33", chord.toString("C", 3));
 
 			chord = new Chord(1, "511-4");
 			assertEquals("55dom11/1.0", chord.toString());
-			assertEquals("G5dom11/1.33", chord.toString('C', 3));
+			assertEquals("G5dom11/1.33", chord.toString("C#", 3));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -514,6 +635,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests for equivalent Chords
+	 */
 	@Test
 	public void testEquivalentChords(){
 		try{
@@ -550,6 +674,9 @@ public class ChordTest {
 		}
 	}
 
+	/**
+	 * Tests for equivalent sequences
+	 */
 	@Test
 	public void testEquivalentSequences(){
 		chord = new Chord(1, Tonality.maj, 4);
