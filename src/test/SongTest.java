@@ -198,14 +198,14 @@ public class SongTest {
 		song.build(sequence, parts_dictionary, 8, 3, true);
 		System.out.println(song.toString(true));
 
-		LinkedList<Chord> new_verse = song.getSegments().get(0).getChords();
+		LinkedList<Chord> new_verse = song.getSong().get(0).getChords();
 		for(int i = 1; i < new_verse.size(); i++){
 			switch(new_verse.get(i-1).getRoot()){
 			case 1: case 4: assertEquals(5, new_verse.get(i).getRoot()); break;
 			case 6: assertEquals(4, new_verse.get(i).getRoot()); break;
 			}
 		}
-		LinkedList<Chord> new_chorus = song.getSegments().get(1).getChords();
+		LinkedList<Chord> new_chorus = song.getSong().get(1).getChords();
 		switch(new_verse.get(new_verse.size() - 1).getRoot()){
 		case 1:
 			assertEquals(4, new_chorus.get(0).getRoot());

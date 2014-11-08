@@ -23,7 +23,7 @@ import thriveTones.SongSegment.SongPart;
  */
 
 public class Song {
-	private LinkedList<SongSegment> segments = new LinkedList<SongSegment>();
+	private LinkedList<SongSegment> song = new LinkedList<SongSegment>();
 	private String name;
 	private String artist;
 	private int mode;
@@ -147,17 +147,17 @@ public class Song {
 	 */
 	public void build(SongPart[] song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
 			int seg_length, int history, boolean debug){
-		segments = new LinkedList<SongSegment>();
+		song = new LinkedList<SongSegment>();
 
 		for(int i = 0; i < song_sequence.length; i++){
 			SongPart part = song_sequence[i];
 			List<Chord> history_seed = new LinkedList<Chord>();
 			if(i != 0){
-				List<Chord> previous_segment = segments.get(i-1).getChords();
+				List<Chord> previous_segment = song.get(i-1).getChords();
 				history_seed = previous_segment.subList(Math.max(0, previous_segment.size() - history),	previous_segment.size());
 			}
 
-			segments.add(new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug));
+			song.add(new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug));
 		}
 	}
 
@@ -189,8 +189,8 @@ public class Song {
 	 * segments accessor
 	 * @return : list of SongSegments associated with song
 	 */
-	public LinkedList<SongSegment> getSegments(){
-		return segments;
+	public LinkedList<SongSegment> getSong(){
+		return song;
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class Song {
 	 */
 	public String toString(boolean label){
 		String playable_segments = "K" + rel_major + "maj\n";
-		ListIterator<SongSegment> it = segments.listIterator();
+		ListIterator<SongSegment> it = song.listIterator();
 		while(it.hasNext())
 			playable_segments += it.next().toString(key, beats, label) + "\n";
 		return playable_segments.trim();		
