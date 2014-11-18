@@ -124,7 +124,7 @@ public class SongSegmentTest {
 		SongSegment generated_chorus =
 				new SongSegment(SongPart.introverse, chord_dictionary, seed, 16, 3, true);
 		LinkedList<Chord> progression = generated_chorus.getChords();
-		assertEquals(1, progression.get(0).getRoot());
+		assertTrue(progression.get(0).getRoot() == 1 || progression.get(0).getRoot() == 5);
 		System.out.println(progression.toString());
 	}
 }
