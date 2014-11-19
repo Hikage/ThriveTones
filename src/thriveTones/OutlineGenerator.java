@@ -29,8 +29,7 @@ public class OutlineGenerator {
 		 * i, v, p, c, b, s, o
 		 * I -> iB | B
 		 * B -> vM | vvM | M
-		 * M -> Cv | CvM | CS
-		 * C -> c | pc | cc | pcc
+		 * M -> cv | cvM | cS
 		 * S -> sE | bE | E
 		 * E -> cE | o
 		 */
@@ -40,13 +39,11 @@ public class OutlineGenerator {
 		grammar.put('I', I);
 		String[] B = {"vM", "vvM", "M"};
 		grammar.put('B', B);
-		String[] M = {"CvM", "CvCS"};
+		String[] M = {"cvM", "cvcS"};
 		grammar.put('M', M);
-		String[] C = {"c", "pc", "cc", "pcc"};
-		grammar.put('C', C);
-		String[] S = {"sCE", "bCE", "CE"};
+		String[] S = {"scE", "bcE", "cE"};
 		grammar.put('S', S);
-		String[] E = {"cE", "o"};
+		String[] E = {"cE", "c", "o"};
 		grammar.put('E', E);
 	}
 

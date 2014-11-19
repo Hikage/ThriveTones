@@ -35,16 +35,15 @@ public class OutlineGeneratorTest {
 	@Test
 	public void testInitialization(){
 		HashMap<Character, String[]> grammar = outline_generator.getGrammar();
-		assertEquals(6, grammar.size());
+		assertEquals(5, grammar.size());
 		assertEquals(2, grammar.get('I').length);
 		assertEquals(3, grammar.get('B').length);
 		assertEquals(2, grammar.get('M').length);
-		assertEquals(4, grammar.get('C').length);
 		assertEquals(3, grammar.get('S').length);
-		assertEquals(2, grammar.get('E').length);
+		assertEquals(3, grammar.get('E').length);
 		assertEquals("iB", grammar.get('I')[0]);
-		assertEquals("CvM", grammar.get('M')[0]);
-		assertEquals("o", grammar.get('E')[1]);
+		assertEquals("cvM", grammar.get('M')[0]);
+		assertEquals("c", grammar.get('E')[1]);
 	}
 
 	/**
