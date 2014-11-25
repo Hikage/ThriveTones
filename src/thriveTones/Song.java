@@ -1,5 +1,6 @@
 package thriveTones;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -140,13 +141,13 @@ public class Song {
 	 * @param history : length of desired history
 	 * @param debug : optional debug mode
 	 */
-	public void build(SongPart[] song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
+	public void build(ArrayList<SongPart> song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
 			int seg_length, int history, boolean debug){
 		song = new LinkedList<SongSegment>();
 
-		for(int i = 0; i < song_sequence.length; i++){
+		for(int i = 0; i < song_sequence.size(); i++){
 			//TODO: allow for multiple verses, etc
-			SongPart part = song_sequence[i];
+			SongPart part = song_sequence.get(i);
 			List<Chord> history_seed = new LinkedList<Chord>();
 			if(i != 0){
 				List<Chord> previous_segment = song.get(i-1).getChords();

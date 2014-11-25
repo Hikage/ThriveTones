@@ -34,16 +34,21 @@ public class Driver {
 		readInData(args[0]);
 		//getUserInputs();
 
-		//TODO: generate sequence automatically
-		SongPart[] song_sequence = {SongPart.intro, SongPart.verse, SongPart.verse, SongPart.chorus,
-				SongPart.verse, SongPart.chorus, SongPart.bridge, SongPart.chorus};
+		OutlineGenerator outline_generator = new OutlineGenerator();
+		ArrayList<SongPart> song_sequence;
+		try {
+			song_sequence = outline_generator.buildOutline();
 
-		Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
-		song.build(song_sequence, reader.getPartsDictionary(), seg_length, history, false);
+			Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
+			song.build(song_sequence, reader.getPartsDictionary(), seg_length, history, false);
 
-		System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
-		System.out.println(song.toString(true));
-		//song.play(tempo);
+			System.out.println("\"" + song.getName() + "\" by " + song.getArtist() + "\n");
+			System.out.println(song.toString(true) + "\n");
+			song.play(tempo);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		System.out.println("\nEnd of program.\nThank you for playing!");
 		System.exit(0);

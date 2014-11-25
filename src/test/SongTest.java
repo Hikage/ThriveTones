@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -161,7 +162,9 @@ public class SongTest {
 	@Test
 	public void testBuild(){
 		//dummy sequence for testing
-		SongPart[] sequence = { SongPart.verse, SongPart.chorus };
+		ArrayList<SongPart> sequence = new ArrayList<SongPart>();
+		sequence.add(SongPart.verse);
+		sequence.add(SongPart.chorus);
 
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
 		Chord chord4 = new Chord(4, Tonality.maj, 4);
@@ -232,7 +235,11 @@ public class SongTest {
 	@Test
 	public void testDuplicatedParts(){
 		//dummy sequence for testing
-		SongPart[] sequence = { SongPart.verse, SongPart.chorus, SongPart.verse, SongPart.chorus };
+		ArrayList<SongPart> sequence = new ArrayList<SongPart>();
+		sequence.add(SongPart.verse);
+		sequence.add(SongPart.chorus);
+		sequence.add(SongPart.verse);
+		sequence.add(SongPart.chorus);
 
 		Chord chord1 = new Chord(1, Tonality.maj, 4);
 		Chord chord4 = new Chord(4, Tonality.maj, 4);
