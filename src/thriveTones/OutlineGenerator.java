@@ -91,35 +91,16 @@ public class OutlineGenerator {
 		String str_outline = expandGrammar("I");
 		System.out.println("\n" + str_outline);
 
-		boolean replace;
 		for(int i = 0; i < str_outline.length(); i++){
 			switch(str_outline.charAt(i)){
 			case 'i':
-				replace = random_generator.nextBoolean();
-				if(str_outline.charAt(i+1) == 'v' && replace){
-					outline.add(SongPart.introverse);
-					i++;
-				}
-				else
-					outline.add(SongPart.intro);
+				outline.add(SongPart.intro);
 				break;
 			case 'v':
-				replace = random_generator.nextBoolean();
-				if(str_outline.charAt(i+1) == 'p' && replace){
-					outline.add(SongPart.verseprechorus);
-					i++;
-				}
-				else
-					outline.add(SongPart.verse);
+				outline.add(SongPart.verse);
 				break;
 			case 'p':
-				replace = random_generator.nextBoolean();
-				if(i+2 < str_outline.length() && str_outline.charAt(i+1) == 'c' && str_outline.charAt(i+2) == 'c' && replace){
-					outline.add(SongPart.prechoruschorus);
-					i++;
-				}
-				else
-					outline.add(SongPart.prechorus);
+				outline.add(SongPart.prechorus);
 				break;
 			case 'c':
 				outline.add(SongPart.chorus);
