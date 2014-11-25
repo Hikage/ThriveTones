@@ -78,14 +78,66 @@ public class OutlineGenerator {
 				expanded += expandGrammar(options[index]);
 			}
 		}
+
 		return expanded;
 	}
 
 	/**
 	 * Builds and returns the song outline
 	 * @return : the generated song outline
+	 * @throws Exception : when an invalid symbol is found in the outline
 	 */
-	public ArrayList<SongPart> buildOutline(){
+	public ArrayList<SongPart> buildOutline() throws Exception{
+		String str_outline = expandGrammar("I");
+		System.out.println("\n" + str_outline);
+
+		boolean replace;
+		for(int i = 0; i < str_outline.length(); i++){
+			switch(str_outline.charAt(i)){
+			case 'i':
+				replace = random_generator.nextBoolean();
+				if(str_outline.charAt(i+1) == 'v' && replace){
+					outline.add(SongPart.introverse);
+					i++;
+				}
+				else
+					outline.add(SongPart.intro);
+				break;
+			case 'v':
+				replace = random_generator.nextBoolean();
+				if(str_outline.charAt(i+1) == 'p' && replace){
+					outline.add(SongPart.verseprechorus);
+					i++;
+				}
+				else
+					outline.add(SongPart.verse);
+				break;
+			case 'p':
+				replace = random_generator.nextBoolean();
+				if(i+2 < str_outline.length() && str_outline.charAt(i+1) == 'c' && str_outline.charAt(i+2) == 'c' && replace){
+					outline.add(SongPart.prechoruschorus);
+					i++;
+				}
+				else
+					outline.add(SongPart.prechorus);
+				break;
+			case 'c':
+				outline.add(SongPart.chorus);
+				break;
+			case 'b':
+				outline.add(SongPart.bridge);
+				break;
+			case 's':
+				outline.add(SongPart.solo);
+				break;
+			case 'o':
+				outline.add(SongPart.outro);
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid symbol in outline: " + str_outline.charAt(i) + "\n" + str_outline);
+			}
+		}
+
 		return outline;
 	}
 

@@ -2,12 +2,14 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import thriveTones.OutlineGenerator;
+import thriveTones.SongSegment.SongPart;
 
 /**
  * "ThriveTones" Song Generator
@@ -64,6 +66,21 @@ public class OutlineGeneratorTest {
 
 			outline = outline_generator.expandGrammar("C");
 			assertFalse(outline.contains("p"));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	/**
+	 * Tests buildOutline()
+	 */
+	@Test
+	public void testBuildOutline(){
+		try{
+			ArrayList<SongPart> outline = outline_generator.buildOutline();
+			System.out.println(outline.toString());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
