@@ -35,15 +35,20 @@ public class OutlineGeneratorTest {
 	@Test
 	public void testInitialization(){
 		HashMap<Character, String[]> grammar = outline_generator.getGrammar();
-		assertEquals(5, grammar.size());
+		assertEquals(9, grammar.size());
 		assertEquals(2, grammar.get('I').length);
 		assertEquals(3, grammar.get('B').length);
 		assertEquals(2, grammar.get('M').length);
+		assertEquals(2, grammar.get('F').length);
+		assertEquals(2, grammar.get('P').length);
+		assertEquals(2, grammar.get('C').length);
 		assertEquals(3, grammar.get('S').length);
-		assertEquals(3, grammar.get('E').length);
+		assertEquals(2, grammar.get('E').length);
+		assertEquals(3, grammar.get('O').length);
 		assertEquals("iB", grammar.get('I')[0]);
-		assertEquals("cvM", grammar.get('M')[0]);
-		assertEquals("c", grammar.get('E')[1]);
+		assertEquals("F", grammar.get('M')[0]);
+		assertEquals("pcvpcSE", grammar.get('P')[1]);
+		assertEquals("O", grammar.get('E')[1]);
 	}
 
 	/**
@@ -54,6 +59,11 @@ public class OutlineGeneratorTest {
 		try {
 			String outline = outline_generator.expandGrammar("I");
 			System.out.println(outline);
+			assertTrue("co".contains(Character.toString(outline.charAt(outline.length() - 1))));
+			assertFalse("sb".contains(Character.toString(outline.charAt(outline.length() - 1))));
+
+			outline = outline_generator.expandGrammar("C");
+			assertFalse(outline.contains("p"));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

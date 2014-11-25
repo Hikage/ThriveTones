@@ -25,13 +25,17 @@ public class OutlineGenerator {
 	 */
 	public OutlineGenerator(){
 		/**
-		 * possible parts: chorus, verse, bridge, intro, introverse, solo, outro, prechorus, prechoruschorus, verseprechorus
+		 * possible parts: intro, verse, prechorus, chorus, bridge, solo, outro, introverse, prechoruschorus, verseprechorus
 		 * i, v, p, c, b, s, o
 		 * I -> iB | B
 		 * B -> vM | vvM | M
-		 * M -> cv | cvM | cS
-		 * S -> sE | bE | E
-		 * E -> cE | o
+		 * M -> F | C
+		 * F -> pvP | P
+		 * P -> pcvP | pcvpcSE
+		 * C -> cvC | cvcSO
+		 * S -> s | b | -
+		 * E -> pO | O
+		 * O -> cO | c | co
 		 */
 
 		//build grammar
@@ -39,12 +43,20 @@ public class OutlineGenerator {
 		grammar.put('I', I);
 		String[] B = {"vM", "vvM", "M"};
 		grammar.put('B', B);
-		String[] M = {"cvM", "cvcS"};
+		String[] M = {"F", "C"};
 		grammar.put('M', M);
-		String[] S = {"scE", "bcE", "cE"};
+		String[] F = {"pvP", "P"};
+		grammar.put('F', F);
+		String[] P = {"pcvP", "pcvpcSE"};
+		grammar.put('P', P);
+		String[] C = {"cvC", "cvcSO"};
+		grammar.put('C', C);
+		String[] S = {"s", "b", ""};
 		grammar.put('S', S);
-		String[] E = {"cE", "c", "o"};
+		String[] E = {"pO", "O"};
 		grammar.put('E', E);
+		String[] O = {"cO", "c", "co"};
+		grammar.put('O', O);
 	}
 
 	/**
