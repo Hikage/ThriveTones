@@ -89,7 +89,6 @@ public class OutlineGenerator {
 	 */
 	public ArrayList<SongPart> buildOutline() throws Exception{
 		String str_outline = expandGrammar("I");
-		System.out.println("\n" + str_outline);
 
 		for(int i = 0; i < str_outline.length(); i++){
 			switch(str_outline.charAt(i)){
