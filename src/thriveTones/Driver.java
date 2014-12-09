@@ -39,6 +39,7 @@ public class Driver {
 		try {
 			song_sequence = outline_generator.buildOutline();
 
+			//TODO: automatic song names
 			Song song = new Song("C", 1, "New Hit", "Rockstar Bot", 4);
 			song.build(song_sequence, reader.getPartsDictionary(), seg_length, history, false);
 

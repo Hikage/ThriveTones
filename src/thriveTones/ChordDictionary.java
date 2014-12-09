@@ -46,6 +46,8 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 			put(key.subList(1, key.size()), chord);
 	}
 
+	//TODO: clean up dictionary to remove dead-ends, etc
+
 	/**
 	 * Given a Chord history set, returns a randomized next chord,
 	 * recursively looking at shorter histories if the current one

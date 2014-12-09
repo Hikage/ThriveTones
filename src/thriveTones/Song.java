@@ -159,6 +159,7 @@ public class Song {
 				song_segment = new SongSegment(part, parts_dictionary.get(part), history_seed, seg_length, history, debug);
 				segments.put(part, song_segment);
 			}
+			//TODO: cleaner bridges between song segments
 			song.add(song_segment);
 		}
 	}

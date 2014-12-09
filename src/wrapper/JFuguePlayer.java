@@ -58,6 +58,7 @@ public class JFuguePlayer{
      */
     public void export(Player player, Pattern pattern){
         Scanner sc = new Scanner(System.in);
+        //TODO: use automated song names
         System.out.println("Type a name for the song");
         String songName = sc.next() + ".mid";
         pattern.setMusicString(this.toString());
