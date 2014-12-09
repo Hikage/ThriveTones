@@ -18,8 +18,8 @@ This revival first looks at a sampling from a database of chord progressions fou
 _Note: Original code was a collaborative team effort during a 2006 senior capstone independent project course at Colorado State University.  I have since lost the contact information for the other 2-3 individuals and in fact no longer remember their names.  However, I wish to give due credit to their work, to the best of my ability.  Fortunately, the new approach is no longer making use of any of the previous GA implementation, and the Markov model implementation has been an entirely individual effort with instructor guidance.  Credit and thanks go also to Dr. Bart Massey of Portland State University for assisting with the latest generation of this project._
 
 ### Build Instructions
-* Compile all .java code files in src/ThriveTones and src/sax.  Additionally, you may wish to compile the files found in src/test if you'd like to perform any unit tests.
-* Download and install the latest version of JFugue (http://www.jfugue.org/) if you would like to listen to any generated songs
+* Compile all .java code files in src/thriveTones and src/sax.  Additionally, you may wish to compile the files found in src/test if you'd like to perform any unit tests.
+* Download and install the latest version of JFugue (http://www.jfugue.org/) if you would like to listen to any generated songs.  Additionally, compile all .java files in src/wrapper.
 * Make sure the input data file is located within the classpath directory.  Currently, the program looks for this file in src/..
 * Execute the Driver.java file, providing the data file name as the only argument
 
@@ -35,10 +35,9 @@ _Due to ownership and copyright considerations, the full Hooktheory data provide
 [x] Complete data read-in to generate stats (8/24)  
 [x] Refactor GA to build chord progressions using Markov chains based on statistics (8/31)  
 [x] Segregate chorus, verse, and bridge data for modular composition (10/13)  
-[] Automate song structure generation (11/10)  
-[] Clean up chord dictionaries to mitigate dead-ends (11/17)  
-[] Better bridging between song segments (11/24)  
-[] Reintroduce duration for varying chord lengths (12/1)  
+[x] Automate song structure generation (11/10)  
+[] Research and organize plan for incorporating harmonic rhythm (12/8)  
+[] Implement harmonic rhythm (12/15)
 
 ### Optional Enhancements / Future Work  
 [] Add melody over chord structure  
@@ -51,9 +50,9 @@ _Due to ownership and copyright considerations, the full Hooktheory data provide
 [] Allow for new songs to be saved/downloaded for the user  
 
 ### Currently Working On / Next Steps
-* Automate song structure construction
-* Remove JFugue from repository
-* Support for chord modes and targets
+* Research harmonic rhythm and ways to automatically generate
+* Implement automated harmonic rhythm
+* Fit melody to underlying chords
 
 ### Development Challenges
 #### How to best represent chords:  
@@ -86,7 +85,11 @@ This structure does not yet account for obscure branches the generator could tak
 To allow for modular song creation, the chord dictionary was partitioned into song-part-specific dictionaries: progressions for choruses populate a dictionary separate from verses, separate from bridges, etc.
 
 #### Song generation:
-This began as a simple hard-coded structure, a typical intro-verse-chorus-verse-chorus-bridge-chorus-chorus pattern, or similar.  Data on common structures are more difficult to find than chord progressions.  Therefore, the approach to automate this portion would be better served by a grammar of common struture rules.  Examples include: verses are commonly followed by choruses, bridges do not occur at the beginning of songs, there shouldn't be any more than two repetitions of the chorus unless at the end of the song, etc.
+This began as a simple hard-coded structure, a typical intro-verse-chorus-verse-chorus-bridge-chorus-chorus pattern, or similar.  Data on common structures are more difficult to find than chord progressions.  Therefore, automating this portion was better served by a grammar of common struture rules.  Examples include: verses are commonly followed by choruses, bridges do not occur at the beginning of songs, there shouldn't be any more than two repetitions of the chorus unless at the end of the song, etc.
+
+I first had to discard compound song parts like "prechoruschorus" and "introverse" from the raw data as they wouldn't fit well into a standardized grammar, with the intention of allowing the bot to optionally reinsert them after the structure was determined.  However, this proved impossible; without being able to parse "prechorus" and "chorus" from "prechoruschorus" (for example), subsequent isolated choruses wouldn't be consistent.  Therefore, I ultimately opted for simplicity, dropping these compound song parts on the floor.
+
+I also wanted to include prechoruses, as these are commonly found in songs.  However, I wanted to maintain consistency (typically, songs with a prechorus have a prechorus preceed all choruses).  This has thus been built into the grammar, ensuring all chorus segments either have a prechorus or don't (exempting common chorus repeats at the end of the song).
 
 #### JFugue:
 Some complicated chords are far more difficult to represent in JFugue.  Therefore, some of the more intricate chords will need to be represented with literal intervals instead of the condensed representation of Cmaj, etc.  This creates a need for some more obsure representation and consideration for unusual edge cases.  For now, this has been disregarded for the sake of simplicity, but it will need to be addressed eventually.
