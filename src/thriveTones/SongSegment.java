@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+import thriveTones.Chord.Tonality;
+
 /**
  * "ThriveTones" Song Generator
  * Copyright © 2014 Brianna Shade
@@ -78,9 +80,8 @@ public class SongSegment {
 
 		//allow for random start if no other seed is provided
 		if(seed == null){
-			Chord start = chord_dictionary.getANextChord(null, debug);
 			seed = new LinkedList<Chord>();
-			seed.add(start);
+			seed.add(new Chord(1, Tonality.maj, 4));
 		}
 
 		ProgressionGenerator generator = new ProgressionGenerator(chord_dictionary);

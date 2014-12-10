@@ -141,7 +141,7 @@ public class Song {
 	 * @param history : length of desired history
 	 * @param debug : optional debug mode
 	 */
-	public void build(ArrayList<SongPart> song_sequence,	HashMap<SongPart, ChordDictionary> parts_dictionary,
+	public void build(ArrayList<SongPart> song_sequence, HashMap<SongPart, ChordDictionary> parts_dictionary,
 			int seg_length, int history, boolean debug){
 		song = new LinkedList<SongSegment>();
 
