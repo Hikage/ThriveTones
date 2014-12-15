@@ -1,4 +1,4 @@
-package thriveTones;
+a78dcf5package thriveTones;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -32,21 +32,31 @@ public class ChordDictionary extends HashMap<LinkedList<Chord>, ArrayList<Chord>
 		// shallow copy the sequence for key storage
 		LinkedList<Chord> key = new LinkedList<Chord>(sequence);
 
-		// add in this chord (even if already present for probability)
-		ArrayList<Chord> available_chords = this.get(key);
-		if(available_chords == null){
-			// first chord at this key
-			available_chords = new ArrayList<Chord>();
-			this.put(key, available_chords);
+		//reduce repetition in the dictionary
+		boolean same = false;
+		if(key.size() > 2){
+			for(int i = key.size() - 1; i > 0; i--){
+				same = key.get(i).equals(key.get(i-1));
+				if(!same) break;
+			}
 		}
-		available_chords.add(chord);								//available chords will change value component in dictionary
+		//add only if we haven't seen 3 of the same chord before
+		if(!same || !chord.equals(key.get(key.size() - 1))){
+			// add in this chord (even if already present, for probability)
+			ArrayList<Chord> available_chords = this.get(key);
+			if(available_chords == null){
+				// first chord at this key
+				available_chords = new ArrayList<Chord>();
+				this.put(key, available_chords);
+			}
 
-		//add entire history
-		if(!key.isEmpty())
-			put(key.subList(1, key.size()), chord);
+			available_chords.add(chord);								//available chords will change value component in dictionary
+
+			//add entire history
+			if(!key.isEmpty())
+				put(key.subList(1, key.size()), chord);
+		}
 	}
-
-	//TODO: clean up dictionary to remove dead-ends, etc
 
 	/**
 	 * Given a Chord history set, returns a randomized next chord,

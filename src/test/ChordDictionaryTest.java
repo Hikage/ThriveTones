@@ -270,4 +270,27 @@ public class ChordDictionaryTest {
 		assertTrue(roots[5] > 20);
 	}
 
+	/**
+	 * Tests repetitive chords
+	 */
+	@Test
+	public void testRepetitiveChords(){
+		Chord chord = new Chord(1, Tonality.maj, 4);
+		LinkedList<Chord> sequence = new LinkedList<Chord>();
+
+		chord_dictionary.put(null, chord);				//first instance
+		sequence.add(chord);
+		chord_dictionary.put(sequence, chord);			//second instance
+		sequence.add(chord);
+		chord_dictionary.put(sequence, chord);			//third instance
+		sequence.add(chord);
+		int pre_dict_size = chord_dictionary.size();
+		chord_dictionary.put(sequence, chord);			//fourth instance - shouldn't be added!
+
+		assertEquals(pre_dict_size, chord_dictionary.size());
+
+		Chord chord2 = new Chord(5, Tonality.maj, 4);
+		chord_dictionary.put(sequence, chord2);			//perfectly legal
+		assertEquals(pre_dict_size + 1, chord_dictionary.size());
+	}
 }
